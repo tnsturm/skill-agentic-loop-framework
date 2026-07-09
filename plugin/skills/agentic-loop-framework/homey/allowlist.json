@@ -12,6 +12,7 @@
     "Bash(npx homey api devices get-*)",
     "Bash(npx homey api apps get-*)",
     "Bash(homey app validate *)",
-    "Bash(npx homey app validate *)"
+    "Bash(npx homey app validate *)",
+    "Bash(homey select current)"
   ]
 }
