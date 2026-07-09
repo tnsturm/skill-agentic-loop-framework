@@ -1,6 +1,22 @@
 # Changelog — agentic-loop-framework
 
-## 0.1.13 (2026-07-09)
+## 0.1.14 (2026-07-09)
+
+- New dashboard field `recommendedModel: {model, effort, why}` on every open milestone —
+  a per-milestone Claude model/reasoning-effort recommendation, distinct from §11's
+  existing subagent tiering. `templates/docs/dashboard/dashboard.html` renders it (new
+  `.modelrec` CSS class + renderer block, mirroring the `.cur`/currentActivity pattern).
+  `CLAUDE.md` §11 renamed "Model Tiering (Subagents & Milestones)" with a new "Milestones
+  (main-loop sessions)" subsection defining the tiering heuristic (mechanical/checklist →
+  mid-tier low/medium; open design/research → mid-tier medium; high-stakes judgment calls,
+  e.g. GO/NO-GO decisions, untested-crash-surface work, correctness-critical domain logic,
+  or anything with its own threat-model → flagship model, high/xhigh). §7's field list and
+  rules updated to require setting it at milestone-creation time. `milestone-checkpoint`
+  SKILL.md step 7 now checks/sets it for every open milestone during the dashboard update,
+  and step 8 (Handover) backfills it for the next milestone if missing before the push
+  notification goes out. Origin: Violet Homey App session 2026-07-09 (user asked for a
+  model/effort recommendation on every open milestone + for this to become standard
+  practice for future milestones/projects).
 
 - `SKILL.md` Phase 0 (Preflight) gains a GitHub-MCP-Server entry in the tool-check list:
   create a fine-grained PAT (direct link to
