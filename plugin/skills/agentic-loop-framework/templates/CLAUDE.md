@@ -9,7 +9,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 **These two skill sets are mandatory for this project — apply them by default, not on request.**
 
 - **Superpowers workflow skills** (`superpowers:*`): use them as the standard way of working — `brainstorming` before any creative/feature work, `writing-plans` before multi-step code, `test-driven-development` for features/bugfixes, `systematic-debugging` for bugs, and the code-review/verification skills before completion. When in doubt whether one applies, invoke it (see `using-superpowers`).
-- **`/documenting-code`** (this project's own skill): apply whenever you write or modify a source file — add the spec-referenced file header, decision-point comments with §-refs, and JSDoc on pure `/lib` exports.
+- **`/documenting-code`** (optional project skill — create it once the project keeps specs under `docs/superpowers/`): apply whenever you write or modify a source file — add the spec-referenced file header, decision-point comments with §-refs, and JSDoc on pure library exports. Until the skill exists, follow the same three rules manually.
 
 These override the default "just write the code" behavior; user instructions still take precedence over both.
 
