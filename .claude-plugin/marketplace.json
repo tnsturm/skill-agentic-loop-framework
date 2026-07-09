@@ -1,0 +1,14 @@
+{
+  "name": "skill-agentic-loop-framework",
+  "owner": {
+    "name": "Torsten Sturm",
+    "url": "https://github.com/tnsturm"
+  },
+  "plugins": [
+    {
+      "name": "agentic-loop-framework",
+      "source": "./plugin",
+      "description": "Loop-getriebenes agentisches Entwicklungs-Framework - Bootstrap-Skill + Templates (Karpathy-Kern, Dashboard-Protokoll, Gate-Hooks, Checkpoint-Skill) + Homey-Modul."
+    }
+  ]
+}
