@@ -1,5 +1,14 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.5 (2026-07-09)
+
+- `homey/hooks/changelog-lang-guard.js` + `homey/hooks/lib/changelog.js` (shared with a
+  future release-gate-equivalent hook in this module) + `homey/test/hooks/changelog-lang-guard.test.js`
+  (6 tests, verified against a simulated merged install of templates/+homey/) — mirrors
+  VioletApp's edit-time changelog-completeness guard. First smoke test to ship under
+  `homey/test/hooks/` (the 4 pre-existing homey hooks — check-version-sync, compose-guard,
+  json-guard, secrets-guard — still have none; flagged as a follow-up, not fixed here).
+
 ## 0.1.4 (2026-07-09)
 
 - `templates/.claude/skills/milestone-checkpoint/SKILL.md`: new step 2 — the
