@@ -51,7 +51,17 @@ dieses Repo ist die einzige lebende Quelle.
      security-requirement-extraction (Fallback: STRIDE manuell — Assets/Trust Boundaries/
      Threats → testbare Requirements),
      context7-MCP (Fallback: offizielle Doku per WebFetch — nie aus dem Gedächtnis),
-     Auto-Memory (Fallback: docs/memory/*.md + docs/memory/MEMORY.md als Index).
+     Auto-Memory (Fallback: docs/memory/*.md + docs/memory/MEMORY.md als Index),
+     GitHub-MCP-Server (PR-/Issue-/Branch-Operationen direkt aus der Session) —
+     Einrichtung falls gewünscht:
+     1. Fine-grained PAT: https://github.com/settings/personal-access-tokens — Repo(s)
+        wählen, Permissions Contents/Pull requests/Issues je Read-and-write setzen.
+     2. `claude mcp add-json github '{"type":"http","url":"https://api.githubcopilot.com/mcp","headers":{"Authorization":"Bearer YOUR_GITHUB_PAT"}}'`
+        im Projektverzeichnis ausführen.
+     3. Smoke-test: ein echter Lese-Call gegen das Repo (z. B. `list_branches`) — „Connected"
+        allein reicht nicht (Details/Stolperfallen: milestone-checkpoint SKILL.md, Schritt 2).
+        Schlägt der Test fehl: Claude Desktop neu starten, danach erneut testen.
+     Fallback ohne MCP: git/gh CLI direkt nutzen — kein Blocker für den Bootstrap.
 2. Bei Bestandsprojekt: Stack, Build-/Testsystem (inkl. Suite-LAUFZEIT!), CI, Git-Historie,
    offene TODOs analysieren; Ist-Zustand in max. 10 Zeilen zusammenfassen.
 

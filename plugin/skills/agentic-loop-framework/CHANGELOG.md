@@ -1,5 +1,20 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.13 (2026-07-09)
+
+- `SKILL.md` Phase 0 (Preflight) gains a GitHub-MCP-Server entry in the tool-check list:
+  create a fine-grained PAT (direct link to
+  https://github.com/settings/personal-access-tokens) scoped to Contents/Pull
+  requests/Issues read-write, register it via `claude mcp add-json github '{"type":"http",
+  "url":"https://api.githubcopilot.com/mcp","headers":{"Authorization":"Bearer
+  YOUR_GITHUB_PAT"}}'`, then smoke-test with a real read call — "Connected" alone doesn't
+  prove the token or session actually works (full pitfalls: milestone-checkpoint SKILL.md,
+  Schritt 2). Fallback: git/gh CLI, no bootstrap blocker.
+- `templates/.claude/skills/milestone-checkpoint/SKILL.md` gets a much shorter "Schritt 0:
+  GitHub-MCP-Verbindung prüfen" instead — just a connection + smoke-test check, pointing to
+  the bootstrap skill's Phase 0 for actual setup. (Supersedes the full walkthrough
+  mistakenly added there in an unpublished 0.1.13 draft — moved to the right place.)
+
 ## 0.1.12 (2026-07-09)
 
 - `templates/.claude/skills/milestone-checkpoint/SKILL.md` step 2, MCP-server handling
