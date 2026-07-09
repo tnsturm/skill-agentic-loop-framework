@@ -1,5 +1,16 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.4 (2026-07-09)
+
+- `templates/.claude/skills/milestone-checkpoint/SKILL.md`: new step 2 — the
+  `/claude-automation-recommender` output (read-only by design) is now summarized as a
+  short numbered list and offered back via `AskUserQuestion` (multiSelect) for direct
+  same-session implementation (Hook → same pattern as step 4 with a smoke test; MCP
+  server → `claude mcp add` if addable without OAuth, else just register + point the
+  user at the auth step; Skill/Subagent → file + smoke-test; Plugin → only after
+  explicit consent). Deselected recommendations get a one-line note in the `→Mx` log
+  instead of silently disappearing. Source: VioletApp →M5-checkpoint follow-up request.
+
 ## 0.1.3 (2026-07-09)
 
 - `templates/.claude/hooks/dashboard-guard.js` + `templates/test/hooks/dashboard-guard.test.js`
