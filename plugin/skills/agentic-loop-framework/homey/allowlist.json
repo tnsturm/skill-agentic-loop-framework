@@ -1,0 +1,17 @@
+{
+  "_comment": "Homey read-only Allowlist-Block — Eintraege nach permissions.allow in .claude/settings.json uebernehmen (CLAUDE.md §10 Schicht ii).",
+  "allow": [
+    "Bash(homey whoami)",
+    "Bash(homey api devices get-*)",
+    "Bash(homey api flow get-*)",
+    "Bash(homey api logic get-*)",
+    "Bash(homey api apps get-*)",
+    "Bash(homey api flowtoken get-*)",
+    "Bash(homey api zones get-*)",
+    "Bash(homey api notifications get-*)",
+    "Bash(npx homey api devices get-*)",
+    "Bash(npx homey api apps get-*)",
+    "Bash(homey app validate *)",
+    "Bash(npx homey app validate *)"
+  ]
+}
