@@ -1,5 +1,12 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.6 (2026-07-09)
+
+- `homey/test/hooks/check-version-sync.test.js` (7 tests) — first smoke test for this
+  hook; no VioletApp test/hooks/check-version-sync.test.js exists to port from, so this
+  was written directly against homey/hooks/check-version-sync.js, mirroring the sibling
+  hook tests' style. Verified against a simulated merged install of templates/+homey/.
+
 ## 0.1.5 (2026-07-09)
 
 - `homey/hooks/changelog-lang-guard.js` + `homey/hooks/lib/changelog.js` (shared with a
