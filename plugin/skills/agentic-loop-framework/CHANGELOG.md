@@ -1,5 +1,12 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.8 (2026-07-09)
+
+- `homey/test/hooks/json-guard.test.js` (5 tests) — ported unchanged (besides the HOOK
+  location) from VioletApp's test/hooks/json-guard.test.js. No logic drift found between
+  the VioletApp and homey/ generic hook. Verified against a simulated merged install of
+  templates/+homey/.
+
 ## 0.1.7 (2026-07-09)
 
 - `homey/test/hooks/compose-guard.test.js` (16 tests) — ported from VioletApp's
