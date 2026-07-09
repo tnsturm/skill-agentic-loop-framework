@@ -1,5 +1,13 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.7 (2026-07-09)
+
+- `homey/test/hooks/compose-guard.test.js` (16 tests) — ported from VioletApp's
+  test/hooks/compose-guard.test.js (path unchanged apart from the HOOK location and one
+  example filename genericized: lib/VioletClient.js → lib/DeviceClient.js). No logic
+  drift found between the VioletApp and homey/ hook. Verified against a simulated
+  merged install of templates/+homey/.
+
 ## 0.1.6 (2026-07-09)
 
 - `homey/test/hooks/check-version-sync.test.js` (7 tests) — first smoke test for this
