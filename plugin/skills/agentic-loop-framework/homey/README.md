@@ -14,6 +14,7 @@ siehe `../CHANGELOG.md`.)
 | `hooks/secrets-guard.js` | `.claude/hooks/` | settings.json PreToolUse, Matcher `Edit\|Write` |
 | `hooks/json-guard.js` | `.claude/hooks/` | settings.json PostToolUse, Matcher `Edit\|Write` |
 | `hooks/check-version-sync.js` | `.claude/hooks/` | settings.json PreToolUse, Matcher `Bash\|PowerShell` |
+| `hooks/release-gate.js` | `.claude/hooks/` | settings.json PreToolUse, Matcher `Bash\|PowerShell` |
 | `allowlist.json` | Einträge → `permissions.allow` in `.claude/settings.json` | — |
 | `agents/release-readiness.md` | `.claude/agents/` | — (Subagent, model/effort-Frontmatter beibehalten) |
 
@@ -61,6 +62,15 @@ CLAUDE.md/HOMEY.md verankern.
 - `secrets-guard` (PreToolUse Edit|Write), falls Geräte-Credentials im Spiel: blockt
   Klartext-Credentials in getrackten Dateien; die Fehlermeldung zitiert den Treffer NIE
   (exaktes Passwort optional out-of-band via Env `DEVICE_WRITE_PASSWORD`).
+- `release-gate` (PreToolUse Bash|PowerShell): blockt `homey app install|publish`, wenn
+  (a) `.homeychangelog.json` keinen vollständigen en+de-Eintrag zur Compose-Version hat,
+  (b) die Version bereits in `docs/dashboard/versions.md` geloggt ist (vergessener Bump
+  = doppelter Release), oder (c) — nur bei publish, und nur wenn eine
+  `docs/superpowers/security/credential-rotation.md` bereits existiert — diese kein
+  datiertes Rotations-Datum enthält. Teil (c) ist bewusst weich gegenüber dem
+  VioletApp-Original: fehlt die Datei ganz, hat die App kein Geräte-Credential zu
+  rotieren und der Check greift nicht (VioletApp selbst verwaltet immer ein
+  Geräte-Credential und verlangt die Datei unbedingt).
 
 ## Phase-4-Hinweis
 

@@ -1,5 +1,17 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.10 (2026-07-09)
+
+- `homey/hooks/release-gate.js` + `homey/test/hooks/release-gate.test.js` (13 tests) —
+  ports VioletApp's `.claude/hooks/release-gate.js` (blocks `homey app install|publish`
+  on an incomplete release checklist), reusing the shared `lib/changelog.js` completeness
+  check. One part genericized: VioletApp's credential-rotation check (part c) is
+  unconditional (it always manages a device credential); the generic version only
+  enforces it once a `docs/superpowers/security/credential-rotation.md` already exists,
+  so apps without device credentials are never forced to create one. README updated
+  (install table + Phase-3 hook list) to document the new hook and the genericization.
+  Verified against a simulated merged install of templates/+homey/.
+
 ## 0.1.9 (2026-07-09)
 
 - `homey/test/hooks/secrets-guard.test.js` (9 tests) — ported from VioletApp's
