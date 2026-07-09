@@ -1,5 +1,22 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.12 (2026-07-09)
+
+- `templates/.claude/skills/milestone-checkpoint/SKILL.md` step 2, MCP-server handling
+  extended with three gotchas learned verifying a standalone GitHub MCP server
+  end-to-end: **(1)** `claude mcp add` defaults to `--scope local` (bound to whatever
+  directory the command ran in) — use `--scope user` for cross-project availability.
+  **(2)** A newly connected server's tools do NOT load into an already-running session
+  even once `claude mcp get <name>` shows "Connected" — only a fresh session picks them
+  up via `ToolSearch`. **(3)** "Connected" only proves the handshake, not that the token
+  can do anything: a fine-grained PAT with no repo access 404s on every repo call; one
+  with read-only access 403s on write calls (`create_branch`, `push_files`, …) —
+  `get_me` succeeds in both broken states, so it's not a reliable health check. Verified
+  live end-to-end: created a local branch + commit, pushed it via `push_files`, confirmed
+  the commit on GitHub via `get_commit`, then cleaned up both sides. Documents the
+  required repo permissions for the GitHub MCP server: Contents (R/W), Pull requests
+  (R/W), Issues (R/W).
+
 ## 0.1.11 (2026-07-09)
 
 - `templates/.claude/skills/milestone-checkpoint/SKILL.md` step 2, MCP-server handling
