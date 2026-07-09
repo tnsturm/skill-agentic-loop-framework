@@ -1,5 +1,14 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.9 (2026-07-09)
+
+- `homey/test/hooks/secrets-guard.test.js` (9 tests) — ported from VioletApp's
+  test/hooks/secrets-guard.test.js, updated for the one intentional drift between the
+  two hooks: the known-secret env var is `DEVICE_WRITE_PASSWORD` here, not
+  `VIOLET_WRITE_PASSWORD` (already genericized in homey/hooks/secrets-guard.js itself).
+  No other logic drift found. Verified against a simulated merged install of
+  templates/+homey/. All 4 pre-existing homey hooks now have smoke-test coverage.
+
 ## 0.1.8 (2026-07-09)
 
 - `homey/test/hooks/json-guard.test.js` (5 tests) — ported unchanged (besides the HOOK
