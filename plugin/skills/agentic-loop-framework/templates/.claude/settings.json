@@ -15,7 +15,9 @@
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
-        "hooks": []
+        "hooks": [
+          { "type": "command", "command": "node .claude/hooks/dashboard-guard.js" }
+        ]
       }
     ],
     "Stop": [

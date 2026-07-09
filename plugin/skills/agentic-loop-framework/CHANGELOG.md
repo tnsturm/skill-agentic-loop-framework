@@ -1,5 +1,16 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.3 (2026-07-09)
+
+- `templates/.claude/hooks/dashboard-guard.js` + `templates/test/hooks/dashboard-guard.test.js`
+  (5 Tests), wired into `templates/.claude/settings.json` PostToolUse Edit|Write — validates
+  the `window.DASHBOARD_STATUS` data block (`script#status-data`) via a sandboxed `vm` eval
+  after every edit to `docs/dashboard/dashboard.html`, blocking (exit 2) on a syntax error the
+  same way `test-gate.js` blocks a red suite. Closes a gap a plain JSON guard can't cover
+  (the data block is a JS object literal embedded in HTML). Source: VioletApp →M5-Checkpoint
+  workflow retro (step 4) — the same smart-quote delimiter bug class hit `dashboard.html`
+  a 4th time, previously only flagged, never codified into a hook.
+
 ## 0.1.2 (2026-07-09)
 
 - README grundlegend erweitert (de) + neues `README.en.md` (en): Was das Framework tut
