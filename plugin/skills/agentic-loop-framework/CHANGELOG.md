@@ -1,5 +1,21 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.11 (2026-07-09)
+
+- `templates/.claude/skills/milestone-checkpoint/SKILL.md` step 2, MCP-server handling
+  refined: a recommender hit for `plugin:<category>:<name>` (e.g. `plugin:engineering:github`)
+  is a role-based **Cowork plugin bundle** — its auth/activation only goes through Cowork's
+  own settings (`setup-cowork`/`cowork-plugin-management` skills), never through
+  `claude plugin`/`claude mcp` from inside a session; document + point the user there
+  instead of attempting it. Separately, a standalone plugin with a plain name in the
+  `claude-plugins-official` marketplace manifest (verified locally: `github` exists there,
+  independent of the Cowork bundle) IS directly installable via `claude plugin install
+  <name>` — the install itself needs no OAuth, but the MCP server behind it can still need
+  its own auth step afterward (check `claude mcp list`, report "Failed to connect" honestly
+  rather than assuming success). Learned live: `plugin:engineering:github` couldn't be
+  toggled from a session, but `claude plugin install github` (the standalone marketplace
+  plugin) worked immediately.
+
 ## 0.1.10 (2026-07-09)
 
 - `homey/hooks/release-gate.js` + `homey/test/hooks/release-gate.test.js` (13 tests) —

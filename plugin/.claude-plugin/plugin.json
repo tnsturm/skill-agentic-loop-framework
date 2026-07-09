@@ -1,6 +1,6 @@
 {
   "name": "agentic-loop-framework",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Bootstrap eines loop-getriebenen agentischen Entwicklungs-Frameworks: verifizierte, selbstkorrigierende Loops (Gates, Dashboard, Checkpoints, Telemetrie) statt Prompt-fuer-Prompt-Arbeit.",
   "author": {
     "name": "Torsten Sturm"
