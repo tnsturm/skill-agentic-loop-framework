@@ -1,0 +1,77 @@
+<svg viewBox="0 0 920 640" width="920" height="640" xmlns="http://www.w3.org/2000/svg" role="img" font-family="Segoe UI, system-ui, sans-serif">
+  <title>Struktur des agentic-loop-framework</title>
+  <desc>Oben: Repo-Struktur des Skills (Marketplace, Plugin, SKILL.md, templates-Baum, homey-Modul). Unten: die vier Verifikations-Loops von Minuten bis Nächten.</desc>
+  <rect x="0" y="0" width="920" height="640" fill="#ffffff"/>
+
+  <!-- ================= Panel 1: Repo-Struktur ================= -->
+  <text x="20" y="28" font-size="15" font-weight="700" fill="#1a1a1a">1 · Repo skill-agentic-loop-framework</text>
+
+  <rect x="20" y="44" width="200" height="46" rx="8" fill="none" stroke="#8a8a8a"/>
+  <text x="120" y="63" font-size="12" font-weight="600" fill="#1a1a1a" text-anchor="middle">.claude-plugin/</text>
+  <text x="120" y="79" font-size="11" fill="#555555" text-anchor="middle">marketplace.json</text>
+
+  <rect x="20" y="110" width="200" height="46" rx="8" fill="none" stroke="#8a8a8a"/>
+  <text x="120" y="129" font-size="12" font-weight="600" fill="#1a1a1a" text-anchor="middle">plugin/</text>
+  <text x="120" y="145" font-size="11" fill="#555555" text-anchor="middle">plugin.json · 0.1.1</text>
+
+  <rect x="20" y="176" width="200" height="62" rx="8" fill="none" stroke="#6A4C93" stroke-width="1.5"/>
+  <text x="120" y="197" font-size="12" font-weight="700" fill="#6A4C93" text-anchor="middle">skills/agentic-loop-…/</text>
+  <text x="120" y="213" font-size="11" fill="#555555" text-anchor="middle">SKILL.md · Phasen 0–7</text>
+  <text x="120" y="228" font-size="11" fill="#555555" text-anchor="middle">CHANGELOG.md · Quellen</text>
+
+  <line x1="120" y1="90" x2="120" y2="110" stroke="#8a8a8a"/>
+  <line x1="120" y1="156" x2="120" y2="176" stroke="#8a8a8a"/>
+
+  <rect x="290" y="44" width="290" height="194" rx="8" fill="none" stroke="#8a8a8a"/>
+  <text x="435" y="66" font-size="12" font-weight="700" fill="#1a1a1a" text-anchor="middle">templates/ — generischer Projektbaum</text>
+  <text x="306" y="90" font-size="11" fill="#555555">CLAUDE.md · §0–§11 Regelwerk</text>
+  <text x="306" y="109" font-size="11" fill="#555555">docs/dashboard/ · Dashboard + Logs</text>
+  <text x="306" y="128" font-size="11" fill="#555555">.claude/settings.json · Hook-Gerüst</text>
+  <text x="306" y="147" font-size="11" fill="#555555">.claude/hooks/ · test-gate + lib/</text>
+  <text x="306" y="166" font-size="11" fill="#555555">.claude/skills/ · milestone-checkpoint</text>
+  <text x="306" y="185" font-size="11" fill="#555555">test/hooks/ · Smoke-Test-Muster</text>
+  <text x="306" y="211" font-size="11" font-style="italic" fill="#888888">1:1 ins Zielprojekt kopieren,</text>
+  <text x="306" y="226" font-size="11" font-style="italic" fill="#888888">Platzhalter &lt;…&gt; füllen</text>
+
+  <rect x="610" y="44" width="290" height="194" rx="8" fill="none" stroke="#b5b5b5" stroke-dasharray="5 4"/>
+  <text x="755" y="66" font-size="12" font-weight="700" fill="#1a1a1a" text-anchor="middle">homey/ — Plattform-Modul (optional)</text>
+  <text x="626" y="90" font-size="11" fill="#555555">README.md · Einbau + Phasen-Zusätze</text>
+  <text x="626" y="109" font-size="11" fill="#555555">HOMEY.md · Plattform-Datei (§6)</text>
+  <text x="626" y="128" font-size="11" fill="#555555">hooks/ · 4 Guard-Hooks</text>
+  <text x="626" y="147" font-size="11" fill="#555555">allowlist.json · read-only CLI</text>
+  <text x="626" y="166" font-size="11" fill="#555555">agents/ · release-readiness</text>
+  <text x="626" y="211" font-size="11" font-style="italic" fill="#888888">Muster für weitere Plattform-</text>
+  <text x="626" y="226" font-size="11" font-style="italic" fill="#888888">Module (ios/, aws/, …)</text>
+
+  <line x1="220" y1="207" x2="290" y2="141" stroke="#8a8a8a"/>
+  <line x1="220" y1="207" x2="610" y2="141" stroke="#b5b5b5" stroke-dasharray="5 4"/>
+
+  <text x="20" y="272" font-size="11" fill="#888888">Installation: claude plugin marketplace add tnsturm/skill-agentic-loop-framework → claude plugin install agentic-loop-framework</text>
+
+  <!-- ================= Panel 2: Die vier Loops ================= -->
+  <text x="20" y="316" font-size="15" font-weight="700" fill="#1a1a1a">2 · Vier ineinandergreifende Verifikations-Loops</text>
+
+  <rect x="20" y="334" width="880" height="60" rx="8" fill="none" stroke="#6A4C93" stroke-width="1.5"/>
+  <text x="36" y="358" font-size="12" font-weight="700" fill="#6A4C93">Innerer Loop · Minuten</text>
+  <text x="36" y="378" font-size="11" fill="#555555">TDD (rot → grün) · Commit-Gates blocken rote Suite/Typen · Telemetrie loggt jede Entscheidung</text>
+  <text x="860" y="358" font-size="11" fill="#888888" text-anchor="end">test-gate · lib/log.js</text>
+
+  <rect x="20" y="404" width="880" height="60" rx="8" fill="none" stroke="#8a8a8a"/>
+  <text x="36" y="428" font-size="12" font-weight="700" fill="#1a1a1a">Session-Loop · Stunden</text>
+  <text x="36" y="448" font-size="11" fill="#555555">Dashboard-Eintrag pflegen · FRICTION sofort loggen · Turn endet nicht rot (Stop-Hook-Muster)</text>
+  <text x="860" y="428" font-size="11" fill="#888888" text-anchor="end">dashboard.html</text>
+
+  <rect x="20" y="474" width="880" height="60" rx="8" fill="none" stroke="#8a8a8a"/>
+  <text x="36" y="498" font-size="12" font-weight="700" fill="#1a1a1a">Milestone-Loop · Tage</text>
+  <text x="36" y="518" font-size="11" fill="#555555">Resume-Prompt → TDD-Umsetzung → DONE-BEDINGUNGEN → /code-review → §9-Gate → Checkpoint (8 Schritte)</text>
+  <text x="860" y="498" font-size="11" fill="#888888" text-anchor="end">milestone-checkpoint</text>
+
+  <rect x="20" y="544" width="880" height="60" rx="8" fill="none" stroke="#8a8a8a"/>
+  <text x="36" y="568" font-size="12" font-weight="700" fill="#1a1a1a">Heartbeat · nächtlich</text>
+  <text x="36" y="588" font-size="11" fill="#555555">CI (Push/PR + Cron) · Triage-Routine schreibt Inbox → nächste Session liest sie zuerst</text>
+  <text x="860" y="568" font-size="11" fill="#888888" text-anchor="end">triage-inbox.md</text>
+
+  <path d="M 908 574 L 914 574 L 914 364 L 900 364" fill="none" stroke="#8a8a8a"/>
+  <path d="M 906 364 L 914 360 L 914 368 Z" fill="#8a8a8a"/>
+  <text x="632" y="628" font-size="11" font-style="italic" fill="#888888">Jeder äußere Loop füttert die inneren: Retro codifiziert Reibung als Hook/Regel/Memory.</text>
+</svg>

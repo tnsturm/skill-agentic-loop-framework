@@ -1,5 +1,12 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.2 (2026-07-09)
+
+- README grundlegend erweitert (de) + neues `README.en.md` (en): Was das Framework tut
+  (die vier Verifikations-Loops), Struktur-Grafik (`assets/struktur.svg`), Installation
+  (inkl. Hinweis: marketplace add akzeptiert GitHub-Kurzform, Git-URLs und lokale Pfade)
+  und der Copy-Paste-Initiierungs-Prompt (mit und ohne Plugin-Installation).
+
 ## 0.1.1 (2026-07-09)
 
 - Seed-Prompts im Settings-Repo entfernt (User-Entscheid): dieses Repo ist die EINZIGE
