@@ -1,5 +1,13 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.1 (2026-07-09)
+
+- Seed-Prompts im Settings-Repo entfernt (User-Entscheid): dieses Repo ist die EINZIGE
+  lebende Quelle; Seed-Referenzen in SKILL.md/README auf die Git-Historie
+  (`skill-ClaudeCode-general-settings@fcbda47`) umgestellt.
+- README: Einstiegszeile für Bootstrap OHNE Plugin-Installation (Repo klonen → Session
+  auf die SKILL.md zeigen) — ersetzt den Copy-Paste-Use-Case der alten Seed-Prompts.
+
 ## 0.1.0 (2026-07-09)
 
 Initiale Extraktion aus dem VioletApp-Projekt (M0–M4.8), Milestone M4.9 der

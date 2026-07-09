@@ -12,8 +12,9 @@ Checkpoints, die das Framework selbst verbessern, und Telemetrie als Retro-Daten
 **Artefakt-Quellen:** Statt Dateien neu zu erfinden, den mitgelieferten Baum
 [`templates/`](templates/) kopieren und Platzhalter anpassen (Spitzklammern `<…>`).
 Für Homey-Apps zusätzlich [`homey/README.md`](homey/README.md) (Plattform-Zusatzblock).
-Historischer Seed: die Bootstrap-Prompts (de/en) im Repo `skill-ClaudeCode-general-settings`
-unter `prompts/` — superseded durch diesen Skill.
+Historischer Seed: die Bootstrap-Prompts (de/en, Stand 2026-07-07) — seit 2026-07-09 nur
+noch in der Git-Historie des Repos `skill-ClaudeCode-general-settings` (Commit `fcbda47`);
+dieses Repo ist die einzige lebende Quelle.
 
 ## Vorab klären (falls nicht im Auftrag genannt)
 

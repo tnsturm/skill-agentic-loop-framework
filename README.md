@@ -14,6 +14,10 @@ claude plugin marketplace add tnsturm/skill-agentic-loop-framework
 claude plugin install agentic-loop-framework
 ```
 
+**Ohne Plugin-Installation** (z. B. fremder Rechner, Einmal-Bootstrap): dieses Repo klonen
+und der Session sagen: „Folge `plugin/skills/agentic-loop-framework/SKILL.md` und richte
+das Agentic-Loop-Framework in diesem Projekt ein." — die SKILL.md ist selbsterklärend.
+
 ## Inhalt
 
 - `plugin/skills/agentic-loop-framework/SKILL.md` — die Bootstrap-Anleitung (Phasen 0–7 + Dauerregeln).
@@ -24,5 +28,6 @@ claude plugin install agentic-loop-framework
   (HOMEY.md, 4 Guard-Hooks, Allowlist, release-readiness-Subagent).
 - `plugin/skills/agentic-loop-framework/CHANGELOG.md` — Versionen + Quellen.
 
-Historischer Seed: die Bootstrap-Prompts in `skill-ClaudeCode-general-settings/prompts/`
-(dort als superseded markiert — die lebende Quelle ist dieses Repo).
+Historischer Seed: die Bootstrap-Prompts (Stand 2026-07-07) — seit 2026-07-09 nur noch in
+der Git-Historie von `skill-ClaudeCode-general-settings` (`fcbda47`); die lebende Quelle
+ist dieses Repo.
