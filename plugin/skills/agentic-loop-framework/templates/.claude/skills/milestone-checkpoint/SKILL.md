@@ -1,0 +1,116 @@
+---
+name: milestone-checkpoint
+description: Between-milestone housekeeping for this project - tightens tool permissions, checks for new automation opportunities, checks/updates the external skill sources this project depends on, and runs a workflow retrospective that codifies recurring friction into hooks/docs/memory. Run between milestones per CLAUDE.md §7 point 4 / the dashboard's →Mx checkpoint entries.
+disable-model-invocation: true
+---
+
+# Milestone Checkpoint
+
+Führt die Zwischen-Milestone-Housekeeping aus CLAUDE.md §7 Punkt 4 in einem Rutsch aus, statt
+mehrere Skills einzeln aufzurufen.
+
+## Schritte
+
+1. `/fewer-permission-prompts` ausführen.
+2. `/claude-automation-recommender` ausführen.
+3. Skill-Quellen prüfen (siehe unten).
+4. **Workflow-Retrospektive / Optimizer** ausführen (siehe unten) — wiederkehrende Reibung aus dem
+   abgeschlossenen Milestone in eine dauerhafte Absicherung überführen.
+5. **Memory-Konsolidierung** (siehe unten) — Memory-Dateien eindampfen, Ergebnis nur als Diff.
+6. **Framework-Drift prüfen** (siehe unten) — Projekt-Framework vs. skill-agentic-loop-framework abgleichen.
+7. Den aktiven `→Mx`-Checkpoint-Eintrag in `docs/dashboard/dashboard.html` aktualisieren:
+   `status: "done"`, `finishedAt` = heute, alle Steps abgehakt, je ein `log[]`-Eintrag mit
+   kurzer Zusammenfassung der Schritte 1–6.
+8. **Handover** (siehe unten) — den nächsten Milestone als Push aufs Handy übergeben.
+
+## Schritt 3: Skill-Quellen prüfen
+
+<!-- PROJEKTABHÄNGIG AUSFÜLLEN: die externen Skill-/Referenz-Quellen dieses Projekts listen.
+     Je Quelle den passenden Update-Weg dokumentieren — zwei bewährte Muster: -->
+
+### Muster A: Git-Checkout-Quelle (Skill-Repo ohne Plugin-Manifest)
+
+```bash
+git -C /tmp/<skill-repo> fetch --quiet
+git -C /tmp/<skill-repo> log HEAD..origin/HEAD --oneline
+```
+
+Existiert `/tmp/<skill-repo>` nicht, frisch klonen. Ist die Ausgabe **nicht leer**
+(Update vorhanden), automatisch nachziehen — keine Rückfrage nötig:
+
+```bash
+git -C /tmp/<skill-repo> pull --quiet
+rm -rf ~/.claude/skills/<skill-name>/*
+cp -r /tmp/<skill-repo>/* ~/.claude/skills/<skill-name>/
+```
+
+### Muster B: Marketplace-Plugin (z. B. Superpowers)
+
+**Nicht automatisierbar aus der Session heraus.** Der einzige Update-Weg ist
+`claude plugin update <plugin>`, was einen Neustart braucht. Nur melden:
+`claude plugin list` (installierte Version), und den Nutzer bitten, das Update bei Bedarf
+selbst in einer interaktiven Session auszuführen.
+
+## Schritt 4: Workflow-Retrospektive (Optimizer)
+
+Wiederkehrende, gleichartige Fehler in dauerhafte Absicherung überführen, damit sie nicht erneut
+auftreten.
+
+1. **Signal sammeln** für den abgeschlossenen Milestone: `feedback`-Memories (Memory-Ordner),
+   `FRICTION:`-Einträge in den Dashboard-`log[]`, und der Git-Verlauf (wiederholte `fix:`/`revert:`-
+   Commits, Commit der einen direkt vorigen korrigiert, ≥2 gleichartige Fix-Commits an derselben Datei).
+   Zusätzlich `.claude/hooks/hook-log.jsonl` auslesen (Block-Zählungen je Hook seit dem letzten
+   Checkpoint statt Erinnerung — M4.8; viele Blocks desselben Hooks = wiederkehrende Reibungsklasse).
+2. **Clustern** zu eigenständigen Problemen; Häufigkeit zählen. **In Scope nur: ≥2× gesehen ODER vom
+   Nutzer markiert** („nochmal", „zum dritten Mal"). Einzelfälle überspringen (YAGNI).
+3. **Root-Cause** je Problem (dreimal „warum": passiert · wiederholt · vor dem Commit nicht gefangen).
+4. **Codifizierungs-Ebene wählen** — verlässlichste zuerst; ein Problem darf mehrere bekommen:
+   **a. Hook** (mechanisch prüfbar → automatischer Guard; unvergesslich) ·
+   **b. CLAUDE.md / <PLATFORM>.md** (Prozess-/Konventionsregel) ·
+   **c. `feedback`-Memory** (sitzungsübergreifende Guidance) ·
+   **d. Skill-Edit** (ein Skill-Schritt ist selbst falsch).
+   Höchste Ebene bevorzugen, die das Problem *vollständig* abdeckt. Jeder neue Hook bringt einen
+   Smoke-Test mit (wie `secrets-guard` / `json-guard`) und wird in `.claude/settings.json` verdrahtet.
+5. **Anwenden + verifizieren** (Hook-Smoke-Test grün; Regel/Memory landet). Kleine, reversible
+   Änderung, eigener Commit.
+6. **Protokollieren** im `→Mx`-`log[]`: `Problem → Root-Cause → Ebene → Änderung → verifiziert`.
+
+Ist das Signal leer (nichts wiederholte sich), ist dieser Schritt ein No-op — nur kurz vermerken.
+
+## Schritt 5: Memory-Konsolidierung (Dreaming-Muster, M4.8)
+
+Sessions seit dem letzten Checkpoint sichten (`search_session_transcripts`, falls verfügbar —
+sonst Dashboard-`log[]` und `git log` als Quellen), dann die Dateien im Memory-Ordner
+(`MEMORY.md` + Einzeldateien) konsolidieren:
+
+- **Deduplizieren/kürzen**: Erledigtes eindampfen (z. B. trägt `project-status` volle
+  Detailhistorien abgeschlossener Milestones, die eine Zeile + Verweis sein können).
+- **Widersprüche auflösen**: veraltete Aussagen korrigieren (z. B. "ab nächster Session aktiv",
+  wenn es längst live ist).
+- **HARTE REGELN**: das Ergebnis IMMER als Diff zum Review präsentieren, NIE direkt anwenden;
+  offene Follow-ups und Security-Notizen NIE löschen; im Zweifel behalten.
+
+## Schritt 6: Framework-Drift prüfen (M4.9)
+
+`git log --since=<letzter Checkpoint> --oneline -- .claude/hooks .claude/skills CLAUDE.md`
+im Projekt sichten: Ist eine der Änderungen GENERISCH (in jedem Projekt sinnvoll)? Dann im
+lokalen Checkout von `skill-agentic-loop-framework` die entsprechende Vorlage
+(`templates/` bzw. Plattform-Modul) nachziehen + CHANGELOG-Eintrag; Commit dort nach
+§9-Freigabe. Kein Drift → kurz vermerken.
+
+## Schritt 8: Handover (M4.8)
+
+1. Aus dem `DASHBOARD_STATUS`-Block den NÄCHSTEN Milestone mit `status: "todo"` (erster in
+   Listenreihenfolge) lesen.
+2. Push-Benachrichtigung aufs Handy senden (PushNotification): Titel `Nächster Milestone: <id>
+   — <title>`, Text = Kurzfassung (erste Prompt-Zeilen) + Hinweis `Start per /remote-control
+   <id>` (der volle Prompt steht im Dashboard; Push hat Längenlimits). Kein Push-Kanal
+   verfügbar → Prompt-Kopf im Chat zeigen und das im Log vermerken.
+3. Fragen, ob der Milestone direkt in dieser Session gestartet werden soll.
+
+## Bericht
+
+Am Ende kurz zusammenfassen: was wurde aktualisiert (Skill-Quellen, falls zutreffend),
+installierte Plugin-Versionen (ohne Aussage darüber, ob sie veraltet sind — das lässt sich von
+hier aus nicht feststellen), und das Ergebnis der Workflow-Retrospektive (welche wiederkehrenden
+Probleme in welche Ebene codifiziert wurden, oder „keine neue Reibung").

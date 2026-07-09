@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><Projektname> — Fortschritts-Dashboard</title>
+<style>
+  :root{
+    --bg:#faf9f5; --surface:#ffffff; --border:rgba(0,0,0,.12); --border2:rgba(0,0,0,.07);
+    --text:#1a1a18; --muted:#6b6a64; --faint:#9a988f;
+    --done:#1d9e75; --doneBg:#e1f5ee; --doneText:#0f6e56;
+    --active:#378add; --activeBg:#e6f1fb; --activeText:#185fa5;
+    --todoBg:#f1efe8; --todoText:#5f5e5a;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#1f1e1c; --surface:#2a2926; --border:rgba(255,255,255,.15); --border2:rgba(255,255,255,.08);
+      --text:#eceae3; --muted:#a8a69d; --faint:#7a7870;
+      --doneBg:#0a3a30; --doneText:#9fe1cb;
+      --activeBg:#0c447c; --activeText:#b5d4f4;
+      --todoBg:#3a3935; --todoText:#cfcdc4;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.55;
+       -webkit-font-smoothing:antialiased;padding:32px 16px}
+  .wrap{max-width:760px;margin:0 auto}
+  h1{font-size:21px;font-weight:600;margin:0}
+  .sub{color:var(--muted);font-size:14px;margin-top:2px}
+  .meta-top{color:var(--faint);font-size:12px;margin-top:6px}
+  .bar{height:9px;border-radius:999px;background:var(--todoBg);overflow:hidden;margin:18px 0 8px}
+  .bar>div{height:100%;background:var(--done);border-radius:999px;transition:width .3s}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:26px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dotk{width:10px;height:10px;border-radius:50%}
+  .row{display:flex;gap:14px}
+  .rail{display:flex;flex-direction:column;align-items:center;width:30px;flex:none}
+  .dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+       font-size:15px;font-weight:600;flex:none}
+  .line{flex:1;width:2px;background:var(--border2);min-height:14px;margin:4px 0}
+  .card{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:13px;
+        padding:15px 17px;margin-bottom:14px}
+  .card.active{border-color:var(--active);border-width:2px;padding:14px 16px}
+  .chead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .ctitle{font-weight:600;font-size:15px}
+  .badge{font-size:12px;font-weight:500;padding:3px 11px;border-radius:8px;white-space:nowrap}
+  .summary{font-size:13.5px;color:var(--muted);margin-top:7px}
+  .steps{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+  .step{font-size:12px;padding:3px 9px;border-radius:7px;background:var(--todoBg);color:var(--todoText);
+        display:inline-flex;align-items:center;gap:5px}
+  .step.ok{background:var(--doneBg);color:var(--doneText)}
+  .step .mk{font-weight:700}
+  .metaline{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--faint);margin-top:11px}
+  .metaline b{font-weight:500;color:var(--muted)}
+  .cur{font-size:12.5px;color:var(--activeText);background:var(--activeBg);border-radius:8px;
+       padding:7px 10px;margin-top:11px}
+  .log{margin-top:10px;font-size:12px;color:var(--faint)}
+  .log div{padding:1px 0}
+  details{margin-top:12px}
+  summary{cursor:pointer;font-size:13px;color:var(--active);list-style:none;
+          display:inline-flex;align-items:center;gap:6px;user-select:none}
+  summary::-webkit-details-marker{display:none}
+  pre{white-space:pre-wrap;font-family:var(--mono);font-size:12px;line-height:1.6;background:var(--bg);
+      border:1px solid var(--border2);border-radius:9px;padding:12px;margin:9px 0 0;overflow-x:auto}
+  .copy{font-size:12px;font-family:var(--sans);color:var(--text);background:var(--surface);
+        border:1px solid var(--border);border-radius:7px;padding:5px 11px;margin-top:9px;cursor:pointer}
+  .copy:hover{background:var(--todoBg)}
+  .chip{font-size:12px;color:var(--muted);margin-top:11px;display:flex;align-items:center;gap:6px}
+  .mono{font-family:var(--mono)}
+  code{font-family:var(--mono);font-size:.92em}
+</style>
+</head>
+<body>
+<div class="wrap"><div id="app"></div></div>
+
+<script id="status-data">
+/* =====================================================================
+   DATEN-BLOCK — EINZIGE QUELLE DER WAHRHEIT
+   Jede Milestone-Session editiert NUR dieses Objekt.
+   Protokoll & Feld-Bedeutungen: CLAUDE.md §7 (generisch, wird automatisch geladen),
+   Plattform-Versionierung: <PLATFORM>.md (per @-Import in CLAUDE.md, falls vorhanden).
+   Den Renderer darunter NICHT anfassen.
+   ===================================================================== */
+window.DASHBOARD_STATUS = {
+  project: "<Projektname>",
+  updatedAt: "<YYYY-MM-DD>",
+  milestones: []
+};
+</script>
+
+<script>
+/* Renderer — nicht editieren. Liest window.DASHBOARD_STATUS und zeichnet das Dashboard. */
+(function () {
+  var S = window.DASHBOARD_STATUS;
+  var BADGE = {
+    done:   { txt: "Abgeschlossen",   bg: "var(--doneBg)",   fg: "var(--doneText)",   dot: "var(--done)",   icon: "✓" },
+    active: { txt: "In Arbeit",        bg: "var(--activeBg)", fg: "var(--activeText)", dot: "var(--active)", icon: "▶" },
+    todo:   { txt: "Nicht begonnen",   bg: "var(--todoBg)",   fg: "var(--todoText)",   dot: "var(--faint)",  icon: "○" }
+  };
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  var ms = S.milestones;
+  var totalSteps = 0, doneSteps = 0;
+  ms.forEach(function (m) { m.steps.forEach(function (s) { totalSteps++; if (s.done) doneSteps++; }); });
+  var pct = totalSteps ? Math.round((doneSteps / totalSteps) * 100) : 0;
+  var doneCount = ms.filter(function (m) { return m.status === "done"; }).length;
+  var activeM = ms.filter(function (m) { return m.status === "active"; }).map(function (m) { return m.id; });
+  var statusLine = doneCount + " von " + ms.length + " abgeschlossen"
+    + (activeM.length ? " · " + activeM.join(", ") + " in Arbeit"
+       : (doneCount < ms.length ? " · " + (ms.find(function(m){return m.status!=="done";})||{}).id + " als Naechstes" : " · fertig"));
+
+  var html = "";
+  html += '<h1>' + esc(S.project) + ' — Fortschritt</h1>';
+  html += '<div class="sub">' + esc(S.subtitle) + '</div>';
+  html += '<div class="meta-top">Stand: ' + esc(S.updatedAt) + ' · ' + esc(statusLine) + ' · ' + pct + '% (' + doneSteps + '/' + totalSteps + ' Steps)</div>';
+  html += '<div class="bar"><div style="width:' + pct + '%"></div></div>';
+  html += '<div class="legend">'
+        + '<span><span class="dotk" style="background:var(--done)"></span>abgeschlossen</span>'
+        + '<span><span class="dotk" style="background:var(--active)"></span>in Arbeit</span>'
+        + '<span><span class="dotk" style="background:var(--faint)"></span>nicht begonnen</span></div>';
+
+  ms.forEach(function (m, i) {
+    var b = BADGE[m.status] || BADGE.todo;
+    var last = i === ms.length - 1;
+    var nDone = m.steps.filter(function (s) { return s.done; }).length;
+
+    html += '<div class="row"><div class="rail">';
+    html += '<div class="dot" style="background:' + b.bg + ';color:' + b.fg + '">' + b.icon + '</div>';
+    if (!last) html += '<div class="line"></div>';
+    html += '</div>';
+
+    html += '<div class="card' + (m.status === "active" ? " active" : "") + '">';
+    html += '<div class="chead"><span class="ctitle">' + esc(m.id) + ' · ' + esc(m.title) + '</span>';
+    html += '<span class="badge" style="background:' + b.bg + ';color:' + b.fg + '">' + esc(b.txt) + '</span></div>';
+    html += '<div class="summary">' + esc(m.summary) + '</div>';
+
+    html += '<div class="steps">';
+    m.steps.forEach(function (s) {
+      html += '<span class="step' + (s.done ? " ok" : "") + '"><span class="mk">' + (s.done ? "✓" : "○") + '</span>' + esc(s.label) + '</span>';
+    });
+    html += '</div>';
+
+    var meta = [];
+    meta.push('<span><b>Steps:</b> ' + nDone + '/' + m.steps.length + '</span>');
+    if (m.startedAt)  meta.push('<span><b>Start:</b> ' + esc(m.startedAt) + '</span>');
+    if (m.finishedAt) meta.push('<span><b>Fertig:</b> ' + esc(m.finishedAt) + '</span>');
+    if (m.runtime)    meta.push('<span><b>Laufzeit:</b> ' + esc(m.runtime) + '</span>');
+    if (m.commit)     meta.push('<span><b>Commit:</b> <span class="mono">' + esc(m.commit) + '</span></span>');
+    html += '<div class="metaline">' + meta.join("") + '</div>';
+
+    if (m.currentActivity) html += '<div class="cur">Aktuell: ' + esc(m.currentActivity) + '</div>';
+
+    if (m.log && m.log.length) {
+      html += '<div class="log">';
+      m.log.slice(-4).forEach(function (l) {
+        html += '<div>· ' + esc(l.at || "") + (l.at ? " — " : "") + esc(l.note || "") + '</div>';
+      });
+      html += '</div>';
+    }
+
+    if (m.prompt && m.status !== "done") {
+      var pid = "p-" + m.id;
+      html += '<details><summary>▸ Start-Prompt anzeigen</summary>';
+      html += '<pre id="' + pid + '">' + esc(m.prompt) + '</pre>';
+      html += '<button class="copy" data-target="' + pid + '">Prompt kopieren</button></details>';
+      html += '<div class="chip">↗ Als neue Sitzung starten: Chip „Start ' + esc(m.id) + ' …“ im Claude-Chat</div>';
+    }
+
+    html += '</div></div>';
+  });
+
+  document.getElementById("app").innerHTML = html;
+
+  document.querySelectorAll(".copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var el = document.getElementById(btn.dataset.target);
+      var text = el ? el.innerText : "";
+      function done() { var o = btn.textContent; btn.textContent = "Kopiert"; setTimeout(function () { btn.textContent = o; }, 1500); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } else { fallback(); }
+      function fallback() {
+        var ta = document.createElement("textarea");
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); } catch (e) {}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
