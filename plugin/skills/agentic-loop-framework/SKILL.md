@@ -1,205 +1,203 @@
 ---
 name: agentic-loop-framework
-description: Bootstrap eines loop-getriebenen agentischen Entwicklungs-Frameworks in einem beliebigen Repo — verifizierte, selbstkorrigierende Loops (Gate-Hooks, Progress-Dashboard, Milestone-Checkpoints, Hook-Telemetrie) statt Prompt-für-Prompt-Arbeit. Trigger: "agentic loop aufsetzen", "Framework-Bootstrap", "verifizierte Loops einrichten", "Projekt auf Milestone-Loops umstellen" — für neue UND bestehende Projekte.
+description: 'Bootstrap a loop-driven agentic development framework in any repo — verified, self-correcting loops (gate hooks, progress dashboard, milestone checkpoints, hook telemetry) instead of prompt-by-prompt work. Triggers: "set up an agentic loop", "framework bootstrap", "set up verified loops", "convert a project to milestone loops" — for new AND existing projects.'
 ---
 
 # Agentic-Loop-Framework — Bootstrap
 
-Richtet in einem Repository ein loop-getriebenes agentisches Entwicklungs-Framework ein.
-Kern: maschinell verifizierte Loops (Tests + Gates), ein selbst-dokumentierendes Dashboard,
-Checkpoints, die das Framework selbst verbessern, und Telemetrie als Retro-Datenbasis.
+Sets up a loop-driven agentic development framework in a repository.
+Core: machine-verified loops (tests + gates), a self-documenting dashboard,
+checkpoints that improve the framework itself, and telemetry as the retrospective data basis.
 
-**Artefakt-Quellen:** Statt Dateien neu zu erfinden, den mitgelieferten Baum
-[`templates/`](templates/) kopieren und Platzhalter anpassen (Spitzklammern `<…>`).
-Für Homey-Apps zusätzlich [`homey/README.md`](homey/README.md) (Plattform-Zusatzblock).
-Historischer Seed: die Bootstrap-Prompts (de/en, Stand 2026-07-07) — seit 2026-07-09 nur
-noch in der Git-Historie des Repos `skill-ClaudeCode-general-settings` (Commit `fcbda47`);
-dieses Repo ist die einzige lebende Quelle.
+**Artifact sources:** Rather than reinventing files, copy the bundled tree
+[`templates/`](templates/) and adapt the placeholders (angle brackets `<…>`).
+For Homey apps additionally [`homey/README.md`](homey/README.md) (platform add-on block).
+Historical seed: the bootstrap prompts (de/en, as of 2026-07-07) — since 2026-07-09 only
+in the git history of the repo `skill-ClaudeCode-general-settings` (commit `fcbda47`);
+this repo is the single living source.
 
-## Vorab klären (falls nicht im Auftrag genannt)
+## Clarify up front (if not stated in the task)
 
-1. Projekt: NEU (Zweck, Sprache/Stack) oder BESTAND (bisher ohne Claude)?
-2. Team: solo oder geteilt (der Framework-Skill wird dann als Plugin verteilt)?
-3. Sprache aller erzeugten Artefakte (CLAUDE.md, Dashboard, Changelogs): de oder en?
-4. Bootstrap-Commits: direkt auf main (solo/neues Repo) oder Branch `bootstrap/agentic-loop`?
+1. Project: NEW (purpose, language/stack) or EXISTING (so far without Claude)?
+2. Team: solo or shared (the framework skill is then distributed as a plugin)?
+3. Language of all generated artifacts (CLAUDE.md, dashboard, changelogs): de or en?
+4. Bootstrap commits: directly on main (solo/new repo) or branch `bootstrap/agentic-loop`?
 
-## Regeln für den gesamten Bootstrap
+## Rules for the entire bootstrap
 
-- Phasen strikt nacheinander; nach jeder Phase einzeln committen.
-- Folgt ein Plattform-Zusatz (z. B. `homey/`): zuerst ALLES lesen; jeder „Phase-N-Zusatz"
-  läuft zusammen mit Phase N, Kontext-/Dauerregel-Zusätze gelten ab Phase 0.
-- Simplicity First: nur Automatisierung, die wiederkehrenden Schmerz trifft — nichts Spekulatives.
-- Fragen nur an den markierten ENTSCHEIDUNGSPUNKTEN — sonst autonom arbeiten.
-- Die Phasen-Commits des Bootstraps sind vom §9-Review-Gate ausgenommen; §9 gilt ab Phase 7.
-- Kontext-Hygiene: den Bootstrap ab Phase 1 als eigenen Dashboard-Eintrag führen
-  (id "B0", steps = Phasen 0–7). Nach Phase 2 und Phase 5: committen, B0 aktualisieren,
-  Resume-Prompt für die nächste Phase ausgeben — der Nutzer entscheidet, ob eine frische
-  Session übernimmt.
+- Phases strictly in sequence; commit separately after each phase.
+- If a platform add-on follows (e.g. `homey/`): read EVERYTHING first; each "Phase-N add-on"
+  runs together with Phase N, context/standing-rule add-ons apply from Phase 0.
+- Simplicity First: only automation that addresses recurring pain — nothing speculative.
+- Ask questions only at the marked DECISION POINTS — otherwise work autonomously.
+- The bootstrap's phase commits are exempt from the §9 review gate; §9 applies from Phase 7.
+- Context hygiene: track the bootstrap from Phase 1 as its own dashboard entry
+  (id "B0", steps = phases 0–7). After Phase 2 and Phase 5: commit, update B0, output a
+  resume prompt for the next phase — the user decides whether a fresh session takes over.
 
-## Phase 0 — Preflight & Bestandsaufnahme
+## Phase 0 — Preflight & inventory
 
-1. Werkzeuge prüfen, jedes Ergebnis klassifizieren als VERFÜGBAR / FEHLT-BLOCKIEREND /
-   FEHLT-DEGRADIERBAR:
-   - BLOCKIEREND (ohne sie stoppen + Installationsweg nennen): git (Repo vorhanden? sonst
-     git init + stack-übliches .gitignore), superpowers-Skills (brainstorming, writing-plans,
+1. Check tools, classify each result as AVAILABLE / MISSING-BLOCKING /
+   MISSING-DEGRADABLE:
+   - BLOCKING (without them, stop + name the installation path): git (repo present? otherwise
+     git init + a stack-typical .gitignore), superpowers skills (brainstorming, writing-plans,
      test-driven-development, systematic-debugging, verification-before-completion),
      /code-review.
-   - DEGRADIERBAR (weglassen + Fallback in CLAUDE.md dokumentieren):
+   - DEGRADABLE (omit + document a fallback in CLAUDE.md):
      /claude-automation-recommender, /fewer-permission-prompts,
-     /goal (Fallback: DONE-BEDINGUNGEN als nummerierte Klartext-Checkliste im Prompt),
-     /remote-control (Fallback: Zeile weglassen), /security-review,
-     security-requirement-extraction (Fallback: STRIDE manuell — Assets/Trust Boundaries/
-     Threats → testbare Requirements),
-     context7-MCP (Fallback: offizielle Doku per WebFetch — nie aus dem Gedächtnis),
-     Auto-Memory (Fallback: docs/memory/*.md + docs/memory/MEMORY.md als Index),
-     GitHub-MCP-Server (PR-/Issue-/Branch-Operationen direkt aus der Session) —
-     Einrichtung falls gewünscht:
-     1. Fine-grained PAT: https://github.com/settings/personal-access-tokens — Repo(s)
-        wählen, Permissions Contents/Pull requests/Issues je Read-and-write setzen.
+     /goal (fallback: DONE CONDITIONS as a numbered plain-text checklist in the prompt),
+     /remote-control (fallback: omit the line), /security-review,
+     security-requirement-extraction (fallback: STRIDE manually — assets/trust boundaries/
+     threats → testable requirements),
+     context7 MCP (fallback: official docs via WebFetch — never from memory),
+     Auto-Memory (fallback: docs/memory/*.md + docs/memory/MEMORY.md as index),
+     GitHub MCP server (PR/issue/branch operations directly from the session) —
+     set up if desired:
+     1. Fine-grained PAT: https://github.com/settings/personal-access-tokens — select
+        repo(s), set Permissions Contents/Pull requests/Issues each to Read-and-write.
      2. `claude mcp add-json github '{"type":"http","url":"https://api.githubcopilot.com/mcp","headers":{"Authorization":"Bearer YOUR_GITHUB_PAT"}}'`
-        im Projektverzeichnis ausführen.
-     3. Smoke-test: ein echter Lese-Call gegen das Repo (z. B. `list_branches`) — „Connected"
-        allein reicht nicht (Details/Stolperfallen: milestone-checkpoint SKILL.md, Schritt 2).
-        Schlägt der Test fehl: Claude Desktop neu starten, danach erneut testen.
-     Fallback ohne MCP: git/gh CLI direkt nutzen — kein Blocker für den Bootstrap.
-2. Bei Bestandsprojekt: Stack, Build-/Testsystem (inkl. Suite-LAUFZEIT!), CI, Git-Historie,
-   offene TODOs analysieren; Ist-Zustand in max. 10 Zeilen zusammenfassen.
+        run in the project directory.
+     3. Smoke test: one real read call against the repo (e.g. `list_branches`) — "Connected"
+        alone is not enough (details/pitfalls: milestone-checkpoint SKILL.md, step 2).
+        If the test fails: restart Claude Desktop, then test again.
+     Fallback without MCP: use the git/gh CLI directly — not a blocker for the bootstrap.
+2. For an existing project: analyze stack, build/test system (incl. suite RUNTIME!), CI,
+   git history, open TODOs; summarize the current state in max. 10 lines.
 
-→ verify: Werkzeug-Tabelle (Name | Status | ggf. Fallback) + Ist-Zusammenfassung im Chat.
+→ verify: tool table (name | status | fallback if any) + current-state summary in chat.
 
-## Phase 1 — Fundament: Zustand auf Platte
+## Phase 1 — Foundation: state on disk
 
-Aus [`templates/`](templates/) kopieren und anpassen (bestehende Dateien NIE überschreiben —
-bei Bestand behutsam mergen):
+Copy from [`templates/`](templates/) and adapt (NEVER overwrite existing files —
+merge carefully for existing projects):
 
-1. `templates/CLAUDE.md` → Repo-Root. Enthält §0 Pflicht-Skills, §1–§4 Karpathy-Kern
-   (Original: github.com/multica-ai/andrej-karpathy-skills, inkl. Tradeoff-Hinweis und
-   Schlussabsatz), §4-Zusatz todo-Test-Konvention, §5 Security by Design (STRIDE),
-   §6 `<PLATFORM>.md`-Mechanismus, §7 Dashboard-Protokoll (inkl. FRICTION- und
-   Triage-Inbox-Regel), §8 Versionierung 0.X.Y, §9 Branch-Gate, §10 Permission-Strategie
-   (3 Schichten), §11 Subagent-Tiering, Source-of-Truth-Abschnitt. Platzhalter füllen;
-   in Phase 1 den §7-Vermerk ergänzen: „milestone-checkpoint-Skill wird in Phase 5
-   dieses Bootstraps eingerichtet" (wird in Phase 5 entfernt).
-2. `templates/docs/dashboard/` → `docs/dashboard/` (dashboard.html mit leerem Datenblock —
-   der Renderer darunter wird NIE editiert; versions.md-Skelett; triage-inbox.md-Skelett).
-   B0-Bootstrap-Eintrag in den Datenblock legen.
-3. `templates/.claude/settings.json` → `.claude/settings.json` (leeres Hook-Gerüst nach
-   Events + minimale read-only-Allowlist). §10-Kurzfassung: (i) Hooks = „darf NIE
-   passieren", gelten in jedem Permission-Modus; (ii) Projekt-Allowlist = „ist IMMER ok",
-   git-portabel, per /fewer-permission-prompts kuratiert; (iii) Auto Mode
-   (claude --permission-mode auto) nur für autonome Loop-Sessions; bypassPermissions lokal NIE.
-4. Memory: erste Projekt-Memories (Projektziel, Stack-Entscheidungen, Konventionen) + Index —
-   ins Auto-Memory-Verzeichnis, falls verfügbar, sonst docs/memory/ (Ort in CLAUDE.md
-   dokumentieren).
+1. `templates/CLAUDE.md` → repo root. Contains §0 mandatory skills, §1–§4 Karpathy core
+   (original: github.com/multica-ai/andrej-karpathy-skills, incl. the tradeoff note and
+   closing paragraph), §4 add-on todo-test convention, §5 Security by Design (STRIDE),
+   §6 `<PLATFORM>.md` mechanism, §7 dashboard protocol (incl. FRICTION and
+   triage-inbox rule), §8 versioning 0.X.Y, §9 branch gate, §10 permission strategy
+   (3 layers), §11 subagent tiering, source-of-truth section. Fill the placeholders;
+   in Phase 1 add the §7 note: "the milestone-checkpoint skill is set up in Phase 5
+   of this bootstrap" (removed in Phase 5).
+2. `templates/docs/dashboard/` → `docs/dashboard/` (dashboard.html with an empty data block —
+   the renderer beneath it is NEVER edited; versions.md skeleton; triage-inbox.md skeleton).
+   Put the B0 bootstrap entry into the data block.
+3. `templates/.claude/settings.json` → `.claude/settings.json` (empty hook scaffold by
+   events + minimal read-only allowlist). §10 short form: (i) Hooks = "must NEVER
+   happen", apply in every permission mode; (ii) project allowlist = "is ALWAYS ok",
+   git-portable, curated via /fewer-permission-prompts; (iii) Auto Mode
+   (claude --permission-mode auto) only for autonomous loop sessions; bypassPermissions NEVER locally.
+4. Memory: first project memories (project goal, stack decisions, conventions) + index —
+   into the Auto-Memory directory if available, otherwise docs/memory/ (document the
+   location in CLAUDE.md).
 
-→ verify: alles committed; ein node-Einzeiler extrahiert window.DASHBOARD_STATUS aus
-dashboard.html und parst ihn fehlerfrei.
+→ verify: everything committed; a node one-liner extracts window.DASHBOARD_STATUS from
+dashboard.html and parses it without error.
 
-## Phase 2 — Milestone-Plan (die Loop-Iterationen definieren)  [interaktiv]
+## Phase 2 — Milestone plan (define the loop iterations)  [interactive]
 
-1. ENTSCHEIDUNGSPUNKT: superpowers:brainstorming mit dem Nutzer — was ist M0 (Foundation),
-   was sind M1..Mn? Ergebnis als Design-Spec unter docs/superpowers/specs/.
-2. superpowers:writing-plans für M0 (docs/superpowers/plans/).
-3. Dashboard füllen: jeder Milestone mit vollständigem Resume-Prompt; jeder Prompt enthält
-   (a) die maschinell prüfbare Done-Bedingung — /goal-Zeile bzw. DONE-BEDINGUNGEN-Checkliste
-   (Fallback aus Phase 0), transcript-verifizierbar („Testrunner zeigt 0 Failures UND
-   Build/Validate zeigt PASS — Outputs im Chat gezeigt");
-   (b) den Startmodus-Hinweis nach §10 (autonomer Lauf per claude --permission-mode auto;
-   Alltags-Session im Default-Modus);
-   (c) die Triage-Inbox-Zeile („Lies zuerst docs/dashboard/triage-inbox.md, §7");
-   (d) als letzte Zeile /remote-control <id> — <titel> (falls verfügbar).
+1. DECISION POINT: superpowers:brainstorming with the user — what is M0 (foundation),
+   what are M1..Mn? Result as a design spec under docs/superpowers/specs/.
+2. superpowers:writing-plans for M0 (docs/superpowers/plans/).
+3. Fill the dashboard: each milestone with a full resume prompt; each prompt contains
+   (a) the machine-checkable done condition — /goal line or DONE CONDITIONS checklist
+   (fallback from Phase 0), transcript-verifiable ("test runner shows 0 failures AND
+   build/validate shows PASS — outputs shown in chat");
+   (b) the start-mode note per §10 (autonomous run via claude --permission-mode auto;
+   everyday session in default mode);
+   (c) the triage-inbox line ("Read docs/dashboard/triage-inbox.md first, §7");
+   (d) as the last line /remote-control <id> — <title> (if available).
 
-→ verify: Dashboard zeigt alle Milestones, jeder unfertige mit vollständigem Prompt.
-Dann: committen, B0 aktualisieren, Resume-Prompt für Phase 3 ausgeben.
+→ verify: dashboard shows all milestones, each unfinished one with a full prompt.
+Then: commit, update B0, output the resume prompt for Phase 3.
 
-## Phase 3 — Innerer Loop: mechanische Verifikation
+## Phase 3 — Inner loop: mechanical verification
 
-1. Falls kein Testrunner existiert: den leichtesten stack-üblichen einrichten
-   (Ziel: Sekunden-Laufzeit, minimale Dependencies) + ersten Smoke-Test.
-2. `templates/.claude/hooks/test-gate.js` + `templates/.claude/hooks/lib/` +
-   `templates/test/hooks/test-gate.test.js` übernehmen und in settings.json registrieren
-   (Matcher `Bash|PowerShell` — Windows-Sessions committen über das PowerShell-Tool!).
-   Der Hook liest das Testkommando aus `package.json scripts.test`; bei Nicht-npm-Stacks
-   die im Hook-Kopf dokumentierte Stelle anpassen. Laufzeitbudget ≤30 s
-   (ENTSCHEIDUNGSPUNKT bei Bestand mit langsamer Suite: welches schnelle Subset? Die volle
-   Suite läuft dann im CI-/Review-Gate).
-3. Hook-Lade-Realität: settings.json-Hooks können sofort ODER erst beim nächsten
-   Session-Start greifen (variiert je Version) — in-Session-Verify daher IMMER per
-   Direktaufruf mit Fixture-stdin (roter Fall exit 2, grüner exit 0); der
-   Ende-zu-Ende-Check (echter Commit wird geblockt) ist dokumentierter erster Schritt
-   der Folge-Session.
-4. In CLAUDE.md verankern: Framework-/Library-Fragen IMMER per context7 (bzw.
-   WebFetch-Fallback) nachschlagen statt aus dem Gedächtnis.
+1. If no test runner exists: set up the lightest stack-typical one
+   (goal: seconds runtime, minimal dependencies) + a first smoke test.
+2. Adopt `templates/.claude/hooks/test-gate.js` + `templates/.claude/hooks/lib/` +
+   `templates/test/hooks/test-gate.test.js` and register it in settings.json
+   (matcher `Bash|PowerShell` — Windows sessions commit via the PowerShell tool!).
+   The hook reads the test command from `package.json scripts.test`; for non-npm stacks
+   adapt the spot documented in the hook header. Runtime budget ≤30 s
+   (DECISION POINT for an existing project with a slow suite: which fast subset? The full
+   suite then runs in the CI/review gate).
+3. Hook-loading reality: settings.json hooks can take effect immediately OR only at the next
+   session start (varies by version) — therefore ALWAYS do in-session verify via
+   direct call with fixture stdin (red case exit 2, green exit 0); the
+   end-to-end check (a real commit gets blocked) is the documented first step
+   of the follow-up session.
+4. Anchor in CLAUDE.md: ALWAYS look up framework/library questions via context7 (or
+   WebFetch fallback) instead of from memory.
 
-→ verify: beide Direktaufrufe des Hook-Skripts liefern die spezifizierten Exit-Codes.
+→ verify: both direct calls of the hook script return the specified exit codes.
 
-## Phase 4 — Automation-Pass (repo-spezifisch statt generisch)
+## Phase 4 — Automation pass (repo-specific instead of generic)
 
-1. /claude-automation-recommender ausführen. Skip-Kriterium: noch kein Produktiv-Code
-   jenseits des Phase-1-Gerüsts oder kein lauffähiger Test → überspringen und als ersten
-   Schritt des ersten →M0-Checkpoints vormerken.
-2. Empfehlungen priorisiert präsentieren (wiederkehrender Schmerz × Aufwand).
-   ENTSCHEIDUNGSPUNKT: der Nutzer wählt.
-3. Gewählte umsetzen: Hooks je mit Smoke-Test + Direktaufruf-Verify (Phase 3.3); Skills;
-   Subagents (z. B. read-only release-readiness-Prüfer mit PASS/FAIL-Checkliste) mit
-   model-/effort-Frontmatter nach Tiering-Regel: mechanische Checklisten-/Extraktions-
-   Agents → model: haiku/sonnet + effort: low/medium; Review-/Judge-/Security-Agents →
-   model: inherit (beim Checker NIE sparen — Feedback-Qualität ist der Loop-Engpass).
+1. Run /claude-automation-recommender. Skip criterion: no production code yet
+   beyond the Phase 1 scaffold or no runnable test → skip and note it as the first
+   step of the first →M0 checkpoint.
+2. Present the recommendations prioritized (recurring pain × effort).
+   DECISION POINT: the user chooses.
+3. Implement the chosen ones: hooks each with smoke test + direct-call verify (Phase 3.3); skills;
+   subagents (e.g. a read-only release-readiness checker with a PASS/FAIL checklist) with
+   model/effort frontmatter per the tiering rule: mechanical checklist/extraction
+   agents → model: haiku/sonnet + effort: low/medium; review/judge/security agents →
+   model: inherit (NEVER economize on the checker — feedback quality is the loop bottleneck).
 
-→ verify: jeder neue Hook per Direktaufruf geprüft.
+→ verify: each new hook checked via direct call.
 
-## Phase 5 — Meta-Loop: das Framework verbessert sich selbst
+## Phase 5 — Meta-loop: the framework improves itself
 
-`templates/.claude/skills/milestone-checkpoint/SKILL.md` → `.claude/skills/
-milestone-checkpoint/SKILL.md` übernehmen; den Skill-Quellen-Platzhalter (Schritt 3) mit
-den echten externen Quellen des Projekts füllen. Der Checkpoint läuft nach jedem
-Milestone-„done" (eigener `→Mx`-Dashboard-Eintrag) und umfasst: Workflow-Retro (liest
-FRICTION-Einträge + hook-log.jsonl-Blockzählungen), /fewer-permission-prompts,
-/claude-automation-recommender, Memory-Konsolidierung (nur als Diff!), Framework-Drift-Check
-(gegen diesen Skill), Dashboard-Update, Handover (Push + Startfrage).
+Adopt `templates/.claude/skills/milestone-checkpoint/SKILL.md` → `.claude/skills/
+milestone-checkpoint/SKILL.md`; fill the skill-sources placeholder (step 3) with
+the project's real external sources. The checkpoint runs after every
+milestone "done" (its own `→Mx` dashboard entry) and covers: workflow retro (reads
+FRICTION entries + hook-log.jsonl block counts), /fewer-permission-prompts,
+/claude-automation-recommender, memory consolidation (as a diff only!), framework-drift check
+(against this skill), dashboard update, handover (push + start question).
 
-Danach den Phase-1-Vermerk in CLAUDE.md §7 entfernen. Committen, B0 aktualisieren,
-Resume-Prompt für Phase 6 ausgeben.
+Then remove the Phase 1 note in CLAUDE.md §7. Commit, update B0, output the
+resume prompt for Phase 6.
 
-→ verify: Skill existiert; CLAUDE.md §7 nennt den Checkpoint als Pflichtschritt, ohne Vermerk.
+→ verify: skill exists; CLAUDE.md §7 names the checkpoint as a mandatory step, without the note.
 
-## Phase 6 — Source of Truth verankern
+## Phase 6 — Anchor the source of truth
 
-Dieses Repo IST bereits der portable Skill — im Projekt nur noch verankern:
+This repo already IS the portable skill — in the project just anchor it:
 
-1. Source-of-Truth-Regel in CLAUDE.md (Vorlage in `templates/CLAUDE.md`): JEDE generische
-   Framework-Änderung (Gate-/Guard-Hooks, Protokollregeln, Checkpoint-Ablauf, Templates)
-   wird IN DERSELBEN SESSION hierher gespiegelt + CHANGELOG-Eintrag; Projekt-/Stack-
-   spezifisches bleibt im Projekt. Faustregel: „In jedem Projekt sinnvoll?" → Skill;
-   „nur hier?" → Projekt.
-2. Telemetrie: `.claude/hooks/lib/log.js` ist im Template-Baum enthalten — jeder neue Hook
-   loggt block/pass an seinen Entscheidungspunkten (Muster in test-gate.js).
+1. Source-of-truth rule in CLAUDE.md (template in `templates/CLAUDE.md`): EVERY generic
+   framework change (gate/guard hooks, protocol rules, checkpoint flow, templates)
+   is mirrored here IN THE SAME SESSION + a CHANGELOG entry; project/stack-specific
+   things stay in the project. Rule of thumb: "useful in every project?" → skill;
+   "only here?" → project.
+2. Telemetry: `.claude/hooks/lib/log.js` is included in the template tree — every new hook
+   logs block/pass at its decision points (pattern in test-gate.js).
 
-→ verify (Trockentest): templates/ in ein Temp-Verzeichnis kopieren — dashboard.html-
-Datenblock parst, settings.json parst, `node --test test/hooks/test-gate.test.js` grün.
+→ verify (dry test): copy templates/ into a temp directory — the dashboard.html
+data block parses, settings.json parses, `node --test test/hooks/test-gate.test.js` green.
 
-## Phase 7 — Probelauf des ganzen Loops (ab hier gilt §9)
+## Phase 7 — Trial run of the whole loop (§9 applies from here)
 
-1. Eine bewusst kleine, echte Aufgabe aus M0 durch den kompletten Loop führen:
-   TDD → Gates → Dashboard-Pflege → /code-review → §9-Frage an den Nutzer.
-2. Jede Reibung sofort als FRICTION:-Eintrag ins Dashboard-Log — erstes Retro-Futter für
-   den →M0-Checkpoint.
+1. Take one deliberately small, real task from M0 through the complete loop:
+   TDD → gates → dashboard maintenance → /code-review → §9 question to the user.
+2. Log every friction immediately as a FRICTION: entry in the dashboard log — first retro fuel for
+   the →M0 checkpoint.
 
-→ verify: Aufgabe gemerged ODER als PR offen; Dashboard und Memory aktuell.
+→ verify: task merged OR open as a PR; dashboard and memory up to date.
 
-## Dauerregeln (in CLAUDE.md verankert; gelten ab sofort)
+## Standing rules (anchored in CLAUDE.md; apply from now on)
 
-- Dashboard-Eintrag des aktiven Milestones in jeder Session aktuell halten.
-- Reibung SOFORT als `FRICTION:`-log-Eintrag im aktiven Milestone — das Retro liest sie aus.
-- Nach jedem Milestone-„done" und vor dem nächsten Start: milestone-checkpoint (eigener
-  →Mx-Dashboard-Eintrag).
-- Jeder deployte/installierte Stand: Version bumpen + versions.md-Zeile (§8).
-- Neue dauerhafte Erkenntnisse sofort als Memory-Datei + Indexzeile.
-- Bekannte Defekte sofort als `{ todo: true }`-Test mit der KORREKTEN Erwartung einfrieren.
-- Bugs: erst superpowers:systematic-debugging. Fertigmeldungen: erst
-  superpowers:verification-before-completion.
-- Permission-Strategie nach §10: Hooks immer; Allowlist für Alltag; Auto Mode nur für
-  autonome Loop-Sessions; bypassPermissions lokal nie.
-- Subagent-Modell-Tiering: mechanisch → haiku/sonnet + niedriger Effort; urteilend →
-  inherit; in Workflows Effort pro Stage steuern.
-- Fragen nur an ENTSCHEIDUNGSPUNKTEN oder §9-Gates — sonst autonom.
+- Keep the active milestone's dashboard entry current in every session.
+- Friction IMMEDIATELY as a `FRICTION:` log entry in the active milestone — the retro reads it.
+- After every milestone "done" and before the next start: milestone-checkpoint (its own
+  →Mx dashboard entry).
+- Every deployed/installed state: bump the version + a versions.md line (§8).
+- New durable insights immediately as a memory file + an index line.
+- Freeze known defects immediately as a `{ todo: true }` test with the CORRECT expectation.
+- Bugs: superpowers:systematic-debugging first. Completion reports: superpowers:verification-before-completion first.
+- Permission strategy per §10: hooks always; allowlist for everyday; Auto Mode only for
+  autonomous loop sessions; bypassPermissions never locally.
+- Subagent model tiering: mechanical → haiku/sonnet + lower effort; judging →
+  inherit; in workflows steer effort per stage.
+- Ask questions only at DECISION POINTS or §9 gates — otherwise autonomous.

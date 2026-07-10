@@ -8,7 +8,7 @@
     {
       "name": "agentic-loop-framework",
       "source": "./plugin",
-      "description": "Loop-getriebenes agentisches Entwicklungs-Framework - Bootstrap-Skill + Templates (Karpathy-Kern, Dashboard-Protokoll, Gate-Hooks, Checkpoint-Skill) + Homey-Modul."
+      "description": "Loop-driven agentic development framework - bootstrap skill + templates (Karpathy core, dashboard protocol, gate hooks, checkpoint skill) + Homey module."
     }
   ]
 }
