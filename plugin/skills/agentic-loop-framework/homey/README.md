@@ -1,94 +1,94 @@
-# Homey-Modul (Plattform-Zusatzblock)
+# Homey module (platform add-on block)
 
-Plattform-Bausteine für Homey-Apps (Apps SDK v3, Homey Pro) — ergänzt den generischen
-Bootstrap aus `../SKILL.md`. Jeder „Phase-N-Zusatz" läuft zusammen mit Phase N der SKILL.md;
-Kontext-/Dauerregel-Zusätze gelten ab Phase 0. (Extrahiert aus dem VioletApp-Projekt —
-siehe `../CHANGELOG.md`.)
+Platform building blocks for Homey apps (Apps SDK v3, Homey Pro) — complements the generic
+bootstrap in `../SKILL.md`. Each "Phase-N add-on" runs together with Phase N of the SKILL.md;
+context/standing-rule add-ons apply from Phase 0. (Extracted from the VioletApp project —
+see `../CHANGELOG.md`.)
 
-## Einbau (welche Datei wohin)
+## Installation (which file goes where)
 
-| Baustein | Ziel im Projekt | Registrierung |
+| Building block | Target in the project | Registration |
 |---|---|---|
-| `HOMEY.md` | Repo-Root (füllt CLAUDE.md §6) | `@HOMEY.md`-Referenz im CLAUDE.md-Extensions-Block |
-| `hooks/compose-guard.js` | `.claude/hooks/` | settings.json PreToolUse, Matcher `Edit\|Write` |
-| `hooks/secrets-guard.js` | `.claude/hooks/` | settings.json PreToolUse, Matcher `Edit\|Write` |
-| `hooks/json-guard.js` | `.claude/hooks/` | settings.json PostToolUse, Matcher `Edit\|Write` |
-| `hooks/check-version-sync.js` | `.claude/hooks/` | settings.json PreToolUse, Matcher `Bash\|PowerShell` |
-| `hooks/release-gate.js` | `.claude/hooks/` | settings.json PreToolUse, Matcher `Bash\|PowerShell` |
-| `allowlist.json` | Einträge → `permissions.allow` in `.claude/settings.json` | — |
-| `agents/release-readiness.md` | `.claude/agents/` | — (Subagent, model/effort-Frontmatter beibehalten) |
+| `HOMEY.md` | repo root (fills CLAUDE.md §6) | `@HOMEY.md` reference in the CLAUDE.md extensions block |
+| `hooks/compose-guard.js` | `.claude/hooks/` | settings.json PreToolUse, matcher `Edit\|Write` |
+| `hooks/secrets-guard.js` | `.claude/hooks/` | settings.json PreToolUse, matcher `Edit\|Write` |
+| `hooks/json-guard.js` | `.claude/hooks/` | settings.json PostToolUse, matcher `Edit\|Write` |
+| `hooks/check-version-sync.js` | `.claude/hooks/` | settings.json PreToolUse, matcher `Bash\|PowerShell` |
+| `hooks/release-gate.js` | `.claude/hooks/` | settings.json PreToolUse, matcher `Bash\|PowerShell` |
+| `allowlist.json` | entries → `permissions.allow` in `.claude/settings.json` | — |
+| `agents/release-readiness.md` | `.claude/agents/` | — (subagent, keep the model/effort frontmatter) |
 
-Die Hooks setzen `templates/.claude/hooks/lib/log.js` voraus (Telemetrie — Teil des
-generischen Baums). Jeder Hook bringt sein Smoke-Test-Muster mit
-(`templates/test/hooks/test-gate.test.js` als Vorlage; Direktaufruf-Verify: roter Fall
-exit 2, grüner exit 0).
+The hooks require `templates/.claude/hooks/lib/log.js` (telemetry — part of the
+generic tree). Each hook brings its own smoke-test pattern
+(`templates/test/hooks/test-gate.test.js` as a template; direct-call verify: red case
+exit 2, green exit 0).
 
-## Phase-0-Zusatz (Preflight)
+## Phase 0 add-on (preflight)
 
-- Homey-CLI: `homey whoami` erfolgreich? Fehlt die CLI: `npm i -g homey`;
-  `homey login` ist interaktiv → macht der Nutzer selbst (BLOCKIEREND, bis erledigt).
-- Skills `homey-app` (SDK-Grundlagen, Compose, CLI) und `homey-cli`
-  (`homey api <manager> <op>`) verfügbar? DEGRADIERBAR — Fallback: context7-Lookup
-  „Homey Apps SDK v3" + offizielle Athom-Doku per WebFetch.
-- Testabfrage: liefert context7 (bzw. WebFetch) Homey-SDK-v3-Doku?
+- Homey CLI: `homey whoami` successful? If the CLI is missing: `npm i -g homey`;
+  `homey login` is interactive → the user does it themselves (BLOCKING until done).
+- Skills `homey-app` (SDK basics, Compose, CLI) and `homey-cli`
+  (`homey api <manager> <op>`) available? DEGRADABLE — fallback: context7 lookup
+  "Homey Apps SDK v3" + the official Athom docs via WebFetch.
+- Test query: does context7 (or WebFetch) return Homey SDK v3 docs?
 
-## Phase-1-Zusatz — HOMEY.md als Plattform-Datei
+## Phase 1 add-on — HOMEY.md as the platform file
 
-1. Bei NEU: ENTSCHEIDUNGSPUNKT App-Gerüst — App-ID, Name, Kategorie; Scaffold per
-   homey-app-Skill bzw. `homey app create`.
-2. `HOMEY.md` aus diesem Modul übernehmen (SDK-Doku-Regel, Versionierung
-   patch/minor, run≠Release, Changelog-Pflicht en+de, JSON-Authoring-Regel,
-   Release-Checkliste; Store-Asset-Maße: App 250x175/500x350/1000x700, Driver
-   75x75/500x500/1000x1000; Icons als transparente monochrome Linien-SVGs — Homey
-   maskiert Icons zu einfarbigen Silhouetten, vollflächiger Hintergrund wird zum
-   weißen Quadrat).
-3. Initiale Allowlist aus `allowlist.json` in `.claude/settings.json` übernehmen.
+1. For NEW: DECISION POINT app scaffold — app ID, name, category; scaffold via the
+   homey-app skill or `homey app create`.
+2. Adopt `HOMEY.md` from this module (SDK docs rule, versioning
+   patch/minor, run≠release, changelog requirement en+de, JSON authoring rule,
+   release checklist; Store asset sizes: app 250x175/500x350/1000x700, driver
+   75x75/500x500/1000x1000; icons as transparent monochrome line SVGs — Homey
+   masks icons into single-color silhouettes, a full-bleed background becomes a
+   white square).
+3. Adopt the initial allowlist from `allowlist.json` into `.claude/settings.json`.
 
-## Phase-2-Zusatz — Done-Bedingungen
+## Phase 2 add-on — done conditions
 
-Jede /goal-Bedingung (bzw. DONE-BEDINGUNGEN-Checkliste) jedes Milestones enthält:
-„npx homey app validate --level publish → PASS, Output im Chat gezeigt".
-validate --level publish ist die Ground Truth des Projekts — auch so in
-CLAUDE.md/HOMEY.md verankern.
+Every /goal condition (or DONE CONDITIONS checklist) of every milestone contains:
+"npx homey app validate --level publish → PASS, output shown in chat".
+validate --level publish is the project's ground truth — anchor it as such in
+CLAUDE.md/HOMEY.md too.
 
-## Phase-3-Zusatz — Homey-Gates (je per TDD, je mit Smoke-Test, Verify per Direktaufruf)
+## Phase 3 add-on — Homey gates (each via TDD, each with a smoke test, verified via direct call)
 
-- `compose-guard` (PreToolUse Edit|Write): blockt Hand-Edits am GENERIERTEN Root-app.json,
-  verweist auf die .homeycompose/-Quelle.
-- `json-guard` (PostToolUse Edit|Write): JSON.parse auf Manifeste/Changelog/locales;
-  bei Fehler exit 2 mit Fix-Hinweis (Smart-Quote-Fehlerklasse).
-- `check-version-sync` (PreToolUse Bash|PowerShell): blockt git commit, wenn app.json und
-  .homeycompose/app.json unterschiedliche Versionen tragen.
-- `secrets-guard` (PreToolUse Edit|Write), falls Geräte-Credentials im Spiel: blockt
-  Klartext-Credentials in getrackten Dateien; die Fehlermeldung zitiert den Treffer NIE
-  (exaktes Passwort optional out-of-band via Env `DEVICE_WRITE_PASSWORD`).
-- `release-gate` (PreToolUse Bash|PowerShell): blockt `homey app install|publish`, wenn
-  (a) `.homeychangelog.json` keinen vollständigen en+de-Eintrag zur Compose-Version hat,
-  (b) die Version bereits in `docs/dashboard/versions.md` geloggt ist (vergessener Bump
-  = doppelter Release), oder (c) — nur bei publish, und nur wenn eine
-  `docs/superpowers/security/credential-rotation.md` bereits existiert — diese kein
-  datiertes Rotations-Datum enthält. Teil (c) ist bewusst weich gegenüber dem
-  VioletApp-Original: fehlt die Datei ganz, hat die App kein Geräte-Credential zu
-  rotieren und der Check greift nicht (VioletApp selbst verwaltet immer ein
-  Geräte-Credential und verlangt die Datei unbedingt).
+- `compose-guard` (PreToolUse Edit|Write): blocks hand-edits to the GENERATED root app.json,
+  points to the .homeycompose/ source.
+- `json-guard` (PostToolUse Edit|Write): JSON.parse on manifests/changelog/locales;
+  on error exit 2 with a fix hint (smart-quote bug class).
+- `check-version-sync` (PreToolUse Bash|PowerShell): blocks git commit when app.json and
+  .homeycompose/app.json carry different versions.
+- `secrets-guard` (PreToolUse Edit|Write), if device credentials are involved: blocks
+  cleartext credentials in tracked files; the error message NEVER quotes the match
+  (the exact password optionally out-of-band via env `DEVICE_WRITE_PASSWORD`).
+- `release-gate` (PreToolUse Bash|PowerShell): blocks `homey app install|publish` when
+  (a) `.homeychangelog.json` has no complete en+de entry for the compose version,
+  (b) the version is already logged in `docs/dashboard/versions.md` (a forgotten bump
+  = a duplicate release), or (c) — only on publish, and only if a
+  `docs/superpowers/security/credential-rotation.md` already exists — that file has no
+  dated rotation date. Part (c) is deliberately softer than the
+  VioletApp original: if the file is missing entirely, the app has no device credential to
+  rotate and the check does not apply (VioletApp itself always manages a
+  device credential and requires the file unconditionally).
 
-## Phase-4-Hinweis
+## Phase 4 note
 
-Erwarte Homey-typische Recommender-Empfehlungen — insbesondere den read-only
-`release-readiness`-Subagent (`agents/release-readiness.md`: PASS/FAIL für Versions-Sync,
-Changelog en+de, validate, Store-Assets, versions.md-Hash, Dashboard-Stand, Triage-Inbox,
-Live-Smoke).
+Expect Homey-typical recommender recommendations — in particular the read-only
+`release-readiness` subagent (`agents/release-readiness.md`: PASS/FAIL for version sync,
+changelog en+de, validate, Store assets, versions.md hash, dashboard state, triage inbox,
+live smoke).
 
-## Phase-7-Zusatz — Probelauf
+## Phase 7 add-on — trial run
 
-Der Probelauf endet mit einem read-only Live-Check gegen den echten Homey
-(allowlistete `homey api … get-*`; `--json` anhängen — ohne Flag liefert die CLI eine
-Box-Drawing-Tabelle).
+The trial run ends with a read-only live check against the real Homey
+(allowlisted `homey api … get-*`; append `--json` — without the flag the CLI returns a
+box-drawing table).
 
-## Dauerregeln-Zusatz (→ in HOMEY.md/CLAUDE.md übernehmen)
+## Standing-rules add-on (→ carry over into HOMEY.md/CLAUDE.md)
 
-- Read-only-Live-Checks gegen das echte Gerät sind fester Verify-Schritt jedes Milestones.
-- Writes an echte Hardware NIE unbeaufsichtigt: erster Live-Write gemeinsam mit dem Nutzer,
-  mit Auto-Revert; `homey app install` und Store-Publish bleiben §9-Human-Gates.
-- Bei Write-/Netzwerk-Milestones: CLAUDE.md §5 (STRIDE + security-requirement-extraction
-  bzw. Fallback) VOR dem Plan; /security-review auf den Diff vor dem Merge (falls verfügbar).
+- Read-only live checks against the real device are a fixed verify step of every milestone.
+- NEVER write to real hardware unattended: the first live write together with the user,
+  with auto-revert; `homey app install` and Store publish remain §9 human gates.
+- For write/network milestones: CLAUDE.md §5 (STRIDE + security-requirement-extraction
+  or fallback) BEFORE the plan; /security-review on the diff before the merge (if available).

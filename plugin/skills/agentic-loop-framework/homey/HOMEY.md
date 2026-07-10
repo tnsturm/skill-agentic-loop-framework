@@ -2,32 +2,32 @@
 
 Homey-app-specific development conventions. Reusable across Homey app projects as-is — pairs with `CLAUDE.md` (general engineering guidelines; §6–8 define the platform-file mechanism and the generic dashboard/versioning protocol this file plugs into).
 
-## SDK-Doku nachschlagen
+## Looking up the SDK docs
 
-Der `homey-app`-Skill deckt die Homey Apps SDK v3 Grundlagen ab (Compose, Kernklassen, CLI). Bei Details, die dort fehlen oder veraltet sein könnten (neue SDK-Version, Edge-Case-API, Compose-Merge-Verhalten), den `context7`-MCP-Server (siehe `.mcp.json`) für einen Live-Doku-Lookup nutzen statt zu raten.
+The `homey-app` skill covers the Homey Apps SDK v3 basics (Compose, core classes, CLI). For details that are missing or possibly outdated there (a new SDK version, an edge-case API, Compose merge behavior), use the `context7` MCP server (see `.mcp.json`) for a live docs lookup instead of guessing.
 
 ## Versioning commands
 
-| Anlass | Befehl | Effekt |
+| Occasion | Command | Effect |
 |---|---|---|
-| Neuer Build im selben Milestone | `npx homey app version patch` | `0.1.0 → 0.1.1` (Y +1) |
-| Neuer Milestone (erster Build) | `npx homey app version minor` | `0.1.x → 0.2.0` (X +1, Y auf 0 zurück) |
+| New build within the same milestone | `npx homey app version patch` | `0.1.0 → 0.1.1` (Y +1) |
+| New milestone (first build) | `npx homey app version minor` | `0.1.x → 0.2.0` (X +1, Y reset to 0) |
 
-Beide Befehle aktualisieren `.homeycompose/app.json`; das generierte Root-`app.json` wird beim nächsten `build`/`run`/`validate` mitgezogen — beide müssen vor dem Commit identisch sein.
+Both commands update `.homeycompose/app.json`; the generated root `app.json` is pulled along on the next `build`/`run`/`validate` — both must be identical before the commit.
 
-`homey app run` (flüchtiger Dev-Modus, wird beim Stoppen wieder entfernt) zählt **nicht** als Release und braucht keinen Bump/Log-Eintrag. Nur `homey app install` und Store-Publish zählen als Release im Sinne von CLAUDE.md §8.
+`homey app run` (ephemeral dev mode, removed again on stop) does **not** count as a release and needs no bump/log entry. Only `homey app install` and a Store publish count as a release in the sense of CLAUDE.md §8.
 
 ## Changelog
 
-`.homeychangelog.json` für jede neue Version mit einer klaren, nutzerverständlichen Änderungsnotiz füllen — **en + de**.
+Fill `.homeychangelog.json` for every new version with a clear, user-understandable change note — **en + de**.
 
-**JSON-Authoring-Regel (bewährt — dieselbe Fehlerklasse traf das Ursprungsprojekt 4×):** `.homeychangelog.json` und die Manifeste sind **striktes JSON**. Beim Bearbeiten von Hand geraten die ASCII-`"`-String-Delimiter leicht zu typografischen „Smart Quotes" (`" "`) → ungültiges JSON, das `homey app validate` (kulant) bis zum Commit durchlässt. Deshalb: JSON-Dateien **programmatisch bauen** (`node` + `JSON.stringify`; deutsche Innen-Anführungszeichen als `„…"` = U+201E/U+201C), **nie die Delimiter von Hand tippen**, und vor dem Commit mit `JSON.parse` prüfen. Der `json-guard`-PostToolUse-Hook (`.claude/hooks/json-guard.js`) erzwingt das automatisch für Manifest-/Changelog-JSON.
+**JSON authoring rule (proven — the same class of bug hit the original project 4×):** `.homeychangelog.json` and the manifests are **strict JSON**. When editing by hand, the ASCII `"` string delimiters easily turn into typographic "smart quotes" (`" "`) → invalid JSON that `homey app validate` (leniently) lets through until the commit. Therefore: build JSON files **programmatically** (`node` + `JSON.stringify`; German inner quotation marks as `„…"` = U+201E/U+201C), **never type the delimiters by hand**, and check with `JSON.parse` before the commit. The `json-guard` PostToolUse hook (`.claude/hooks/json-guard.js`) enforces this automatically for manifest/changelog JSON.
 
-## Release-Checkliste (Umsetzung von CLAUDE.md §8 für Homey)
+## Release checklist (implementing CLAUDE.md §8 for Homey)
 
-1. Code-Stand committen.
-2. Bumpen: `npx homey app version patch` (neuer Build im selben Milestone) bzw. `npx homey app version minor` zum Milestone-Start.
-3. `.homeychangelog.json` für die neue Version füllen (en + de).
-4. Generiertes `app.json` prüfen (Version == `.homeycompose/app.json`); Bump + Changelog zusammen committen.
-5. Hochladen (`npx homey app install` bzw. Store-Publish).
-6. Zeile im Projekt-Versions-Log ergänzen (Version, Datum, Commit, Ziel, Notiz) — siehe z. B. `docs/dashboard/versions.md`.
+1. Commit the code state.
+2. Bump: `npx homey app version patch` (new build within the same milestone) or `npx homey app version minor` at the milestone start.
+3. Fill `.homeychangelog.json` for the new version (en + de).
+4. Check the generated `app.json` (version == `.homeycompose/app.json`); commit the bump + changelog together.
+5. Upload (`npx homey app install` or Store publish).
+6. Add a line to the project version log (version, date, commit, target, note) — see e.g. `docs/dashboard/versions.md`.

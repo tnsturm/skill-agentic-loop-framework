@@ -1,13 +1,13 @@
-# Triage-Inbox
+# Triage Inbox
 
-Nächtliche Befund-Sammlung der `<projekt>-nightly-triage`-Routine —
-**jede neue Milestone-Session und der release-readiness-Subagent lesen diese Datei zuerst**
-(CLAUDE.md §7). Die Routine pflegt die Abschnitte (Einträge wandern), sie hängt nicht endlos an.
+Nightly finding collection from the `<project>-nightly-triage` routine —
+**every new milestone session and the release-readiness subagent read this file first**
+(CLAUDE.md §7). The routine maintains the sections (entries move between them), it does not append endlessly.
 
-**Stand:** <YYYY-MM-DD>
+**As of:** <YYYY-MM-DD>
 
-## Offen
+## Open
 
-## Neu (<YYYY-MM-DD>)
+## New (<YYYY-MM-DD>)
 
-## Erledigt (<YYYY-MM-DD>)
+## Done (<YYYY-MM-DD>)

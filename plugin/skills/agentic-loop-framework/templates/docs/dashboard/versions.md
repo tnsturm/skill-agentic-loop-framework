@@ -1,9 +1,9 @@
-# <Projektname> — Versions-Log (App-Version ↔ Commit)
+# <Project name> — Version log (app version ↔ commit)
 
-Nachvollziehbarkeit: **jede** deployte/installierte/veröffentlichte Version trägt eine
-eindeutige Versionsnummer und ist hier einem exakten Commit zugeordnet (CLAUDE.md §8).
+Traceability: **every** deployed/installed/published version carries a
+unique version number and is mapped here to an exact commit (CLAUDE.md §8).
 
 ## Log
 
-| Version | Datum | Commit | Ziel | Milestone | Notiz |
+| Version | Date | Commit | Target | Milestone | Note |
 |---|---|---|---|---|---|
