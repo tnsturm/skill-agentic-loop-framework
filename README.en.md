@@ -26,7 +26,7 @@ as a hook, rule, or memory:
 4. **Heartbeat (nightly):** CI on push/PR plus cron, and a local triage routine that
    writes findings into a committed inbox — the next session reads it first.
 
-![Structure of the agentic-loop-framework](assets/struktur.svg)
+![Structure of the agentic-loop-framework](assets/struktur.en.svg)
 
 ## Installation
 
