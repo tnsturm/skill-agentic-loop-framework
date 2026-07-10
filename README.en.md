@@ -79,5 +79,4 @@ commit-gate subset (phase 3).
 
 Historical seed: the bootstrap prompts (as of 2026-07-07) — since 2026-07-09 only in the
 git history of `skill-ClaudeCode-general-settings` (`fcbda47`); the living source is this
-repo. The SKILL.md itself is German; its phase structure and the templates are
-language-neutral, and the bootstrap prompt above works in English sessions.
+repo.
