@@ -198,20 +198,20 @@ Based on: https://github.com/multica-ai/andrej-karpathy-skills
 
 ## Project Extensions
 
-<!-- Projekt-Extensions: Plattform-Datei per §6 referenzieren, z. B. @<PLATFORM>.md -->
+<!-- Project extensions: reference the platform file per §6, e.g. @<PLATFORM>.md -->
 
-## Claude-Code-Settings: Skill = Source of Truth
+## Claude Code Settings: Skill = Source of Truth
 
-**Globale** Claude-Code-Settings-Änderungen (die auf jedem Rechner gelten sollen — `permissions.allow`-Muster, die überall nützlich sind, globale Hooks, `model`, Notification-Flags, Plugins/Marketplaces) gehören in ein privates Settings-Skill-Repo (`<euer-Settings-Skill-Repo>`) als **Quelle der Wahrheit**, nicht nur in die Live-`~/.claude/settings.json`:
+**Global** Claude Code settings changes (meant to apply on every machine — `permissions.allow` patterns that are useful everywhere, global hooks, `model`, notification flags, plugins/marketplaces) belong in a private settings-skill repo (`<your-settings-skill-repo>`) as the **source of truth**, not only in the live `~/.claude/settings.json`:
 
-1. Zuerst im Skill-Repo ablegen, dann in die Live-`~/.claude/settings.json` **spiegeln** — nie nur die Live-Datei ändern (sonst geht die Änderung beim Rechnerwechsel verloren).
-2. **Projekt-/plattformspezifische** Settings (z. B. plattformspezifische Allowlist-Einträge oder Guard-Hooks) bleiben in der **`.claude/settings.json` dieses Repos** — sie sind dort schon portabel (ein `git clone` bringt sie mit) und gehören nicht in den globalen Skill.
+1. Put it in the skill repo first, then **mirror** it into the live `~/.claude/settings.json` — never change only the live file (otherwise the change is lost when you switch machines).
+2. **Project/platform-specific** settings (e.g. platform-specific allowlist entries or guard hooks) stay in **this repo's `.claude/settings.json`** — they are already portable there (a `git clone` brings them along) and do not belong in the global skill.
 
-Faustregel: „In jedem Projekt sinnvoll?" → global (Skill). „Nur hier / nur für diese Plattform sinnvoll?" → projekt-lokal (dieses Repo).
+Rule of thumb: "useful in every project?" → global (skill). "only here / only for this platform?" → project-local (this repo).
 
-**Framework-Artefakte**: Jede GENERISCHE Änderung an Gate-/Guard-Hooks,
-CLAUDE.md-Protokollregeln, dem Checkpoint-Ablauf oder den Dashboard-/Template-Formaten wird
-**in derselben Session** in das Framework-Repo `skill-agentic-loop-framework`
-(`plugin/skills/agentic-loop-framework/templates/` bzw. Plattform-Module) gespiegelt + dessen
-CHANGELOG ergänzt. Projekt-spezifisches (konkrete Allowlist-Einträge, projektspezifische
-Skripte) bleibt hier. Der milestone-checkpoint prüft Drift (Schritt 6).
+**Framework artifacts**: every GENERIC change to gate/guard hooks,
+CLAUDE.md protocol rules, the checkpoint flow, or the dashboard/template formats is
+mirrored **in the same session** into the framework repo `skill-agentic-loop-framework`
+(`plugin/skills/agentic-loop-framework/templates/` or the platform modules) + its
+CHANGELOG updated. Project-specific things (concrete allowlist entries, project-specific
+scripts) stay here. The milestone-checkpoint checks for drift (step 6).

@@ -2,8 +2,8 @@
 
 // Smoke test for .claude/hooks/dashboard-guard.js (PostToolUse Edit|Write) — the guard
 // blocks a broken window.DASHBOARD_STATUS data block (exit 2) and leaves a valid block /
-// non-guarded files alone (exit 0) — extrahiert aus VioletApp →M5-Checkpoint (siehe
-// CHANGELOG des agentic-loop-framework). Closes the gap a plain JSON guard can't cover:
+// non-guarded files alone (exit 0) — extracted from VioletApp →M5 checkpoint (see
+// the agentic-loop-framework CHANGELOG). Closes the gap a plain JSON guard can't cover:
 // the data block is a JS object literal embedded in HTML, not standalone JSON.
 
 const { test } = require('node:test');

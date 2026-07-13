@@ -10,7 +10,7 @@
 //
 // Only Edit/Write is guarded: the `homey app …` commands regenerate app.json via Bash,
 // so legitimate builds/version bumps pass untouched. Pattern mirrors the other hooks
-// (fail-open on our own errors); extrahiert aus VioletApp M4 — siehe Framework-CHANGELOG.
+// (fail-open on our own errors); extracted from VioletApp M4 — see the framework CHANGELOG.
 
 const fs = require('fs');
 const path = require('path');

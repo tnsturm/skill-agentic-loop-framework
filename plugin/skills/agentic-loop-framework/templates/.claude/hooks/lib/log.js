@@ -1,7 +1,7 @@
 'use strict';
 
-// Hook telemetry (pure helper) — extrahiert aus VioletApp M4.8
-// (siehe CHANGELOG des agentic-loop-framework).
+// Hook telemetry (pure helper) — extracted from VioletApp M4.8
+// (see the agentic-loop-framework CHANGELOG).
 // One JSONL decision record per hook decision, appended to the guarded repo's
 // .claude/hooks/hook-log.jsonl (gitignored). Resolution is cwd-based on purpose:
 // hook smoke tests spawn hooks with fixture cwds that have no .claude/hooks/

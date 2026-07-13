@@ -44,7 +44,7 @@ auch beliebige Git-URLs und lokale Pfade.
 ## Bootstrap initiieren
 
 Im (neuen oder bestehenden) Projektordner eine frische Session starten und pasten —
-die Kontextzeilen beantworten vorab die Fragen aus dem „Vorab klären"-Abschnitt der
+die Kontextzeilen beantworten vorab die Fragen aus dem „Clarify up front"-Abschnitt der
 SKILL.md:
 
 ```

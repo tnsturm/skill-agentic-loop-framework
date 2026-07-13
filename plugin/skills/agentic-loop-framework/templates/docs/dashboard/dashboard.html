@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title><Projektname> — Fortschritts-Dashboard</title>
+<title><Project name> — Progress dashboard</title>
 <style>
   :root{
     --bg:#faf9f5; --surface:#ffffff; --border:rgba(0,0,0,.12); --border2:rgba(0,0,0,.07);
@@ -80,27 +80,27 @@
 
 <script id="status-data">
 /* =====================================================================
-   DATEN-BLOCK — EINZIGE QUELLE DER WAHRHEIT
-   Jede Milestone-Session editiert NUR dieses Objekt.
-   Protokoll & Feld-Bedeutungen: CLAUDE.md §7 (generisch, wird automatisch geladen),
-   Plattform-Versionierung: <PLATFORM>.md (per @-Import in CLAUDE.md, falls vorhanden).
-   Den Renderer darunter NICHT anfassen.
+   DATA BLOCK — SINGLE SOURCE OF TRUTH
+   Every milestone session edits ONLY this object.
+   Protocol & field meanings: CLAUDE.md §7 (generic, loaded automatically),
+   platform versioning: <PLATFORM>.md (via @-import in CLAUDE.md, if present).
+   Do NOT touch the renderer below.
    ===================================================================== */
 window.DASHBOARD_STATUS = {
-  project: "<Projektname>",
+  project: "<Project name>",
   updatedAt: "<YYYY-MM-DD>",
   milestones: []
 };
 </script>
 
 <script>
-/* Renderer — nicht editieren. Liest window.DASHBOARD_STATUS und zeichnet das Dashboard. */
+/* Renderer — do not edit. Reads window.DASHBOARD_STATUS and draws the dashboard. */
 (function () {
   var S = window.DASHBOARD_STATUS;
   var BADGE = {
-    done:   { txt: "Abgeschlossen",   bg: "var(--doneBg)",   fg: "var(--doneText)",   dot: "var(--done)",   icon: "✓" },
-    active: { txt: "In Arbeit",        bg: "var(--activeBg)", fg: "var(--activeText)", dot: "var(--active)", icon: "▶" },
-    todo:   { txt: "Nicht begonnen",   bg: "var(--todoBg)",   fg: "var(--todoText)",   dot: "var(--faint)",  icon: "○" }
+    done:   { txt: "Done",          bg: "var(--doneBg)",   fg: "var(--doneText)",   dot: "var(--done)",   icon: "✓" },
+    active: { txt: "In progress",   bg: "var(--activeBg)", fg: "var(--activeText)", dot: "var(--active)", icon: "▶" },
+    todo:   { txt: "Not started",   bg: "var(--todoBg)",   fg: "var(--todoText)",   dot: "var(--faint)",  icon: "○" }
   };
   function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
@@ -110,19 +110,19 @@ window.DASHBOARD_STATUS = {
   var pct = totalSteps ? Math.round((doneSteps / totalSteps) * 100) : 0;
   var doneCount = ms.filter(function (m) { return m.status === "done"; }).length;
   var activeM = ms.filter(function (m) { return m.status === "active"; }).map(function (m) { return m.id; });
-  var statusLine = doneCount + " von " + ms.length + " abgeschlossen"
-    + (activeM.length ? " · " + activeM.join(", ") + " in Arbeit"
-       : (doneCount < ms.length ? " · " + (ms.find(function(m){return m.status!=="done";})||{}).id + " als Naechstes" : " · fertig"));
+  var statusLine = doneCount + " of " + ms.length + " done"
+    + (activeM.length ? " · " + activeM.join(", ") + " in progress"
+       : (doneCount < ms.length ? " · " + (ms.find(function(m){return m.status!=="done";})||{}).id + " next" : " · complete"));
 
   var html = "";
-  html += '<h1>' + esc(S.project) + ' — Fortschritt</h1>';
+  html += '<h1>' + esc(S.project) + ' — Progress</h1>';
   html += '<div class="sub">' + esc(S.subtitle) + '</div>';
-  html += '<div class="meta-top">Stand: ' + esc(S.updatedAt) + ' · ' + esc(statusLine) + ' · ' + pct + '% (' + doneSteps + '/' + totalSteps + ' Steps)</div>';
+  html += '<div class="meta-top">As of: ' + esc(S.updatedAt) + ' · ' + esc(statusLine) + ' · ' + pct + '% (' + doneSteps + '/' + totalSteps + ' Steps)</div>';
   html += '<div class="bar"><div style="width:' + pct + '%"></div></div>';
   html += '<div class="legend">'
-        + '<span><span class="dotk" style="background:var(--done)"></span>abgeschlossen</span>'
-        + '<span><span class="dotk" style="background:var(--active)"></span>in Arbeit</span>'
-        + '<span><span class="dotk" style="background:var(--faint)"></span>nicht begonnen</span></div>';
+        + '<span><span class="dotk" style="background:var(--done)"></span>done</span>'
+        + '<span><span class="dotk" style="background:var(--active)"></span>in progress</span>'
+        + '<span><span class="dotk" style="background:var(--faint)"></span>not started</span></div>';
 
   ms.forEach(function (m, i) {
     var b = BADGE[m.status] || BADGE.todo;
@@ -148,16 +148,16 @@ window.DASHBOARD_STATUS = {
     var meta = [];
     meta.push('<span><b>Steps:</b> ' + nDone + '/' + m.steps.length + '</span>');
     if (m.startedAt)  meta.push('<span><b>Start:</b> ' + esc(m.startedAt) + '</span>');
-    if (m.finishedAt) meta.push('<span><b>Fertig:</b> ' + esc(m.finishedAt) + '</span>');
-    if (m.runtime)    meta.push('<span><b>Laufzeit:</b> ' + esc(m.runtime) + '</span>');
+    if (m.finishedAt) meta.push('<span><b>Finished:</b> ' + esc(m.finishedAt) + '</span>');
+    if (m.runtime)    meta.push('<span><b>Runtime:</b> ' + esc(m.runtime) + '</span>');
     if (m.commit)     meta.push('<span><b>Commit:</b> <span class="mono">' + esc(m.commit) + '</span></span>');
     html += '<div class="metaline">' + meta.join("") + '</div>';
 
-    if (m.currentActivity) html += '<div class="cur">Aktuell: ' + esc(m.currentActivity) + '</div>';
+    if (m.currentActivity) html += '<div class="cur">Now: ' + esc(m.currentActivity) + '</div>';
 
     if (m.recommendedModel) {
-      html += '<div class="modelrec"><b>Modell-Empfehlung:</b> ' + esc(m.recommendedModel.model)
-            + ' · Aufwand ' + esc(m.recommendedModel.effort) + ' — ' + esc(m.recommendedModel.why) + '</div>';
+      html += '<div class="modelrec"><b>Model recommendation:</b> ' + esc(m.recommendedModel.model)
+            + ' · effort ' + esc(m.recommendedModel.effort) + ' — ' + esc(m.recommendedModel.why) + '</div>';
     }
 
     if (m.log && m.log.length) {
@@ -170,10 +170,10 @@ window.DASHBOARD_STATUS = {
 
     if (m.prompt && m.status !== "done") {
       var pid = "p-" + m.id;
-      html += '<details><summary>▸ Start-Prompt anzeigen</summary>';
+      html += '<details><summary>▸ Show start prompt</summary>';
       html += '<pre id="' + pid + '">' + esc(m.prompt) + '</pre>';
-      html += '<button class="copy" data-target="' + pid + '">Prompt kopieren</button></details>';
-      html += '<div class="chip">↗ Als neue Sitzung starten: Chip „Start ' + esc(m.id) + ' …“ im Claude-Chat</div>';
+      html += '<button class="copy" data-target="' + pid + '">Copy prompt</button></details>';
+      html += '<div class="chip">↗ Start as a new session: the “Start ' + esc(m.id) + ' …” chip in the Claude chat</div>';
     }
 
     html += '</div></div>';
@@ -185,7 +185,7 @@ window.DASHBOARD_STATUS = {
     btn.addEventListener("click", function () {
       var el = document.getElementById(btn.dataset.target);
       var text = el ? el.innerText : "";
-      function done() { var o = btn.textContent; btn.textContent = "Kopiert"; setTimeout(function () { btn.textContent = o; }, 1500); }
+      function done() { var o = btn.textContent; btn.textContent = "Copied"; setTimeout(function () { btn.textContent = o; }, 1500); }
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(done, fallback);
       } else { fallback(); }

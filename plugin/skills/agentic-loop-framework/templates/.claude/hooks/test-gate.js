@@ -1,8 +1,8 @@
 'use strict';
 
 // PreToolUse hook (matcher: Bash|PowerShell) — blocks `git commit` while the repo's own
-// test suite is red, so failing tests can't land in history (extrahiert aus
-// VioletApp M4.6 — siehe CHANGELOG des agentic-loop-framework).
+// test suite is red, so failing tests can't land in history (extracted from
+// VioletApp M4.6 — see the agentic-loop-framework CHANGELOG).
 // Register it ALONGSIDE other gates, not merged: Claude Code runs matching
 // hooks in parallel, so commit latency is max(gates) instead of the sum, and
 // each gate stays single-purpose and fail-open. The test command comes from
@@ -10,9 +10,9 @@
 // command stays project-defined. Repos without a test script are never blocked.
 // Fail open on our own errors, exit 2 only on a real finding.
 //
-// NICHT-NPM-STACKS: die scripts.test-Aufloesung unten durch das projektuebliche
-// SCHNELLE Testkommando ersetzen (Laufzeitbudget <= 30 s; die volle Suite
-// gehoert ins CI-/Review-Gate, nicht in den Commit-Pfad).
+// NON-NPM STACKS: replace the scripts.test resolution below with the project's
+// own FAST test command (runtime budget <= 30 s; the full suite belongs in the
+// CI/review gate, not in the commit path).
 
 const fs = require('fs');
 const path = require('path');

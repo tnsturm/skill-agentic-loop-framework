@@ -1,7 +1,7 @@
 'use strict';
 
 // PreToolUse hook (matcher: Edit|Write) — enforces "device write credential never
-// in source/settings" (extrahiert aus VioletApp M3 — siehe Framework-CHANGELOG).
+// in source/settings" (extracted from VioletApp M3 — see the framework CHANGELOG).
 // Blocks (exit 2) any Edit/Write that would put a controller credential into a
 // TRACKED app file: a hardcoded `Basic <base64>` Authorization value, a
 // string-literal writePassword/writeUsername assignment, or — when configured

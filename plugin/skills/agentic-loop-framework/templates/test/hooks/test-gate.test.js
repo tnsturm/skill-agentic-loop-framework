@@ -3,10 +3,10 @@
 // Smoke test for .claude/hooks/test-gate.js (PreToolUse Bash|PowerShell) — the
 // gate blocks `git commit` (exit 2) while the guarded project's own test suite
 // (package.json scripts.test) is red, passes green suites and non-commit
-// commands, and fails open (exit 0) on its own errors — extrahiert aus
-// VioletApp M4.6 (siehe CHANGELOG des agentic-loop-framework). Muster fuer alle
-// Gate-Hook-Smoke-Tests: Fixture-Projekte in Temp, parallel gestartete
-// Suite-Laeufe (Wall-Time), Direktaufruf mit stdin-Payload.
+// commands, and fails open (exit 0) on its own errors — extracted from
+// VioletApp M4.6 (see the agentic-loop-framework CHANGELOG). Pattern for all
+// gate-hook smoke tests: fixture projects in temp, suites started in parallel
+// (wall-time), direct call with an stdin payload.
 
 const { test } = require('node:test');
 const assert = require('node:assert');

@@ -1,5 +1,5 @@
 {
-  "_comment": "Homey read-only Allowlist-Block — Eintraege nach permissions.allow in .claude/settings.json uebernehmen (CLAUDE.md §10 Schicht ii).",
+  "_comment": "Homey read-only allowlist block — copy entries into permissions.allow in .claude/settings.json (CLAUDE.md §10 layer ii).",
   "allow": [
     "Bash(homey whoami)",
     "Bash(homey api devices get-*)",
