@@ -1,6 +1,6 @@
 {
   "name": "agentic-loop-framework",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "Bootstrap a loop-driven agentic development framework: verified, self-correcting loops (gates, dashboard, checkpoints, telemetry) instead of prompt-by-prompt work.",
   "author": {
     "name": "Torsten Sturm"

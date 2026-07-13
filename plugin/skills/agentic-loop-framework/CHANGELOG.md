@@ -1,5 +1,25 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.15 (2026-07-13)
+
+- Full English i18n of the plugin's German-language artifacts — the repo now ships in
+  English throughout, except the intentionally bilingual German halves `README.md` and
+  `assets/struktur.svg`. Translated: `SKILL.md` (body + frontmatter — also fixed a GitHub
+  YAML error by single-quoting the `description`, whose unquoted `Trigger: ` colon was
+  parsed as a mapping); the `plugin.json` + `.claude-plugin/marketplace.json` descriptions;
+  the `templates/` tree (`CLAUDE.md` tail, `docs/dashboard/{triage-inbox,versions}.md`,
+  `docs/dashboard/dashboard.html` UI strings + `lang`, `.claude/skills/milestone-checkpoint/SKILL.md`
+  body); the `homey/` module (`HOMEY.md`, `README.md`, `agents/release-readiness.md`,
+  `allowlist.json` comment); the previously-German 0.1.0–0.1.2 changelog entries below; and
+  the German header comments across the gate/guard hooks, `lib/` helpers, and smoke tests.
+  Added an English structure diagram `assets/struktur.en.svg` (referenced from `README.en.md`;
+  the German `README.md` keeps `assets/struktur.svg`); both diagrams' `plugin.json` version
+  label refreshed to 0.1.15. Where code was involved the change is
+  comment/string-only — no hook logic, dashboard renderer logic, or `window.DASHBOARD_STATUS`
+  structure was altered. Every substantive file was verified meaning-equivalent by a second
+  bilingual instance; `dashboard.html`/`struktur.en.svg` additionally checked for
+  structural/behavioral parity. Origin: user request 2026-07-13.
+
 ## 0.1.14 (2026-07-09)
 
 - New dashboard field `recommendedModel: {model, effort, why}` on every open milestone —
