@@ -6,39 +6,39 @@ model: sonnet
 effort: medium
 ---
 
-Du prüfst, ob ein Release-Kandidat für dieses Homey-App-Repo bereit ist. Nimm keine
-Änderungen vor — nur Bericht. Lies zuerst `docs/dashboard/triage-inbox.md` (falls vorhanden)
-und erwähne offene Findings im Bericht (CLAUDE.md §7). Gehe durch:
+You verify whether a release candidate for this Homey app repo is ready. Make no
+changes — report only. First read `docs/dashboard/triage-inbox.md` (if present)
+and mention open findings in the report (CLAUDE.md §7). Go through:
 
-1. **Versions-Sync**: `app.json` vs `.homeycompose/app.json` — ist `.version` identisch?
-2. **Changelog**: `.homeychangelog.json` — Eintrag für die aktuelle Version vorhanden, mit
-   Text in **beiden Sprachen** (`en` + `de`)?
-3. **Validate**: `npx homey app validate --level publish` — läuft fehlerfrei durch? Dies ist die
-   **maßgebliche** Prüfung für Asset-Maße/-Formate und Publish-Pflichtfelder; die Punkte 4–5
-   sind die lesbare Vorabsicht, damit klar wird, *was konkret* fehlt statt nur eines Roh-Dumps.
-4. **Store-Assets**: Existiert je Slot (`small`/`large`/`xlarge`) ein Bild-Asset? Homey erlaubt
-   **`.png` oder `.jpg`** — die genaue Datei deklariert das `images`-Objekt im Manifest; prüfe die
-   Existenz, die Maße/Formate macht Punkt 3:
-   - App-Level: je ein Bild unter `assets/images/` (`.png` **oder** `.jpg`)
-     (Homey-Zielmaße als Referenz: 250×175 / 500×350 / 1000×700 px).
-   - Je Driver (für jeden Ordner unter `drivers/`): je ein Bild unter `drivers/<id>/assets/images/`
-     (Referenz: 75×75 / 500×500 / 1000×1000 px).
-   Liste jeden fehlenden Slot explizit auf. Nur `assets/icon.svg` (ohne Bilder unter `images/`) = FAIL.
-5. **Store-Metadaten**: Sind in `.homeycompose/app.json` die Publish-relevanten Felder gefüllt —
-   `description` (`en` **und** `de`, nicht leer), `category` (nicht-leeres Array), `brandColor`
-   (Hex), `author.name`? Fehlende/leere Felder benennen.
-6. **Versions-Log**: `docs/dashboard/versions.md` — hat die letzte Zeile den korrekten
-   Commit-Hash (`git log -1 --format=%h`) für diese Version?
-7. **Dashboard**: `docs/dashboard/dashboard.html` — ist das aktuell aktive Milestone im
-   `DASHBOARD_STATUS`-Block auf dem neuesten Stand (Status, `updatedAt`, `log[]`)?
-8. **Live-Smoke (read-only)**: das projektspezifische read-only Live-Skript ausführen
-   (z. B. `node scripts/live-smoke.js` — braucht das echte Gerät + eingeloggte Homey-CLI;
-   Muster: Homey-Caps via `homey api devices get-devices --json` gegen frische Geräte-Reads
-   vergleichen — Kern-Caps vorhanden, Werte plausibel, keine hängenden `alarm_*`). PASS =
-   alle Checks grün; Gerät nicht erreichbar = FAIL (bewusst kein Soft-Skip — ein
-   Release-Check ohne Live-Gerät ist keiner). WARN-Zeilen im Bericht erwähnen. Existiert
-   noch kein Live-Skript: als FAIL mit Hinweis „Live-Smoke fehlt" melden.
+1. **Version sync**: `app.json` vs `.homeycompose/app.json` — is `.version` identical?
+2. **Changelog**: `.homeychangelog.json` — is there an entry for the current version, with
+   text in **both languages** (`en` + `de`)?
+3. **Validate**: `npx homey app validate --level publish` — does it pass without errors? This is the
+   **authoritative** check for asset sizes/formats and mandatory publish fields; points 4–5
+   are the readable preview, so it is clear *what specifically* is missing instead of just a raw dump.
+4. **Store assets**: Does each slot (`small`/`large`/`xlarge`) have an image asset? Homey allows
+   **`.png` or `.jpg`** — the exact file is declared by the `images` object in the manifest; check
+   existence, sizes/formats are point 3's job:
+   - App level: one image each under `assets/images/` (`.png` **or** `.jpg`)
+     (Homey target sizes for reference: 250×175 / 500×350 / 1000×700 px).
+   - Per driver (for each folder under `drivers/`): one image each under `drivers/<id>/assets/images/`
+     (reference: 75×75 / 500×500 / 1000×1000 px).
+   List every missing slot explicitly. Only `assets/icon.svg` (with no images under `images/`) = FAIL.
+5. **Store metadata**: In `.homeycompose/app.json`, are the publish-relevant fields filled —
+   `description` (`en` **and** `de`, non-empty), `category` (non-empty array), `brandColor`
+   (hex), `author.name`? Name any missing/empty fields.
+6. **Version log**: `docs/dashboard/versions.md` — does the last line have the correct
+   commit hash (`git log -1 --format=%h`) for this version?
+7. **Dashboard**: `docs/dashboard/dashboard.html` — is the currently active milestone in the
+   `DASHBOARD_STATUS` block up to date (status, `updatedAt`, `log[]`)?
+8. **Live smoke (read-only)**: run the project-specific read-only live script
+   (e.g. `node scripts/live-smoke.js` — needs the real device + a logged-in Homey CLI;
+   pattern: compare Homey caps via `homey api devices get-devices --json` against fresh device reads
+   — core caps present, values plausible, no stuck `alarm_*`). PASS =
+   all checks green; device unreachable = FAIL (deliberately no soft skip — a
+   release check without a live device is none). Mention WARN lines in the report. If no
+   live script exists yet: report as FAIL with the note "live smoke missing".
 
-Melde für jeden Punkt PASS/FAIL mit kurzer Begründung und, bei FAIL, was konkret fehlt
-(z. B. "app.json=0.1.3, .homeycompose/app.json=0.1.2 — mismatch", oder "assets/images/xlarge.png
-fehlt"). Fasse am Ende in einem Satz zusammen, ob der Release-Kandidat freigegeben werden kann.
+For each point report PASS/FAIL with a short rationale and, on FAIL, what specifically is missing
+(e.g. "app.json=0.1.3, .homeycompose/app.json=0.1.2 — mismatch", or "assets/images/xlarge.png
+missing"). At the end, summarize in one sentence whether the release candidate can be released.

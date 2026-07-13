@@ -13,7 +13,7 @@
 // three). Pattern mirrors check-version-sync.js: fail open on our own errors
 // (no compose manifest -> not ours to gate), exit 2 only on real findings.
 //
-// Extrahiert aus VioletApp M4.6 (siehe Framework-CHANGELOG) — part (c) genericized:
+// Extracted from VioletApp M4.6 (see the framework CHANGELOG) — part (c) genericized:
 // VioletApp's original enforces rotation proof unconditionally for every publish
 // (it always manages a device credential); here it only fires once a
 // credential-rotation.md already exists, so apps without device credentials are

@@ -25,9 +25,9 @@
   "url":"https://api.githubcopilot.com/mcp","headers":{"Authorization":"Bearer
   YOUR_GITHUB_PAT"}}'`, then smoke-test with a real read call — "Connected" alone doesn't
   prove the token or session actually works (full pitfalls: milestone-checkpoint SKILL.md,
-  Schritt 2). Fallback: git/gh CLI, no bootstrap blocker.
-- `templates/.claude/skills/milestone-checkpoint/SKILL.md` gets a much shorter "Schritt 0:
-  GitHub-MCP-Verbindung prüfen" instead — just a connection + smoke-test check, pointing to
+  step 2). Fallback: git/gh CLI, no bootstrap blocker.
+- `templates/.claude/skills/milestone-checkpoint/SKILL.md` gets a much shorter "Step 0:
+  Check the GitHub MCP connection" instead — just a connection + smoke-test check, pointing to
   the bootstrap skill's Phase 0 for actual setup. (Supersedes the full walkthrough
   mistakenly added there in an unpublished 0.1.13 draft — moved to the right place.)
 
@@ -140,43 +140,43 @@
 
 ## 0.1.2 (2026-07-09)
 
-- README grundlegend erweitert (de) + neues `README.en.md` (en): Was das Framework tut
-  (die vier Verifikations-Loops), Struktur-Grafik (`assets/struktur.svg`), Installation
-  (inkl. Hinweis: marketplace add akzeptiert GitHub-Kurzform, Git-URLs und lokale Pfade)
-  und der Copy-Paste-Initiierungs-Prompt (mit und ohne Plugin-Installation).
+- README substantially expanded (de) + new `README.en.md` (en): what the framework does
+  (the four verification loops), structure diagram (`assets/struktur.svg`), installation
+  (incl. note: marketplace add accepts the GitHub shorthand, git URLs, and local paths)
+  and the copy-paste initiation prompt (with and without plugin installation).
 
 ## 0.1.1 (2026-07-09)
 
-- Seed-Prompts im Settings-Repo entfernt (User-Entscheid): dieses Repo ist die EINZIGE
-  lebende Quelle; Seed-Referenzen in SKILL.md/README auf die Git-Historie
-  (`skill-ClaudeCode-general-settings@fcbda47`) umgestellt.
-- README: Einstiegszeile für Bootstrap OHNE Plugin-Installation (Repo klonen → Session
-  auf die SKILL.md zeigen) — ersetzt den Copy-Paste-Use-Case der alten Seed-Prompts.
+- Removed the seed prompts from the settings repo (user decision): this repo is the ONLY
+  living source; seed references in SKILL.md/README switched to the git history
+  (`skill-ClaudeCode-general-settings@fcbda47`).
+- README: entry line for bootstrapping WITHOUT plugin installation (clone the repo → point
+  the session at the SKILL.md) — replaces the copy-paste use case of the old seed prompts.
 
 ## 0.1.0 (2026-07-09)
 
-Initiale Extraktion aus dem VioletApp-Projekt (M0–M4.8), Milestone M4.9 der
-Loop-Hardening-Reihe. Quellen je Artefakt:
+Initial extraction from the VioletApp project (M0–M4.8), milestone M4.9 of the
+loop-hardening series. Sources per artifact:
 
 - `SKILL.md` ← `skill-ClaudeCode-general-settings/prompts/agentic-loop-bootstrap.de.md`
-  (Stand 2026-07-07), von Copy-Paste-Prompt zu Skill-Anleitung generalisiert; Phasen
-  verweisen jetzt auf den mitgelieferten `templates/`-Baum.
-- `templates/CLAUDE.md` ← VioletApp `CLAUDE.md` (§0–§11; Karpathy-Kern §1–§4 via
-  github.com/multica-ai/andrej-karpathy-skills; §7 inkl. FRICTION- + Triage-Inbox-Regel
-  aus M4.8; §10 Permission-Strategie; §11 Subagent-Tiering), Projekt-Extensions →
-  Platzhalter.
-- `templates/docs/dashboard/dashboard.html` ← VioletApp-Dashboard (Renderer 1:1,
-  Datenblock geleert); `versions.md`- und `triage-inbox.md`-Skelette ← M4.8-Formate.
-- `templates/.claude/settings.json` ← VioletApp-Gerüst, plattformfrei reduziert
-  (Matcher-Lesson M4.6: `Bash|PowerShell`).
-- `templates/.claude/hooks/test-gate.js` ← VioletApp M4.6 (inkl. NODE_TEST_CONTEXT-Lesson);
-  `lib/log.js` + `lib/spawn-env.js` ← M4.8 (Telemetrie, explizites cwd);
-  `test/hooks/test-gate.test.js` ← M4.6-Smoke-Test-Muster.
-- `templates/.claude/skills/milestone-checkpoint/SKILL.md` ← VioletApp-Stand nach M4.8/M4.9
-  (Schritte: Retro mit hook-log-Signal, Memory-Konsolidierung, Framework-Drift-Check,
-  Handover); Skill-Quellen-Abschnitt → Platzhalter.
-- `homey/` ← VioletApp: `HOMEY.md`, Guard-Hooks `compose-guard`/`json-guard`/
-  `check-version-sync`/`secrets-guard` (M3–M4.5; secrets-guard app-neutral formuliert,
-  Env `DEVICE_WRITE_PASSWORD`), Homey-Allowlist-Block, `release-readiness`-Subagent
-  (M4-Stand + M4.7-Live-Smoke-Punkt als projektspezifisches Muster + M4.8-Triage-Zeile);
-  `README.md` ← Bootstrap Prompt B als Einbau-Anleitung.
+  (as of 2026-07-07), generalized from a copy-paste prompt into a skill guide; the phases
+  now reference the bundled `templates/` tree.
+- `templates/CLAUDE.md` ← VioletApp `CLAUDE.md` (§0–§11; Karpathy core §1–§4 via
+  github.com/multica-ai/andrej-karpathy-skills; §7 incl. the FRICTION + triage-inbox rule
+  from M4.8; §10 permission strategy; §11 subagent tiering), project extensions →
+  placeholders.
+- `templates/docs/dashboard/dashboard.html` ← VioletApp dashboard (renderer 1:1,
+  data block emptied); `versions.md` and `triage-inbox.md` skeletons ← M4.8 formats.
+- `templates/.claude/settings.json` ← VioletApp scaffold, reduced to be platform-free
+  (matcher lesson M4.6: `Bash|PowerShell`).
+- `templates/.claude/hooks/test-gate.js` ← VioletApp M4.6 (incl. the NODE_TEST_CONTEXT lesson);
+  `lib/log.js` + `lib/spawn-env.js` ← M4.8 (telemetry, explicit cwd);
+  `test/hooks/test-gate.test.js` ← M4.6 smoke-test pattern.
+- `templates/.claude/skills/milestone-checkpoint/SKILL.md` ← VioletApp state after M4.8/M4.9
+  (steps: retro with hook-log signal, memory consolidation, framework-drift check,
+  handover); skill-sources section → placeholder.
+- `homey/` ← VioletApp: `HOMEY.md`, guard hooks `compose-guard`/`json-guard`/
+  `check-version-sync`/`secrets-guard` (M3–M4.5; secrets-guard phrased app-neutrally,
+  env `DEVICE_WRITE_PASSWORD`), Homey allowlist block, `release-readiness` subagent
+  (M4 state + M4.7 live-smoke point as a project-specific pattern + M4.8 triage line);
+  `README.md` ← bootstrap prompt B as the install guide.

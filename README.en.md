@@ -41,7 +41,7 @@ arbitrary git URLs and local paths.
 ## Initiating the bootstrap
 
 Start a fresh session in the (new or existing) project folder and paste this — the
-context lines pre-answer the questions from the SKILL.md's "Vorab klären" section:
+context lines pre-answer the questions from the SKILL.md's "Clarify up front" section:
 
 ```
 Set up the agentic-loop framework in this repository — use the agentic-loop-framework

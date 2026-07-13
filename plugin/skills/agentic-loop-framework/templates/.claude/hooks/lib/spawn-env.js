@@ -1,7 +1,7 @@
 'use strict';
 
-// Spawn env for nested node:test runs (pure helper) — extrahiert aus VioletApp
-// M4.8 (siehe CHANGELOG des agentic-loop-framework); Lektion aus M4.6/M4.7:
+// Spawn env for nested node:test runs (pure helper) — extracted from VioletApp
+// M4.8 (see the agentic-loop-framework CHANGELOG); lesson from M4.6/M4.7:
 // inherited NODE_TEST_CONTEXT/NODE_TEST_WORKER_ID flip a child `node --test`
 // into the runner's child protocol — exit 0 despite failures, no readable TAP.
 
