@@ -59,6 +59,23 @@ test('parse: non-install commands → empty', () => {
   assert.deepStrictEqual(specsOf('node script.js'), []);
 });
 
+test('parse: leading env-var prefix does not hide the install (security-review Vuln 1)', () => {
+  assert.deepStrictEqual(specsOf('CI=true npm install evil-pkg'), ['evil-pkg']);
+  assert.deepStrictEqual(specsOf('HUSKY=0 npm_config_registry=https://x npm i -D fake'), ['fake']);
+  assert.deepStrictEqual(specsOf('FOO=bar node script.js'), []);
+});
+
+test('parse: npx/npm exec --package value IS the verified spec (security-review Vuln 2)', () => {
+  assert.deepStrictEqual(specsOf('npx --package evil-tool run-it'), ['evil-tool']);
+  assert.deepStrictEqual(specsOf('npx -p evil-tool cmd'), ['evil-tool']);
+  assert.deepStrictEqual(specsOf('npm exec --package evil-tool -- cmd'), ['evil-tool']);
+  assert.deepStrictEqual(specsOf('npx --package=evil-inline run'), ['evil-inline']);
+  assert.deepStrictEqual(specsOf('npx -p a -p b cmd').sort(), ['a', 'b']);
+  assert.deepStrictEqual(specsOf('npx cowsay hi'), ['cowsay']);
+  assert.deepStrictEqual(specsOf('npm i lodash && npx foo'), ['lodash', 'foo']);
+  assert.deepStrictEqual(specsOf('npm i -w pkgs/foo lodash'), ['lodash']);
+});
+
 test('parse: savesToRuntimeDeps semantics', () => {
   assert.strictEqual(parseInstallCommand('npm install foo')[0].savesToRuntimeDeps, true);
   assert.strictEqual(parseInstallCommand('npm i -D foo')[0].savesToRuntimeDeps, false);

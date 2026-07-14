@@ -2,6 +2,11 @@
 
 ## 0.1.16 (2026-07-14)
 
+- Hardened `parseInstallCommand` against two gate-bypasses found in the M5.9 security
+  review: a leading `VAR=val` env-assignment prefix no longer hides an install from the
+  parser (`CI=true npm i <fake>` is now caught), and `npx`/`npm exec` `-p`/`--package X`
+  (and `--package=X`) now verify X — the package npx actually fetches and executes —
+  instead of the command name. Ephemeral positional detection is per-segment.
 - New `package-guard` PreToolUse hook (slopsquatting defense) — mirror of VioletApp M5.9:
   blocks agent-initiated npm installs (`npm install|i|add|exec`, `npx`, `yarn add`,
   `pnpm add`; Bash AND PowerShell) and `package.json` edits (all dep blocks incl.
