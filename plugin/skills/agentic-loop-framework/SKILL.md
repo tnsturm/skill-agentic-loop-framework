@@ -152,7 +152,9 @@ Then: commit, update B0, output the resume prompt for Phase 3.
 Adopt `templates/.claude/skills/milestone-checkpoint/SKILL.md` → `.claude/skills/
 milestone-checkpoint/SKILL.md`; fill the skill-sources placeholder (step 3) with
 the project's real external sources. The checkpoint runs after every
-milestone "done" (its own `→Mx` dashboard entry) and covers: workflow retro (reads
+milestone "done" (its own `Mx.0` "Housekeeping Agentic Loop" dashboard entry; the
+implementation milestone it gates is numbered `Mx.1`) and covers: branch/worktree
+cleanup (first action, before the skill), workflow retro (reads
 FRICTION entries + hook-log.jsonl block counts), /fewer-permission-prompts,
 /claude-automation-recommender, memory consolidation (as a diff only!), framework-drift check
 (against this skill), dashboard update, handover (push + start question).
@@ -182,7 +184,7 @@ data block parses, settings.json parses, `node --test test/hooks/test-gate.test.
 1. Take one deliberately small, real task from M0 through the complete loop:
    TDD → gates → dashboard maintenance → /code-review → §9 question to the user.
 2. Log every friction immediately as a FRICTION: entry in the dashboard log — first retro fuel for
-   the →M0 checkpoint.
+   the M0.0 checkpoint.
 
 → verify: task merged OR open as a PR; dashboard and memory up to date.
 
@@ -191,7 +193,7 @@ data block parses, settings.json parses, `node --test test/hooks/test-gate.test.
 - Keep the active milestone's dashboard entry current in every session.
 - Friction IMMEDIATELY as a `FRICTION:` log entry in the active milestone — the retro reads it.
 - After every milestone "done" and before the next start: milestone-checkpoint (its own
-  →Mx dashboard entry).
+  Mx.0 dashboard entry).
 - Every deployed/installed state: bump the version + a versions.md line (§8).
 - New durable insights immediately as a memory file + an index line.
 - Freeze known defects immediately as a `{ todo: true }` test with the CORRECT expectation.

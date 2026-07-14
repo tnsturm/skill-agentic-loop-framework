@@ -1,5 +1,22 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.17 (2026-07-14)
+
+- Checkpoint naming convention renamed (mirror of VioletApp, 2026-07-14): between-milestone
+  checkpoint entries are now `id: "Mx.0"`, `title: "Housekeeping Agentic Loop"` (previously
+  `id: "→Mx"`, `title: "Zwischen-Check"`), and the implementation milestone a checkpoint
+  gates is numbered `Mx.1`. Updated in `templates/CLAUDE.md` §7 point 4,
+  `templates/.claude/skills/milestone-checkpoint/SKILL.md`, and this plugin's `SKILL.md`
+  (Phases 5/7, standing rules). Historical `→Mx` mentions in code comments and old
+  changelog entries are left as-is.
+- New first checkpoint action (before running the milestone-checkpoint skill):
+  branch/worktree cleanup — check locally and on origin for no-longer-needed branches
+  and worktrees, show a short explanation per candidate, offer selectable deletion,
+  then delete the selected branches (local + origin) and worktrees (git + disk).
+  Anchored in `templates/CLAUDE.md` §7 point 4; projects add it as the first
+  `steps[]` label ("Branch-/Worktree-Cleanup") and as ACTION 1 of their checkpoint
+  resume prompts.
+
 ## 0.1.16 (2026-07-14)
 
 - Hardened `parseInstallCommand` against two gate-bypasses found in the M5.9 security

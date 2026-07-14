@@ -1,6 +1,6 @@
 ---
 name: milestone-checkpoint
-description: Between-milestone housekeeping for this project - tightens tool permissions, checks for new automation opportunities, checks/updates the external skill sources this project depends on, and runs a workflow retrospective that codifies recurring friction into hooks/docs/memory. Run between milestones per CLAUDE.md §7 point 4 / the dashboard's →Mx checkpoint entries.
+description: Between-milestone housekeeping for this project - tightens tool permissions, checks for new automation opportunities, checks/updates the external skill sources this project depends on, and runs a workflow retrospective that codifies recurring friction into hooks/docs/memory. Run between milestones per CLAUDE.md §7 point 4 / the dashboard's Mx.0 "Housekeeping Agentic Loop" checkpoint entries.
 disable-model-invocation: true
 ---
 
@@ -24,7 +24,7 @@ error → setup runs via the agentic-loop-framework bootstrap (Phase 0), not her
    completed milestone into a durable safeguard.
 5. **Memory consolidation** (see below) — condense the memory files, present the result as a diff only.
 6. **Check for framework drift** (see below) — reconcile the project framework vs. skill-agentic-loop-framework.
-7. Update the active `→Mx` checkpoint entry in `docs/dashboard/dashboard.html`:
+7. Update the active `Mx.0` checkpoint entry in `docs/dashboard/dashboard.html`:
    `status: "done"`, `finishedAt` = today, all steps ticked off, one `log[]` entry each with
    a short summary of steps 1–6. In doing so, for EVERY still-open milestone in the
    data block check/set `recommendedModel` (CLAUDE.md §11) — if it is missing (new entry)
@@ -80,7 +80,7 @@ chat without consequence, directly afterwards:
      `.claude/agents/<name>.md`, smoke-test briefly (e.g. a dry-run call).
    - **Plugin**: `claude plugin marketplace add`/`claude plugin install` only after explicit
      consent (marketplace changes are not a pure read operation).
-4. Do NOT silently drop unselected recommendations — note briefly in the `→Mx` `log[]`
+4. Do NOT silently drop unselected recommendations — note briefly in the `Mx.0` `log[]`
    what was implemented and what was deliberately deferred.
 
 ## Step 3: Check the skill sources
@@ -133,7 +133,7 @@ happen again.
    smoke test (like `secrets-guard` / `json-guard`) and is wired into `.claude/settings.json`.
 5. **Apply + verify** (hook smoke test green; rule/memory lands). A small, reversible
    change, its own commit.
-6. **Log** in the `→Mx` `log[]`: `problem → root cause → level → change → verified`.
+6. **Log** in the `Mx.0` `log[]`: `problem → root cause → level → change → verified`.
 
 If the signal is empty (nothing repeated), this step is a no-op — just note it briefly.
 
