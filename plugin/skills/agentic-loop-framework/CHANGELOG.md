@@ -1,5 +1,24 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.16 (2026-07-14)
+
+- New `package-guard` PreToolUse hook (slopsquatting defense) — mirror of VioletApp M5.9:
+  blocks agent-initiated npm installs (`npm install|i|add|exec`, `npx`, `yarn add`,
+  `pnpm add`; Bash AND PowerShell) and `package.json` edits (all dep blocks incl.
+  recursive `overrides` and `npm:` alias TARGETS) that name unverified packages —
+  nonexistent on the registry, first published < 90 days ago, < 500 weekly downloads,
+  or unverifiable (registry unreachable → fail CLOSED; harness-input parse errors fail
+  open per house convention). Pure logic in `templates/.claude/hooks/lib/package-specs.js`
+  (parse/resolve/diff/verdict, fully offline-testable), IO shell in
+  `templates/.claude/hooks/package-guard.js`, tests with a local `node:http` stub registry
+  in `templates/test/hooks/package-guard.test.js` (no real network). Registered in
+  `templates/.claude/settings.json` (both PreToolUse matcher groups). New CLAUDE.md §5
+  block "Dependency Hygiene": existence proof for new deps in specs/plans,
+  `--ignore-scripts` for agent installs. Template divergence from the VioletApp origin
+  (the only one, noted in both headers): `BLOCK_RUNTIME_DEPS = false` (generic projects
+  have runtime deps; Violet freezes `dependencies` at `{}`). Origin: VioletApp M5.9
+  threat model (STRIDE, SR-01..SR-10) + spec 2026-07-14.
+
 ## 0.1.15 (2026-07-13)
 
 - Full English i18n of the plugin's German-language artifacts — the repo now ships in

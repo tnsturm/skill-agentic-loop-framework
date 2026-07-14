@@ -1,0 +1,235 @@
+'use strict';
+
+// Tests for .claude/hooks/package-guard.js + lib/package-specs.js — framework-
+// template copy; origin: VioletApp M5.9 (spec docs/superpowers/specs/
+// 2026-07-14-m5.9-package-guard-design.md §3, §7 there). Template divergences
+// from the origin test suite (spec §6): BLOCK_RUNTIME_DEPS is false here, so a
+// runtime-dep install is verified (not policy-blocked); manifest fixtures are
+// built from this template's own dep-less package.json. Unit tests hit the pure
+// lib directly (offline); hook tests spawn the hook against a local node:http
+// stub registry — NO real network anywhere here.
+
+const { test } = require('node:test');
+const assert = require('node:assert');
+const { spawnSync, spawn } = require('node:child_process');
+const http = require('node:http');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const HOOK = path.join(__dirname, '..', '..', '.claude', 'hooks', 'package-guard.js');
+const { parseInstallCommand, resolveSpecName, diffNewDeps, verdict } = require('../../.claude/hooks/lib/package-specs');
+
+/** @param {string} cmd */
+const specsOf = (cmd) => parseInstallCommand(cmd).map((e) => e.spec);
+
+test('parse: plain npm install with two specs', () => {
+  assert.deepStrictEqual(specsOf('npm install lodash left-pad'), ['lodash', 'left-pad']);
+});
+
+test('parse: npm i alias, scoped + versioned specs', () => {
+  assert.deepStrictEqual(specsOf('npm i @scope/pkg@^1.2.3 foo@2'), ['@scope/pkg@^1.2.3', 'foo@2']);
+});
+
+test('parse: bare npm install / npm ci → no specs', () => {
+  assert.deepStrictEqual(specsOf('npm install'), []);
+  assert.deepStrictEqual(specsOf('npm ci'), []);
+});
+
+test('parse: compound command finds install segment', () => {
+  assert.deepStrictEqual(specsOf('git pull && npm install evil-pkg; npm test'), ['evil-pkg']);
+});
+
+test('parse: flags skipped, value-flags consume their value', () => {
+  assert.deepStrictEqual(specsOf('npm install --registry https://x.example lodash'), ['lodash']);
+  assert.deepStrictEqual(specsOf('npm i -D --loglevel silent typescript'), ['typescript']);
+});
+
+test('parse: npx / npm exec take first non-flag token', () => {
+  assert.deepStrictEqual(specsOf('npx --yes cowsay hello'), ['cowsay']);
+  assert.deepStrictEqual(specsOf('npm exec prettier -- --write .'), ['prettier']);
+});
+
+test('parse: yarn add / pnpm add', () => {
+  assert.deepStrictEqual(specsOf('yarn add foo && pnpm add bar'), ['foo', 'bar']);
+});
+
+test('parse: non-install commands → empty', () => {
+  assert.deepStrictEqual(specsOf('npm test'), []);
+  assert.deepStrictEqual(specsOf('git commit -m "npm install lodash"'), []);
+  assert.deepStrictEqual(specsOf('node script.js'), []);
+});
+
+test('parse: savesToRuntimeDeps semantics', () => {
+  assert.strictEqual(parseInstallCommand('npm install foo')[0].savesToRuntimeDeps, true);
+  assert.strictEqual(parseInstallCommand('npm i -D foo')[0].savesToRuntimeDeps, false);
+  assert.strictEqual(parseInstallCommand('npm install --no-save foo')[0].savesToRuntimeDeps, false);
+  assert.strictEqual(parseInstallCommand('npx foo')[0].savesToRuntimeDeps, false);
+  assert.strictEqual(parseInstallCommand('yarn add foo')[0].savesToRuntimeDeps, true);
+});
+
+test('resolve: plain, versioned, scoped, alias, skips, invalid', () => {
+  assert.strictEqual(resolveSpecName('lodash'), 'lodash');
+  assert.strictEqual(resolveSpecName('foo@^1.2.3'), 'foo');
+  assert.strictEqual(resolveSpecName('@scope/pkg@2.0.0'), '@scope/pkg');
+  assert.strictEqual(resolveSpecName('npm:real-target@^1'), 'real-target');
+  for (const s of ['github:user/repo', 'git+https://x.git', 'file:../local', 'workspace:*',
+                   'https://x.example/a.tgz', 'user/repo', 'UPPER_CASE', '']) {
+    assert.strictEqual(resolveSpecName(s), null, s);
+  }
+});
+
+const PRE = { dependencies: {}, devDependencies: { typescript: '^5.0.0', '@types/node': 'npm:other-types@^1' } };
+
+test('diff: unchanged → empty; new + alias-swap + overrides detected', () => {
+  assert.deepStrictEqual(diffNewDeps(PRE, PRE), []);
+  const post = {
+    ...PRE,
+    devDependencies: { ...PRE.devDependencies, '@types/node': 'npm:evil-types@^2', 'new-pkg': '^1.0.0' },
+    overrides: { a: { b: 'npm:deep-override@1' } },
+  };
+  assert.deepStrictEqual(diffNewDeps(PRE, post), [
+    { name: 'evil-types', spec: 'npm:evil-types@^2', depBlock: 'devDependencies' },
+    { name: 'new-pkg', spec: '^1.0.0', depBlock: 'devDependencies' },
+    { name: 'deep-override', spec: 'npm:deep-override@1', depBlock: 'overrides' },
+  ]);
+});
+
+const NOW = Date.parse('2026-07-14T00:00:00Z');
+/** @param {number} d */
+const daysAgo = (d) => new Date(NOW - d * 86400000).toISOString();
+
+test('verdict: rules + boundaries + fail-closed on missing metadata', () => {
+  assert.deepStrictEqual(verdict({ exists: false, createdAt: null, weeklyDownloads: null }, NOW), { ok: false, rule: 'not-found' });
+  assert.deepStrictEqual(verdict({ exists: true, createdAt: daysAgo(10), weeklyDownloads: 9999 }, NOW), { ok: false, rule: 'too-new' });
+  assert.deepStrictEqual(verdict({ exists: true, createdAt: daysAgo(400), weeklyDownloads: 12 }, NOW), { ok: false, rule: 'low-adoption' });
+  assert.deepStrictEqual(verdict({ exists: true, createdAt: daysAgo(90), weeklyDownloads: 500 }, NOW), { ok: true });
+  assert.deepStrictEqual(verdict({ exists: true, createdAt: null, weeklyDownloads: 500 }, NOW), { ok: false, rule: 'verify-unavailable' });
+});
+
+// ---- hook spawn tests (stub registry) ----
+
+/**
+ * @param {Record<string, object>} routes
+ * @param {(base: string, hits: string[]) => Promise<void>} fn
+ */
+function withStub(routes, fn) {
+  return new Promise((resolve, reject) => {
+    /** @type {string[]} */
+    const hits = [];
+    const srv = http.createServer((req, res) => {
+      hits.push(String(req.url));
+      const body = routes[decodeURIComponent(String(req.url))];
+      res.statusCode = body ? 200 : 404;
+      res.end(JSON.stringify(body || {}));
+    });
+    srv.listen(0, '127.0.0.1', async () => {
+      const addr = /** @type {import('node:net').AddressInfo} */ (srv.address());
+      const base = `http://127.0.0.1:${addr.port}`;
+      try { await fn(base, hits); resolve(undefined); } catch (e) { reject(e); } finally { srv.close(); }
+    });
+  });
+}
+
+/**
+ * Async spawn — spawnSync would block the event loop and deadlock the stub.
+ * @param {object} input @param {Record<string, string>} [env]
+ * @returns {Promise<{code: number|null, err: string}>}
+ */
+function runHookAsync(input, env) {
+  return new Promise((resolve) => {
+    const child = spawn(process.execPath, [HOOK], { env: { ...process.env, ...(env || {}) } });
+    let err = '';
+    child.stderr.on('data', (c) => { err += c; });
+    child.on('close', (code) => resolve({ code, err: err.trim() }));
+    child.stdin.end(JSON.stringify(input));
+  });
+}
+
+const OLD_OK = { time: { created: '2020-01-01T00:00:00Z' } };
+
+test('hook: not-found blocks with name + rule in stderr', async () => {
+  await withStub({}, async (base) => {
+    const { code, err } = await runHookAsync(
+      { tool_name: 'Bash', tool_input: { command: 'npm i -D ghost-pkg-xyz' } },
+      { PACKAGE_GUARD_REGISTRY_BASE: base, PACKAGE_GUARD_DOWNLOADS_BASE: base });
+    assert.strictEqual(code, 2, err);
+    assert.match(err, /ghost-pkg-xyz/);
+    assert.match(err, /not-found/);
+    assert.match(err, /manually in your own terminal/);
+  });
+});
+
+test('hook: too-new and low-adoption block; old+popular passes', async () => {
+  const fresh = { time: { created: new Date(Date.now() - 10 * 86400000).toISOString() } };
+  await withStub({
+    '/fresh-pkg': fresh, '/downloads/point/last-week/fresh-pkg': { downloads: 99999 },
+    '/quiet-pkg': OLD_OK, '/downloads/point/last-week/quiet-pkg': { downloads: 3 },
+    '/good-pkg': OLD_OK, '/downloads/point/last-week/good-pkg': { downloads: 8888 },
+  }, async (base) => {
+    const env = { PACKAGE_GUARD_REGISTRY_BASE: base, PACKAGE_GUARD_DOWNLOADS_BASE: base };
+    const freshR = await runHookAsync({ tool_name: 'Bash', tool_input: { command: 'npm i -D fresh-pkg' } }, env);
+    assert.strictEqual(freshR.code, 2, freshR.err); assert.match(freshR.err, /too-new/);
+    const quietR = await runHookAsync({ tool_name: 'Bash', tool_input: { command: 'npm i -D quiet-pkg' } }, env);
+    assert.strictEqual(quietR.code, 2, quietR.err); assert.match(quietR.err, /low-adoption/);
+    const goodR = await runHookAsync({ tool_name: 'Bash', tool_input: { command: 'npm i -D good-pkg' } }, env);
+    assert.strictEqual(goodR.code, 0, goodR.err);
+  });
+});
+
+test('hook: registry unreachable → verify-unavailable, fail closed', () => {
+  const r = spawnSync(process.execPath, [HOOK], {
+    input: JSON.stringify({ tool_name: 'Bash', tool_input: { command: 'npm i -D whatever-pkg' } }),
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      PACKAGE_GUARD_REGISTRY_BASE: 'http://127.0.0.1:9', PACKAGE_GUARD_DOWNLOADS_BASE: 'http://127.0.0.1:9',
+      PACKAGE_GUARD_TIMEOUT_MS: '500',
+    },
+  });
+  assert.strictEqual(r.status, 2, r.stderr);
+  assert.match(r.stderr, /verify-unavailable/);
+});
+
+// Template divergence: BLOCK_RUNTIME_DEPS=false — a runtime-dep install is NOT
+// policy-blocked; it goes through registry verification like any other spec.
+test('hook: runtime dep is verified, not policy-blocked (template default)', async () => {
+  await withStub({}, async (base) => {
+    const { code, err } = await runHookAsync(
+      { tool_name: 'Bash', tool_input: { command: 'npm install some-runtime-pkg' } },
+      { PACKAGE_GUARD_REGISTRY_BASE: base, PACKAGE_GUARD_DOWNLOADS_BASE: base });
+    assert.strictEqual(code, 2, err);
+    assert.match(err, /not-found/);
+    assert.doesNotMatch(err, /runtime-dep/);
+  });
+});
+
+test('hook: manifest edit with new fake dep blocked; unchanged manifest passes', async () => {
+  await withStub({}, async (base) => {
+    const env = { PACKAGE_GUARD_REGISTRY_BASE: base, PACKAGE_GUARD_DOWNLOADS_BASE: base };
+    const diskPath = path.join(__dirname, '..', '..', 'package.json');
+    const disk = fs.readFileSync(diskPath, 'utf8');
+    const post = JSON.stringify(
+      { ...JSON.parse(disk), devDependencies: { 'ghost-types': '^1.0.0' } }, null, 2);
+    const blocked = await runHookAsync(
+      { tool_name: 'Write', tool_input: { file_path: diskPath, content: post } }, env);
+    assert.strictEqual(blocked.code, 2, blocked.err);
+    assert.match(blocked.err, /ghost-types/); assert.match(blocked.err, /not-found/);
+    const clean = await runHookAsync(
+      { tool_name: 'Write', tool_input: { file_path: diskPath, content: disk } }, env);
+    assert.strictEqual(clean.code, 0, clean.err);
+  });
+});
+
+test('hook: non-install / non-manifest → exit 0, ZERO registry hits', async () => {
+  await withStub({}, async (base, hits) => {
+    const env = { PACKAGE_GUARD_REGISTRY_BASE: base, PACKAGE_GUARD_DOWNLOADS_BASE: base };
+    assert.strictEqual((await runHookAsync({ tool_name: 'Bash', tool_input: { command: 'npm test' } }, env)).code, 0);
+    assert.strictEqual((await runHookAsync({ tool_name: 'Edit', tool_input: { file_path: 'lib/x.js', new_string: 'y' } }, env)).code, 0);
+    assert.deepStrictEqual(hits, []);
+  });
+});
+
+test('hook: unparseable stdin → exit 0 (fail open, trusted harness)', () => {
+  const r = spawnSync(process.execPath, [HOOK], { input: 'not json', encoding: 'utf8' });
+  assert.strictEqual(r.status, 0);
+});

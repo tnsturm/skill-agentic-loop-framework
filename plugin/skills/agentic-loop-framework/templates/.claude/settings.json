@@ -4,12 +4,15 @@
       {
         "matcher": "Bash|PowerShell",
         "hooks": [
-          { "type": "command", "command": "node .claude/hooks/test-gate.js" }
+          { "type": "command", "command": "node .claude/hooks/test-gate.js" },
+          { "type": "command", "command": "node .claude/hooks/package-guard.js" }
         ]
       },
       {
         "matcher": "Edit|Write",
-        "hooks": []
+        "hooks": [
+          { "type": "command", "command": "node .claude/hooks/package-guard.js" }
+        ]
       }
     ],
     "PostToolUse": [
