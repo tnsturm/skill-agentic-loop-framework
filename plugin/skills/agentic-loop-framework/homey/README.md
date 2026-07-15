@@ -13,6 +13,7 @@ see `../CHANGELOG.md`.)
 | `hooks/compose-guard.js` | `.claude/hooks/` | settings.json PreToolUse, matcher `Edit\|Write` |
 | `hooks/secrets-guard.js` | `.claude/hooks/` | settings.json PreToolUse, matcher `Edit\|Write` |
 | `hooks/json-guard.js` | `.claude/hooks/` | settings.json PostToolUse, matcher `Edit\|Write` |
+| `hooks/changelog-lang-guard.js` | `.claude/hooks/` | settings.json PostToolUse, matcher `Edit\|Write` |
 | `hooks/check-version-sync.js` | `.claude/hooks/` | settings.json PreToolUse, matcher `Bash\|PowerShell` |
 | `hooks/release-gate.js` | `.claude/hooks/` | settings.json PreToolUse, matcher `Bash\|PowerShell` |
 | `allowlist.json` | entries → `permissions.allow` in `.claude/settings.json` | — |
@@ -57,6 +58,10 @@ CLAUDE.md/HOMEY.md too.
   points to the .homeycompose/ source.
 - `json-guard` (PostToolUse Edit|Write): JSON.parse on manifests/changelog/locales;
   on error exit 2 with a fix hint (smart-quote bug class).
+- `changelog-lang-guard` (PostToolUse Edit|Write): after an edit to `.homeychangelog.json`,
+  blocks (exit 2) if the entry for the current compose-manifest version is missing its en
+  or de half — shifts `release-gate`'s same check left to the edit itself, sharing the
+  completeness check via `hooks/lib/changelog.js` so the logic isn't duplicated.
 - `check-version-sync` (PreToolUse Bash|PowerShell): blocks git commit when app.json and
   .homeycompose/app.json carry different versions.
 - `secrets-guard` (PreToolUse Edit|Write), if device credentials are involved: blocks

@@ -1,5 +1,25 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.18 (2026-07-15)
+
+- Fixed a hook-telemetry pollution bug found live during VioletApp's M6.0 checkpoint
+  workflow retro: hook test suites that spawn a hook subprocess without an isolated
+  `cwd` cause the hook's own `input.cwd || process.cwd()` fallback to resolve to the
+  REAL project repo, so every `logHook()` call in the test run writes a fake decision
+  record into the real (gitignored) `hook-log.jsonl` — up to hundreds of entries per
+  full test run for a hook with many block-path test cases. The M4.8 fixture-safety
+  fix in `templates/.claude/hooks/lib/log.js` only covered an explicitly-undefined
+  `cwd`, not this fallback case. Added a `HOOK_LOG_DISABLE` test-only env opt-out to
+  `logHook()` (dev telemetry only — the block DECISION itself is unaffected either
+  way) and wired it into all four hook-spawn call sites of
+  `templates/test/hooks/package-guard.test.js` (its own helper functions plus two
+  standalone `spawnSync` calls that bypassed them).
+- `homey/README.md`: documented the `changelog-lang-guard` hook (installation table +
+  Phase 3 add-on section) — the hook file and its test already shipped in
+  `homey/hooks/`/`homey/test/hooks/` since 0.1.x, but the README never listed it, so a
+  project bootstrapped from this module's Phase-1 instructions never actually adopted
+  it. Found via a stale `loop-dev-roadmap` memory note in VioletApp, re-verified live.
+
 ## 0.1.17 (2026-07-14)
 
 - Checkpoint naming convention renamed (mirror of VioletApp, 2026-07-14): between-milestone
