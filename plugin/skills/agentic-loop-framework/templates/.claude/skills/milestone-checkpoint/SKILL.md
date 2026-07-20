@@ -23,7 +23,8 @@ error → setup runs via the agentic-loop-framework bootstrap (Phase 0), not her
 4. Run the **workflow retrospective / optimizer** (see below) — turn recurring friction from the
    completed milestone into a durable safeguard.
 5. **Memory consolidation** (see below) — condense the memory files, present the result as a diff only.
-6. **Check for framework drift** (see below) — reconcile the project framework vs. skill-agentic-loop-framework.
+6. **Framework reconciliation** (see below) — 6a: drift project → framework;
+   6b: native-feature review (what does Claude Code now do natively that we still do by hand?).
 7. Update the active `Mx.0` checkpoint entry in `docs/dashboard/dashboard.html`:
    `status: "done"`, `finishedAt` = today, all steps ticked off, one `log[]` entry each with
    a short summary of steps 1–6. In doing so, for EVERY still-open milestone in the
@@ -45,7 +46,7 @@ chat without consequence, directly afterwards:
 3. For each selected recommendation **implement it directly in the same session**, matching the type:
    - **Hook**: same pattern as step 4 (hook file + smoke test, wired into `.claude/settings.json`,
      suite verified green, its own commit); if the change is generic,
-     step 6 (framework drift) applies to it as well.
+     step 6a (drift) applies to it as well.
    - **MCP server**: first distinguish WHICH registration is meant — a
      `plugin:<category>:<name>` entry (e.g. `plugin:engineering:github`) is a
      role-based **Cowork plugin bundle** whose auth/activation runs ONLY via the
@@ -85,6 +86,11 @@ chat without consequence, directly afterwards:
 
 ## Step 3: Check the skill sources
 
+Every source here is third-party code that ends up in a trusted context. Both patterns below
+are gated by CLAUDE.md §5 "Extension Hygiene": review before adoption, review before update.
+Additionally verify once per checkpoint that `disableSkillShellExecution` is still `true` in
+`.claude/settings.json` and that no newly adopted skill silently required turning it off.
+
 <!-- FILL IN PER PROJECT: list this project's external skill/reference sources.
      Document the appropriate update path per source — two proven patterns: -->
 
@@ -95,14 +101,37 @@ git -C /tmp/<skill-repo> fetch --quiet
 git -C /tmp/<skill-repo> log HEAD..origin/HEAD --oneline
 ```
 
-If `/tmp/<skill-repo>` does not exist, clone it fresh. If the output is **not empty**
-(an update exists), pull it in automatically — no confirmation needed:
+If `/tmp/<skill-repo>` does not exist, clone it fresh (a fresh clone is a FIRST ADOPTION —
+review the whole tree, not just a diff).
 
-```bash
-git -C /tmp/<skill-repo> pull --quiet
-rm -rf ~/.claude/skills/<skill-name>/*
-cp -r /tmp/<skill-repo>/* ~/.claude/skills/<skill-name>/
-```
+If the output is **not empty**, an update exists. It is NOT pulled in unreviewed —
+this path writes third-party code into the trusted `~/.claude/skills/` directory
+(CLAUDE.md §5, Extension Hygiene). Instead:
+
+1. **Review the incoming diff** before it reaches `~/.claude/`:
+   ```bash
+   git -C /tmp/<skill-repo> diff HEAD..origin/HEAD
+   ```
+2. **Screen it** against the §5 Extension Hygiene checklist. Mechanical pre-filter — any hit
+   is a STOP, not a warning:
+   ```bash
+   git -C /tmp/<skill-repo> diff HEAD..origin/HEAD | \
+     grep -nE '!`|```!|allowed-tools|curl |wget |fetch\(|child_process|eval\(|atob\(|base64 -d|\.ssh|\.aws|gh auth|\.env|postinstall'
+   ```
+3. **Verdict:**
+   - Clean (no checklist hit, diff plausibly matches its commit messages) → pull and copy in;
+     no confirmation needed.
+   - Any hit, or a diff too large/opaque to actually read → do NOT copy. Show the user the
+     findings verbatim (file + line) and ask. Leave the old version in place meanwhile —
+     a stale skill is strictly safer than an unreviewed one.
+4. Only after a clean verdict:
+   ```bash
+   git -C /tmp/<skill-repo> pull --quiet
+   rm -rf ~/.claude/skills/<skill-name>/*
+   cp -r /tmp/<skill-repo>/* ~/.claude/skills/<skill-name>/
+   ```
+5. Log the verdict in the `Mx.0` `log[]` (source, commit range, clean/blocked) — an unlogged
+   review is indistinguishable from no review.
 
 ### Pattern B: Marketplace plugin (e.g. Superpowers)
 
@@ -110,6 +139,10 @@ cp -r /tmp/<skill-repo>/* ~/.claude/skills/<skill-name>/
 `claude plugin update <plugin>`, which needs a restart. Only report:
 `claude plugin list` (installed version), and ask the user to run the update themselves
 when needed in an interactive session.
+
+Marketplace ≠ reviewed. Before recommending an update, state which plugin version is installed
+and that its contents were not inspected from here; the §5 checklist applies to plugin skills
+too (they are in scope for `disableSkillShellExecution`).
 
 ## Step 4: Workflow retrospective (optimizer)
 
@@ -150,13 +183,54 @@ memory folder (`MEMORY.md` + individual files):
 - **HARD RULES**: ALWAYS present the result as a diff for review, NEVER apply it directly;
   NEVER delete open follow-ups and security notes; when in doubt, keep it.
 
-## Step 6: Check for framework drift (M4.9)
+## Step 6: Framework reconciliation
+
+Two directions. 6a asks "did this project learn something every project needs?",
+6b asks "did the platform learn something that makes our own machinery redundant?".
+
+### 6a: Drift project → framework (M4.9)
 
 Review `git log --since=<last checkpoint> --oneline -- .claude/hooks .claude/skills CLAUDE.md`
 in the project: is any of the changes GENERIC (useful in every project)? If so, in the
 local checkout of `skill-agentic-loop-framework` update the corresponding template
 (`templates/` or the platform module) + a CHANGELOG entry; commit there after
 §9 approval. No drift → note it briefly.
+
+### 6b: Native-feature review (framework → platform)
+
+The framework only grows if nobody ever asks what it can shed. Claude Code ships fast;
+every explicit instruction, skill, hook, or agent we maintain by hand is a candidate for
+replacement by a native feature — and a duplicated feature is worse than none, because it
+drifts out of sync with the real behavior silently.
+
+Ledger: `docs/dashboard/native-feature-review.md` (one row per artifact, carries the last
+verdict + date). Do NOT re-litigate every row every time — only rows whose `Zuletzt geprüft`
+predates the current release notes need a fresh look.
+
+1. **Fetch the platform delta** since the ledger's `Zuletzt geprüft` dates: the Claude Code
+   release notes / `CHANGELOG`, `code.claude.com/docs` (memory, skills, hooks, subagents,
+   settings, slash commands), and the installed version (`claude --version`). Note the desktop
+   app too — features can land there first.
+2. **Inventory our artifacts**: `CLAUDE.md` sections, `.claude/skills/`, `.claude/hooks/`,
+   `.claude/agents/`, plus the standing rules in this skill. New artifacts since the last
+   checkpoint get a fresh ledger row.
+3. **Verdict per candidate**, and be strict about the bar:
+   - **replace** — the native feature covers the artifact *completely* AND is on by default or
+     explicitly enabled here. Remove ours, keep a one-line pointer to the native feature so the
+     next session does not "helpfully" reintroduce it.
+   - **keep + note** — partial overlap (native covers the common case, our version covers a
+     project-specific edge, or ours is a fail-closed guard and the native one is advisory).
+     Record what the native feature does NOT cover — that note is the reason the artifact
+     still exists, and the first thing to re-check next time.
+   - **keep** — no native equivalent.
+   Bias to **keep** for anything mechanically enforcing (hooks, gates): a hook that blocks is
+   not equivalent to a model that is told to be careful. Bias to **replace** for prose rules
+   that merely describe behavior Claude now exhibits by default.
+4. **Apply** the `replace` verdicts as one small reversible change with its own commit; generic
+   ones flow through 6a into the framework + CHANGELOG. Update every touched row's
+   `Zuletzt geprüft` date — including the ones that stayed.
+5. **Log** in the `Mx.0` `log[]`: `<n> rows reviewed → <n> replaced / <n> kept`, naming the
+   replacements. Nothing changed → note it in one line; that is a valid and common outcome.
 
 ## Step 8: Handover (M4.8)
 
@@ -176,4 +250,5 @@ At the end, summarize briefly: what was updated (skill sources, if applicable),
 installed plugin versions (without any statement about whether they are outdated — that cannot be
 determined from here), which recommender recommendations were implemented or deferred,
 and the result of the workflow retrospective (which recurring problems were codified into which
-level, or "no new friction").
+level, or "no new friction"), and the native-feature review (which artifacts were retired in
+favor of a built-in, or "no platform overlap this round").

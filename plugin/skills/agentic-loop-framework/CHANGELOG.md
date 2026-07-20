@@ -1,5 +1,31 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.19 (2026-07-20)
+
+- **Extension Hygiene** — new CLAUDE.md §5 block covering third-party skills, agents, hooks and
+  MCP servers, the sibling of the existing Dependency Hygiene rule. Motivated by two independent
+  security labs (Reversec 06/2026, Datadog 05/2026) with working PoCs: skills exfiltrate
+  credentials, and `` !`cmd` `` dynamic-context blocks execute during preprocessing — before the
+  model can refuse. Skills also need no install step (a cloned repo's `.claude/skills/` loads on
+  workspace trust).
+- **Fixed an unreviewed third-party code path in our own checkpoint**: `milestone-checkpoint`
+  step 3 / Pattern A used to `git pull` external skill repos and copy them into
+  `~/.claude/skills/` automatically, explicitly "no confirmation needed". It now reviews the
+  incoming diff against the §5 checklist (mechanical `grep` pre-filter for dynamic-context,
+  `allowed-tools`, network, credential paths, `eval`/base64, postinstall) and blocks on any hit,
+  leaving the older version in place. A stale skill beats an unreviewed one.
+- `disableSkillShellExecution: true` added to `templates/.claude/settings.json`. Verified
+  2026-07-20 that no framework template, no VioletApp skill, and no installed plugin skill body
+  uses dynamic context, so this breaks nothing today; bundled/managed skills are out of scope
+  per the docs.
+- **Step 6 is now "Framework reconciliation"** with two directions: 6a the existing drift check
+  (project → framework), 6b a new **native-feature review** (framework → platform) asking which
+  of our own instructions/skills/hooks/agents Claude Code now does natively. Carried by a new
+  ledger template `templates/docs/dashboard/native-feature-review.md`, seeded with today's
+  verdicts (auto memory vs. our memory convention, `/code-review` vs. §9, etc.). Bias: keep
+  mechanically-enforcing artifacts, retire prose rules the platform now satisfies by default.
+  No step renumbering — 7 (dashboard) and 8 (handover) are unchanged.
+
 ## 0.1.18 (2026-07-15)
 
 - Fixed a hook-telemetry pollution bug found live during VioletApp's M6.0 checkpoint

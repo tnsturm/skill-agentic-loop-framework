@@ -34,5 +34,6 @@
       "Bash(git fetch *)",
       "Bash(git merge-base *)"
     ]
-  }
+  },
+  "disableSkillShellExecution": true
 }

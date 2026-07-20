@@ -23,8 +23,9 @@ als Hook, Regel oder Memory:
 3. **Milestone-Loop (Tage):** Jeder Milestone hat einen Resume-Prompt mit
    maschinell prüfbarer Done-Bedingung, endet mit `/code-review` + explizitem
    Push-Gate, und zwischen Milestones läuft der `milestone-checkpoint`-Skill
-   (8 Schritte: Permissions, Automation-Empfehlungen, Skill-Quellen, Workflow-Retro,
-   Memory-Konsolidierung, Framework-Drift-Check, Dashboard, Handover).
+   (8 Schritte: Permissions, Automation-Empfehlungen, Skill-Quellen inkl. Review-Gate,
+   Workflow-Retro, Memory-Konsolidierung, Framework-Abgleich (Drift + Native-Feature-Review),
+   Dashboard, Handover).
 4. **Heartbeat (nächtlich):** CI bei Push/PR plus Cron, dazu eine lokale
    Triage-Routine, die Befunde in eine committete Inbox schreibt — die nächste
    Session liest sie zuerst.

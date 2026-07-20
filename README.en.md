@@ -21,8 +21,8 @@ as a hook, rule, or memory:
 3. **Milestone loop (days):** Every milestone has a resume prompt with a machine-checkable
    done condition, ends with `/code-review` + an explicit push gate, and between
    milestones the `milestone-checkpoint` skill runs (8 steps: permissions, automation
-   recommendations, skill sources, workflow retro, memory consolidation, framework drift
-   check, dashboard, handover).
+   recommendations, skill sources incl. review gate, workflow retro, memory consolidation,
+   framework reconciliation (drift + native-feature review), dashboard, handover).
 4. **Heartbeat (nightly):** CI on push/PR plus cron, and a local triage routine that
    writes findings into a committed inbox — the next session reads it first.
 

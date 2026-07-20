@@ -80,10 +80,12 @@ merge carefully for existing projects):
    in Phase 1 add the §7 note: "the milestone-checkpoint skill is set up in Phase 5
    of this bootstrap" (removed in Phase 5).
 2. `templates/docs/dashboard/` → `docs/dashboard/` (dashboard.html with an empty data block —
-   the renderer beneath it is NEVER edited; versions.md skeleton; triage-inbox.md skeleton).
+   the renderer beneath it is NEVER edited; versions.md skeleton; triage-inbox.md skeleton;
+   native-feature-review.md ledger, seeded — read by the checkpoint's step 6b).
    Put the B0 bootstrap entry into the data block.
 3. `templates/.claude/settings.json` → `.claude/settings.json` (empty hook scaffold by
-   events + minimal read-only allowlist). §10 short form: (i) Hooks = "must NEVER
+   events + minimal read-only allowlist + `disableSkillShellExecution: true`, the §5
+   Extension-Hygiene default posture). §10 short form: (i) Hooks = "must NEVER
    happen", apply in every permission mode; (ii) project allowlist = "is ALWAYS ok",
    git-portable, curated via /fewer-permission-prompts; (iii) Auto Mode
    (claude --permission-mode auto) only for autonomous loop sessions; bypassPermissions NEVER locally.
@@ -156,8 +158,10 @@ milestone "done" (its own `Mx.0` "Housekeeping Agentic Loop" dashboard entry; th
 implementation milestone it gates is numbered `Mx.1`) and covers: branch/worktree
 cleanup (first action, before the skill), workflow retro (reads
 FRICTION entries + hook-log.jsonl block counts), /fewer-permission-prompts,
-/claude-automation-recommender, memory consolidation (as a diff only!), framework-drift check
-(against this skill), dashboard update, handover (push + start question).
+/claude-automation-recommender, skill-source vetting (review before update — §5 Extension
+Hygiene), memory consolidation (as a diff only!), framework reconciliation (6a drift against
+this skill, 6b native-feature review via docs/dashboard/native-feature-review.md),
+dashboard update, handover (push + start question).
 
 Then remove the Phase 1 note in CLAUDE.md §7. Commit, update B0, output the
 resume prompt for Phase 6.
@@ -200,6 +204,8 @@ data block parses, settings.json parses, `node --test test/hooks/test-gate.test.
 - Bugs: superpowers:systematic-debugging first. Completion reports: superpowers:verification-before-completion first.
 - Permission strategy per §10: hooks always; allowlist for everyday; Auto Mode only for
   autonomous loop sessions; bypassPermissions never locally.
+- Third-party skills/agents/hooks/MCP: never adopt or update unreviewed (§5 Extension Hygiene);
+  `disableSkillShellExecution: true` stays on unless a named skill needs otherwise.
 - Subagent model tiering: mechanical → haiku/sonnet + lower effort; judging →
   inherit; in workflows steer effort per stage.
 - Ask questions only at DECISION POINTS or §9 gates — otherwise autonomous.
