@@ -152,15 +152,15 @@ Then: commit, update B0, output the resume prompt for Phase 3.
 ## Phase 5 — Meta-loop: the framework improves itself
 
 Adopt `templates/.claude/skills/milestone-checkpoint/SKILL.md` → `.claude/skills/
-milestone-checkpoint/SKILL.md`; fill the skill-sources placeholder (step 3) with
+milestone-checkpoint/SKILL.md`; fill the skill-sources placeholder (step 4) with
 the project's real external sources. The checkpoint runs after every
 milestone "done" (its own `Mx.0` "Housekeeping Agentic Loop" dashboard entry; the
 implementation milestone it gates is numbered `Mx.1`) and covers: branch/worktree
-cleanup (first action, before the skill), workflow retro (reads
+cleanup (step 1 of the skill), workflow retro (reads
 FRICTION entries + hook-log.jsonl block counts), /fewer-permission-prompts,
 /claude-automation-recommender, skill-source vetting (review before update — §5 Extension
-Hygiene), memory consolidation (as a diff only!), framework reconciliation (6a drift against
-this skill, 6b native-feature review via docs/dashboard/native-feature-review.md),
+Hygiene), memory consolidation (as a diff only!), framework reconciliation (7a drift against
+this skill, 7b native-feature review via docs/dashboard/native-feature-review.md),
 dashboard update, handover (push + start question).
 
 Then remove the Phase 1 note in CLAUDE.md §7. Commit, update B0, output the

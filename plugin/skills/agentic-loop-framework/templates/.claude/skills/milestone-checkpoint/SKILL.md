@@ -12,28 +12,38 @@ calling several skills individually.
 ## Step 0: Check the GitHub MCP connection
 
 `claude mcp get github` → "Connected"? Additionally a real read call (e.g. `list_branches`
-against a repo) — status alone is not enough (pitfalls: step 2). No server or
+against a repo) — status alone is not enough (pitfalls: step 3). No server or
 error → setup runs via the agentic-loop-framework bootstrap (Phase 0), not here.
 
 ## Steps
 
-1. Run `/fewer-permission-prompts`.
-2. Run `/claude-automation-recommender`, offer the results for direct implementation (see below).
-3. Check the skill sources (see below).
-4. Run the **workflow retrospective / optimizer** (see below) — turn recurring friction from the
+1. **Branch/worktree cleanup** (see below).
+2. Run `/fewer-permission-prompts`.
+3. Run `/claude-automation-recommender`, offer the results for direct implementation (see below).
+4. Check the skill sources (see below).
+5. Run the **workflow retrospective / optimizer** (see below) — turn recurring friction from the
    completed milestone into a durable safeguard.
-5. **Memory consolidation** (see below) — condense the memory files, present the result as a diff only.
-6. **Framework reconciliation** (see below) — 6a: drift project → framework;
-   6b: native-feature review (what does Claude Code now do natively that we still do by hand?).
-7. Update the active `Mx.0` checkpoint entry in `docs/dashboard/dashboard.html`:
+6. **Memory consolidation** (see below) — condense the memory files, present the result as a diff only.
+7. **Framework reconciliation** (see below) — 7a: drift project → framework;
+   7b: native-feature review (what does Claude Code now do natively that we still do by hand?).
+8. Update the active `Mx.0` checkpoint entry in `docs/dashboard/dashboard.html`:
    `status: "done"`, `finishedAt` = today, all steps ticked off, one `log[]` entry each with
-   a short summary of steps 1–6. In doing so, for EVERY still-open milestone in the
+   a short summary of steps 1–7. In doing so, for EVERY still-open milestone in the
    data block check/set `recommendedModel` (CLAUDE.md §11) — if it is missing (new entry)
    or the remaining scope has become noticeably different since the last assessment,
    re-derive it now; otherwise leave it unchanged.
-8. **Handover** (see below) — hand off the next milestone as a push to the phone.
+9. **Handover** (see below) — hand off the next milestone as a push to the phone.
 
-## Step 2: Offer /claude-automation-recommender results
+## Step 1: Branch/worktree cleanup
+
+Check locally and on origin for branches and worktrees that are no longer needed
+(`git branch -vv`, `git branch -r`, `git worktree list`). Show a short explanation next to
+each candidate (what it belonged to; merged, orphaned, or still active?) and offer via
+`AskUserQuestion` (multiSelect) which ones to delete. Then delete the selected branches
+(local + origin) and worktrees (`git worktree remove` including the directory on disk).
+Record the result in the `Mx.0` `log[]`.
+
+## Step 3: Offer /claude-automation-recommender results
 
 The recommender is read-only (it only suggests). So that the suggestions don't fizzle out in the
 chat without consequence, directly afterwards:
@@ -44,9 +54,9 @@ chat without consequence, directly afterwards:
 2. Via `AskUserQuestion` (multiSelect) offer exactly this list as options: "Which
    recommendations to implement directly now?" — plus the implicit option to select none.
 3. For each selected recommendation **implement it directly in the same session**, matching the type:
-   - **Hook**: same pattern as step 4 (hook file + smoke test, wired into `.claude/settings.json`,
+   - **Hook**: same pattern as step 5 (hook file + smoke test, wired into `.claude/settings.json`,
      suite verified green, its own commit); if the change is generic,
-     step 6a (drift) applies to it as well.
+     step 7a (drift) applies to it as well.
    - **MCP server**: first distinguish WHICH registration is meant — a
      `plugin:<category>:<name>` entry (e.g. `plugin:engineering:github`) is a
      role-based **Cowork plugin bundle** whose auth/activation runs ONLY via the
@@ -84,7 +94,7 @@ chat without consequence, directly afterwards:
 4. Do NOT silently drop unselected recommendations — note briefly in the `Mx.0` `log[]`
    what was implemented and what was deliberately deferred.
 
-## Step 3: Check the skill sources
+## Step 4: Check the skill sources
 
 Every source here is third-party code that ends up in a trusted context. Both patterns below
 are gated by CLAUDE.md §5 "Extension Hygiene": review before adoption, review before update.
@@ -144,7 +154,7 @@ Marketplace ≠ reviewed. Before recommending an update, state which plugin vers
 and that its contents were not inspected from here; the §5 checklist applies to plugin skills
 too (they are in scope for `disableSkillShellExecution`).
 
-## Step 4: Workflow retrospective (optimizer)
+## Step 5: Workflow retrospective (optimizer)
 
 Turn recurring, similar mistakes into a durable safeguard so they don't
 happen again.
@@ -170,7 +180,7 @@ happen again.
 
 If the signal is empty (nothing repeated), this step is a no-op — just note it briefly.
 
-## Step 5: Memory consolidation (dreaming pattern, M4.8)
+## Step 6: Memory consolidation (dreaming pattern, M4.8)
 
 Review the sessions since the last checkpoint (`search_session_transcripts`, if available —
 otherwise the dashboard `log[]` and `git log` as sources), then consolidate the files in the
@@ -183,12 +193,12 @@ memory folder (`MEMORY.md` + individual files):
 - **HARD RULES**: ALWAYS present the result as a diff for review, NEVER apply it directly;
   NEVER delete open follow-ups and security notes; when in doubt, keep it.
 
-## Step 6: Framework reconciliation
+## Step 7: Framework reconciliation
 
-Two directions. 6a asks "did this project learn something every project needs?",
-6b asks "did the platform learn something that makes our own machinery redundant?".
+Two directions. 7a asks "did this project learn something every project needs?",
+7b asks "did the platform learn something that makes our own machinery redundant?".
 
-### 6a: Drift project → framework (M4.9)
+### 7a: Drift project → framework (M4.9)
 
 Review `git log --since=<last checkpoint> --oneline -- .claude/hooks .claude/skills CLAUDE.md`
 in the project: is any of the changes GENERIC (useful in every project)? If so, in the
@@ -196,7 +206,7 @@ local checkout of `skill-agentic-loop-framework` update the corresponding templa
 (`templates/` or the platform module) + a CHANGELOG entry; commit there after
 §9 approval. No drift → note it briefly.
 
-### 6b: Native-feature review (framework → platform)
+### 7b: Native-feature review (framework → platform)
 
 The framework only grows if nobody ever asks what it can shed. Claude Code ships fast;
 every explicit instruction, skill, hook, or agent we maintain by hand is a candidate for
@@ -227,15 +237,15 @@ predates the current release notes need a fresh look.
    not equivalent to a model that is told to be careful. Bias to **replace** for prose rules
    that merely describe behavior Claude now exhibits by default.
 4. **Apply** the `replace` verdicts as one small reversible change with its own commit; generic
-   ones flow through 6a into the framework + CHANGELOG. Update every touched row's
+   ones flow through 7a into the framework + CHANGELOG. Update every touched row's
    `Zuletzt geprüft` date — including the ones that stayed.
 5. **Log** in the `Mx.0` `log[]`: `<n> rows reviewed → <n> replaced / <n> kept`, naming the
    replacements. Nothing changed → note it in one line; that is a valid and common outcome.
 
-## Step 8: Handover (M4.8)
+## Step 9: Handover (M4.8)
 
 1. From the `DASHBOARD_STATUS` block read the NEXT milestone with `status: "todo"` (first in
-   list order). If it has no `recommendedModel` (see step 7), add it now,
+   list order). If it has no `recommendedModel` (see step 8), add it now,
    before the push notification goes out — the handover is the moment when
    someone decides which model the next session starts with.
 2. Send a push notification to the phone (PushNotification): title `Next milestone: <id>

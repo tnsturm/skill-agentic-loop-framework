@@ -1,5 +1,16 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.20 (2026-07-20)
+
+- **Branch/worktree cleanup is now step 1 of `milestone-checkpoint`** instead of a
+  free-floating "AKTION 1" paragraph duplicated into every checkpoint resume prompt in the
+  dashboard. The instruction lived only in CLAUDE.md §7 point 4 ("first action — before the
+  skill") and in the prompts; the skill itself never mentioned it, so any session that just
+  ran `/milestone-checkpoint` silently skipped it. Former steps 1–8 renumbered to 2–9
+  (framework reconciliation is now 7a/7b); CLAUDE.md §7 point 4 and the Phase-5 section of
+  the bootstrap SKILL.md updated to match. Checkpoint resume prompts now only say "run
+  /milestone-checkpoint — cleanup is its step 1".
+
 ## 0.1.19 (2026-07-20)
 
 - **Extension Hygiene** — new CLAUDE.md §5 block covering third-party skills, agents, hooks and
