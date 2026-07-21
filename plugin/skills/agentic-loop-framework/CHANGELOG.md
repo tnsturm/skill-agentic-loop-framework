@@ -1,5 +1,17 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.21 (2026-07-21)
+
+- **New generic hook: `control-bytes-guard`** — PostToolUse (Edit|Write) blocks a guarded
+  text file (`.js`/`.json`/`.md`/`.html`/`.txt`) that contains a raw C0 control byte other
+  than tab/LF/CR. Extracted from a VioletApp M7.0 workflow retro: a literal `\u`-escape the
+  model intended as source text landed as a real control character instead, twice, each
+  time caught by hand and fixed via a throwaway Node script. Added to
+  `templates/.claude/hooks/` + `templates/test/hooks/`, wired into
+  `templates/.claude/settings.json`. (VioletApp also built a `docs-header-guard` hook in the
+  same retro, but that one stays project-local — it enforces a documenting-code skill's
+  reference grammar that isn't part of this generic template.)
+
 ## 0.1.20 (2026-07-20)
 
 - **Branch/worktree cleanup is now step 1 of `milestone-checkpoint`** instead of a

@@ -19,7 +19,8 @@
       {
         "matcher": "Edit|Write",
         "hooks": [
-          { "type": "command", "command": "node .claude/hooks/dashboard-guard.js" }
+          { "type": "command", "command": "node .claude/hooks/dashboard-guard.js" },
+          { "type": "command", "command": "node .claude/hooks/control-bytes-guard.js" }
         ]
       }
     ],
