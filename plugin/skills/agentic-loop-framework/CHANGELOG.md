@@ -1,5 +1,20 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.22 (2026-07-21)
+
+- **CLAUDE.md §9 is now "Branch Lifecycle"** — the former "Finishing a Branch" content becomes
+  its second half ("Finishing: review, then ask", unchanged), and a new first half fixes the
+  gap at the other end: **one worktree per session**. Milestone/feature sessions start in their
+  own worktree via `superpowers:using-git-worktrees`; short read-only or single-file sessions
+  stay in the primary checkout. Extracted from a VioletApp incident (2026-07-21): two agent
+  sessions shared one working directory, so every commit had to be reasoned about against
+  foreign changes in `git status`, and one session's `git push` shipped the other session's
+  finished-but-unpushed commit that nobody had decided to release — git cannot arbitrate this,
+  only isolation prevents it. Also adds the corollary for automations: a routine writing **only
+  its own ledger file** commits directly on the main branch (its findings must be readable
+  there — §7 has every new session read them first, and a PR queue hides them behind a merge
+  nobody performs); anything beyond that ledger needs a branch and a PR.
+
 ## 0.1.21 (2026-07-21)
 
 - **New generic hook: `control-bytes-guard`** — PostToolUse (Edit|Write) blocks a guarded
