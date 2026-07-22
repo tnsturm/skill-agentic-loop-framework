@@ -1,5 +1,29 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.23 (2026-07-22)
+
+- **CLAUDE.md §11 moves to a two-model palette (workhorse/flagship)** — a new "Current
+  palette" line names the concrete models once (currently workhorse = Claude Sonnet 5,
+  flagship = Claude Fable 5); all tier rules now reference the roles, so future model
+  swaps are one-line edits. The former three-way milestone tiering (Haiku/Sonnet/Opus)
+  collapses to two tiers with `effort` as the fine-grained dial ("effort before model
+  switch; the model switch happens only at the judgment boundary"). Haiku leaves the
+  subagent mechanical tier; `model: inherit` for checkers is unchanged and now explicitly
+  notes that a flagship session's checker inheriting the flagship is intended. Two new
+  §11 paragraphs: (a) security milestones stay on the flagship despite possible
+  safety-classifier refusals on benign adversarial work (log as `FRICTION:`, rephrase,
+  only drop the affected sub-step to the workhorse if it persists); (b) autonomous
+  loops/scheduled routines default to the workhorse — flagship turns run minutes at
+  flagship rates, which compounds unattended.
+- **New §7 resume-prompt rule:** prompts state the goal and the machine-checkable done
+  condition, never a step-by-step procedure — load-bearing for flagship sessions
+  (over-prescriptive prompts measurably reduce flagship output quality), not just style.
+- Bootstrap SKILL.md (Phase 4.3 + standing rules) rephrased to reference the §11 palette
+  roles instead of hard-coded model names.
+- **Migration note for adopting projects:** at the next milestone checkpoint, re-derive
+  every open milestone's `recommendedModel` against the new palette (checkpoint step 8
+  already covers the mechanics; this is a one-time full pass instead of only-new-entries).
+
 ## 0.1.22 (2026-07-21)
 
 - **CLAUDE.md §9 is now "Branch Lifecycle"** — the former "Finishing a Branch" content becomes

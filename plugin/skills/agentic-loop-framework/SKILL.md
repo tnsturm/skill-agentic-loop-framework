@@ -144,7 +144,8 @@ Then: commit, update B0, output the resume prompt for Phase 3.
 3. Implement the chosen ones: hooks each with smoke test + direct-call verify (Phase 3.3); skills;
    subagents (e.g. a read-only release-readiness checker with a PASS/FAIL checklist) with
    model/effort frontmatter per the tiering rule: mechanical checklist/extraction
-   agents → model: haiku/sonnet + effort: low/medium; review/judge/security agents →
+   agents → the workhorse model of the CLAUDE.md §11 palette + effort: low/medium;
+   review/judge/security agents →
    model: inherit (NEVER economize on the checker — feedback quality is the loop bottleneck).
 
 → verify: each new hook checked via direct call.
@@ -206,6 +207,7 @@ data block parses, settings.json parses, `node --test test/hooks/test-gate.test.
   autonomous loop sessions; bypassPermissions never locally.
 - Third-party skills/agents/hooks/MCP: never adopt or update unreviewed (§5 Extension Hygiene);
   `disableSkillShellExecution: true` stays on unless a named skill needs otherwise.
-- Subagent model tiering: mechanical → haiku/sonnet + lower effort; judging →
-  inherit; in workflows steer effort per stage.
+- Model tiering per §11 palette (workhorse/flagship): mechanical subagents → workhorse +
+  lower effort; judging → inherit; in workflows steer effort per stage; effort before
+  model switch.
 - Ask questions only at DECISION POINTS or §9 gates — otherwise autonomous.
