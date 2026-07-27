@@ -1,5 +1,18 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.25 (2026-07-27)
+
+- **§1 gains two brainstorming interview rules** (template CLAUDE.md): (a) *Hunt unknown
+  unknowns* — during brainstorming, actively bring own domain knowledge and name risks,
+  constraints, and pitfalls the user hasn't mentioned, instead of only extracting what
+  they already know; (b) *Architecture changers first* — order clarifying questions by
+  impact, architecture-changing questions before detail questions. Complements the
+  superpowers:brainstorming skill, which already covers "explore context first" and
+  "one question at a time" but has neither an unknown-unknowns hunt nor a question-
+  ordering rule. Origin: a user-proposed interview prompt ("Before we build: find my
+  unknown unknowns … interview me one question at a time, architecture changers first");
+  the already-covered parts were deliberately NOT restated (per the CLAUDE.md head rule).
+
 ## 0.1.24 (2026-07-27)
 
 - **§11 palette gains an *implementer* role (Claude Opus 5) + new "Flagship orchestration"

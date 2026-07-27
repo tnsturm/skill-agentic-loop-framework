@@ -23,6 +23,11 @@ Before implementing:
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
 
+During brainstorming, before converging on a design:
+
+- **Hunt unknown unknowns:** bring your own domain knowledge to the table — name risks, constraints, and pitfalls in this territory the user hasn't mentioned, don't only extract what they already know.
+- **Architecture changers first:** order clarifying questions by impact — questions whose answers would change the architecture come before detail questions.
+
 ## 2. Simplicity First
 
 **Minimum code that solves the problem. Nothing speculative.**
