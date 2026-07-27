@@ -1,5 +1,22 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.24 (2026-07-27)
+
+- **§11 palette gains an *implementer* role (Claude Opus 5) + new "Flagship orchestration"
+  section.** Milestone sessions still know only two tiers (workhorse/flagship) — the
+  implementer is a delegation target *inside* flagship sessions: the flagship main loop
+  acts as orchestrator (decompose, delegate implementation — implementer for complex/
+  ambiguous work, workhorse for mechanical work — parallelize independent tasks, review
+  every result; review subagents stay `model: inherit`). Deliberately a default, not a
+  ban: trivial edits and short verifications stay in the orchestrator — for a one-line
+  fix, handing over context costs more flagship tokens than the fix, and hard bans are
+  exactly the over-prescriptiveness flagship models respond poorly to. The pattern lives
+  in §11 as a standing rule, not in resume prompts (§7 keeps those goal + done condition).
+  Origin: a user-proposed orchestrator prompt ("write no code yourself, hand each task to
+  Opus 5 or Sonnet 5, review every result before the next step") — adopted with three
+  fixes: no absolute self-execution ban, no forced sequencing of independent tasks, and
+  scoped to flagship-worthy milestones only.
+
 ## 0.1.23 (2026-07-22)
 
 - **CLAUDE.md §11 moves to a two-model palette (workhorse/flagship)** — a new "Current
