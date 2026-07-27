@@ -71,9 +71,10 @@ this repo is the single living source.
 Copy from [`templates/`](templates/) and adapt (NEVER overwrite existing files —
 merge carefully for existing projects):
 
-1. `templates/CLAUDE.md` → repo root. Contains §0 mandatory skills, §1–§4 Karpathy core
-   (original: github.com/multica-ai/andrej-karpathy-skills, incl. the tradeoff note and
-   closing paragraph), §4 add-on todo-test convention, §5 Security by Design (STRIDE),
+1. `templates/CLAUDE.md` → repo root. Contains §0 default skills (judgment-based, not
+   mandatory ritual), §1–§4 reduced to their non-default deltas (Karpathy core origin:
+   github.com/multica-ai/andrej-karpathy-skills; model-default behavior is deliberately
+   not restated — see the file preamble), §4 todo-test convention, §5 Security by Design (STRIDE),
    §6 `<PLATFORM>.md` mechanism, §7 dashboard protocol (incl. FRICTION and
    triage-inbox rule), §8 versioning 0.X.Y, §9 branch gate, §10 permission strategy
    (3 layers), §11 subagent tiering, source-of-truth section. Fill the placeholders;
