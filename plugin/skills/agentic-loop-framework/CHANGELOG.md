@@ -1,5 +1,38 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.25 (2026-07-27)
+
+- **Native `/doctor` integrated into the checkpoint flow (new step 2b).** Claude Code's
+  `/doctor` (alias `/checkup`, ≥ 2.1.220) is now a first-class checkpoint step: it covers
+  installation health, unused extensions vs. context cost, CLAUDE.md dedup/trimming/lazy
+  migration, slow hooks, and version currency read-only with two confirmation gates.
+  Consequences encoded in the template: step 6 (memory consolidation) narrows to the
+  memory folder (doctor checks 2–4 own the CLAUDE.md side), step 7b drops its own
+  `claude --version` check (doctor check 7), doctor check 8 (auto mode as default) is
+  declined at the gate (collides with §10's 3-layer permission strategy), and check 9 is
+  documented as a complement to — not a replacement for — `/fewer-permission-prompts`
+  (denial-based + local-scope vs. frequency-based + git-portable project allowlist).
+  The command blocks model invocation, so the step asks the user to type it (skip + log
+  + handover note when running unattended). New ledger row in the native-feature-review
+  template; CLAUDE.md §7 point 4 names the run in the checkpoint sequence.
+- **CLAUDE.md rewritten for judgment-based rules (Opus 5 / Fable 5).** New preamble: a
+  rule earns its place only if it carries information a fresh session doesn't have;
+  model-default behavior is deliberately not restated; security fail-closed rules stay
+  non-negotiable bans. §0 "Always-On Skills" becomes "Default Skills" — process skills
+  are the normal path for substantive work by the session's own judgment, with a
+  one-sentence note when deliberately skipped (traceability replaces obligation). §1–§3
+  collapse to their non-default deltas (name competing interpretations; simplicity as
+  tie-breaker; mention-don't-delete for unrelated dead code). §4 keeps verifiable success
+  criteria + the `{ todo: true }` defect-freeze convention but drops the mandated plan
+  format. Rationale: over-prescriptive rules measurably reduce flagship output quality
+  (same finding as the §7 resume-prompt rule, 0.1.23) — bans are reserved for security.
+- **Step-3 MCP pitfalls compressed** to a fact list (scope default `local`, no live tool
+  reload, "Connected" ≠ usable → smoke-test one real write call, PAT permissions) — same
+  facts, less procedural prose.
+- **Homey module:** JSON authoring rule trimmed to a pointer — the `json-guard` hook
+  enforces it mechanically; prose now states the gotcha in one line (doctor check 3
+  category: rules a hook already enforces don't need re-explaining).
+
 ## 0.1.24 (2026-07-27)
 
 - **§11 palette gains an *implementer* role (Claude Opus 5) + new "Flagship orchestration"

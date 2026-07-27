@@ -21,7 +21,7 @@ Both commands update `.homeycompose/app.json`; the generated root `app.json` is 
 
 Fill `.homeychangelog.json` for every new version with a clear, user-understandable change note — **en + de**.
 
-**JSON authoring rule (proven — the same class of bug hit the original project 4×):** `.homeychangelog.json` and the manifests are **strict JSON**. When editing by hand, the ASCII `"` string delimiters easily turn into typographic "smart quotes" (`" "`) → invalid JSON that `homey app validate` (leniently) lets through until the commit. Therefore: build JSON files **programmatically** (`node` + `JSON.stringify`; German inner quotation marks as `„…"` = U+201E/U+201C), **never type the delimiters by hand**, and check with `JSON.parse` before the commit. The `json-guard` PostToolUse hook (`.claude/hooks/json-guard.js`) enforces this automatically for manifest/changelog JSON.
+**JSON authoring rule:** build manifest/changelog JSON **programmatically** (`node` + `JSON.stringify`; German inner quotation marks as `„…"` = U+201E/U+201C) — hand-typed delimiters turn into smart quotes that `homey app validate` lets through. The `json-guard` PostToolUse hook (`.claude/hooks/json-guard.js`) enforces this mechanically.
 
 ## Release checklist (implementing CLAUDE.md §8 for Homey)
 
