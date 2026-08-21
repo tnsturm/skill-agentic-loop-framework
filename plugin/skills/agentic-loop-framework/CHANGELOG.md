@@ -1,5 +1,30 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.26 (2026-08-21)
+
+- **§0 names the plan-execution skill** (template CLAUDE.md): `subagent-driven-development`
+  joins the always-on list as the standard path for executing a written plan, with
+  `executing-plans` as the named exception for tasks that share toolchain state or one
+  common error list (name which and why in the plan header). The vague
+  "code-review/verification skills before completion" becomes the concrete
+  `verification-before-completion`, with a pointer that code review itself runs through
+  `/code-review` (§9). Origin: an audit of an adopting project (VioletApp) found that SDD
+  was the de-facto implementation path for 17 of 19 plans and every dashboard resume prompt,
+  yet was anchored nowhere in CLAUDE.md — it survived only in the plan headers that
+  superpowers:writing-plans generates. A tersely worded resume prompt would have dropped it
+  silently, since brainstorming and writing-plans were rule-backed but the implementation
+  phase was not.
+- **§11 "Flagship orchestration" stops paraphrasing SDD** (template CLAUDE.md): the section
+  described decompose → delegate → parallelize → review-before-integrate in prose, i.e. a
+  hand-maintained second copy of `subagent-driven-development` + `dispatching-parallel-agents`
+  — and one missing the skills' per-task reviewer prompt and final whole-branch review. It now
+  points at both skills and keeps only what is genuinely flagship-specific: the model choice
+  per subagent (implementer vs. workhorse, reviewers at `model: inherit`).
+- **SKILL.md standing rules** gain the matching one-liner next to the existing
+  systematic-debugging / verification-before-completion bullet.
+- Bumped `plugin.json` to 0.1.26 — it had been left at 0.1.22 while the changelog advanced to
+  0.1.25, so this closes that drift too.
+
 ## 0.1.25 (2026-07-27)
 
 - **§1 gains two brainstorming interview rules** (template CLAUDE.md): (a) *Hunt unknown

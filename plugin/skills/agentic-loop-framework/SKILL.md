@@ -202,6 +202,9 @@ data block parses, settings.json parses, `node --test test/hooks/test-gate.test.
 - Every deployed/installed state: bump the version + a versions.md line (§8).
 - New durable insights immediately as a memory file + an index line.
 - Freeze known defects immediately as a `{ todo: true }` test with the CORRECT expectation.
+- Executing a written plan: superpowers:subagent-driven-development (superpowers:executing-plans
+  when the tasks share toolchain state or one common error list — name which and why in the
+  plan header).
 - Bugs: superpowers:systematic-debugging first. Completion reports: superpowers:verification-before-completion first.
 - Permission strategy per §10: hooks always; allowlist for everyday; Auto Mode only for
   autonomous loop sessions; bypassPermissions never locally.
