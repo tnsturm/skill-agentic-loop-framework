@@ -164,6 +164,17 @@ happen again.
    commits, a commit that corrects the immediately preceding one, ≥2 similar fix commits to the same file).
    Additionally read `.claude/hooks/hook-log.jsonl` (block counts per hook since the last
    checkpoint instead of memory — M4.8; many blocks from the same hook = a recurring friction class).
+   Count it deterministically instead of skimming — set `SINCE` to the last checkpoint's date:
+
+   ```bash
+   node -e "const fs=require('fs');const SINCE='<last-checkpoint-YYYY-MM-DD>';const a={};for(const l of fs.readFileSync('.claude/hooks/hook-log.jsonl','utf8').trim().split(/\r?\n/)){try{const o=JSON.parse(l);if(o.decision==='block'&&o.ts>=SINCE)a[o.hook]=(a[o.hook]||0)+1}catch{}}console.log(a)"
+   ```
+
+   If a single hook shows a striking spike, **first check whether it came from a test run**
+   (timestamps clustered within minutes, hook = the one being tested) before deriving a friction
+   class from it. In the origin repo this exact mistake was waiting to happen: 434 of 449 block
+   records were fixture records written by one hook's own test suite. `lib/log.js` closes that
+   structurally via the node:test markers, so such a cluster would itself be the finding.
 2. **Cluster** into distinct problems; count frequency. **In scope only: seen ≥2× OR flagged by the
    user** ("again", "for the third time"). Skip one-offs (YAGNI).
 3. **Root cause** per problem (three "whys": happens · repeats · not caught before the commit).
@@ -205,6 +216,13 @@ in the project: is any of the changes GENERIC (useful in every project)? If so, 
 local checkout of `skill-agentic-loop-framework` update the corresponding template
 (`templates/` or the platform module) + a CHANGELOG entry; commit there after
 §9 approval. No drift → note it briefly.
+
+**Show a table before editing; do not mirror from memory.** Twice a piece slipped through exactly
+here. So: first list every affected file across all involved repos as a table —
+`repo | path | current state | required state` — then edit, then rebuild the table and show that
+every row is now consistent. Files that do not exist in the framework yet belong in the table as
+their own row ("missing there") rather than being silently passed over. The second table is the
+proof; without it the mirroring is a claim.
 
 ### 7b: Native-feature review (framework → platform)
 
@@ -262,3 +280,7 @@ determined from here), which recommender recommendations were implemented or def
 and the result of the workflow retrospective (which recurring problems were codified into which
 level, or "no new friction"), and the native-feature review (which artifacts were retired in
 favor of a built-in, or "no platform overlap this round").
+
+The report ends with two lines (CLAUDE.md §7): **verified** — what was actually run in this
+session, with the command and its result — and **assumed** — what was taken over unchecked. A step
+an unattended run skipped (e.g. `/doctor`) belongs in the second line, not silently in the first.

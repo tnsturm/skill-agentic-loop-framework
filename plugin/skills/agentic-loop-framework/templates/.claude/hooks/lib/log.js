@@ -1,7 +1,8 @@
 'use strict';
 
-// Hook telemetry (pure helper) — extracted from VioletApp M4.8
-// (see the agentic-loop-framework CHANGELOG).
+// Hook telemetry (pure helper) — extracted from VioletApp M4.8, origin doc
+// docs/superpowers/specs/2026-07-09-m4.8-loop-hardening-autonomy-metaloop.md §3 D1/D2
+// (see also this skill's CHANGELOG).
 // One JSONL decision record per hook decision, appended to the guarded repo's
 // .claude/hooks/hook-log.jsonl (gitignored). Resolution is cwd-based on purpose:
 // hook smoke tests spawn hooks with fixture cwds that have no .claude/hooks/
@@ -29,11 +30,18 @@ const path = require('path');
  * hook test harnesses set it so any cwd a hook computes internally still can't
  * produce telemetry.
  * @param {string} hook Hook name, e.g. `test-gate`.
- * @param {'block'|'pass'} decision Outcome at a real decision point (D3).
+ * @param {'block'|'pass'|'skip'} decision Outcome at a real decision point (D3); `skip` = the
+ *   check could not run at all (e.g. toolchain not installed) and nothing was verified.
  * @param {string|undefined} cwd Guarded repo root (the hook-input cwd), or undefined to skip.
  */
 function logHook(hook, decision, cwd) {
-  if (!cwd || process.env.HOOK_LOG_DISABLE) return; // fixture safety, D2 + M6.0 retro
+  // fixture safety (D2) + HOOK_LOG_DISABLE (VioletApp M6.0 retro) + 2026-08-21:
+  // NODE_TEST_CONTEXT/NODE_TEST_WORKER_ID are set in every hook process spawned from
+  // `node --test` (lib/spawn-env.js strips them only for deliberately nested suites). That
+  // closes the pollution class structurally instead of by convention — HOOK_LOG_DISABLE only
+  // covers tests that remember to set it, which in the origin repo was 4 of 14.
+  if (!cwd || process.env.HOOK_LOG_DISABLE) return;
+  if (process.env.NODE_TEST_CONTEXT || process.env.NODE_TEST_WORKER_ID) return;
   try {
     fs.appendFileSync(
       path.join(cwd, '.claude', 'hooks', 'hook-log.jsonl'),

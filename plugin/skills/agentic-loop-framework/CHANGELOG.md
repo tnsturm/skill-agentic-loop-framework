@@ -1,5 +1,67 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.28 (2026-08-21)
+
+Herkunft: der neue native `/insights`-Report (Claude Code 2.1.220) über 33 Sessions eines
+adoptierenden Projekts (VioletApp, 2026-06-24 bis 2026-08-17). Übernommen wurden nur Befunde,
+die sich gegen das Repo verifizieren ließen — mehrere Report-Vorschläge waren im Framework
+längst gelöst oder standen im Widerspruch zu §5/§9/§10 (siehe „Bewusst nicht übernommen").
+
+- **`lib/log.js`: Telemetrie no-op'et unter node:test-Markern.** `NODE_TEST_CONTEXT`/
+  `NODE_TEST_WORKER_ID` trägt jeder aus `node --test` gespawnte Hook-Prozess; `lib/spawn-env.js`
+  strippt sie nur für absichtlich verschachtelte Suiten. Damit ist die Ledger-Pollution durch
+  Hook-Tests strukturell zu, statt per Konvention: `HOOK_LOG_DISABLE` deckte nur Tests ab, die
+  daran denken es zu setzen (im Ursprungs-Repo 4 von 14). Dort waren 434 von 449 `block`-Records
+  Fixture-Records eines einzigen Hook-Tests — Schritt 5 des Checkpoints hätte daraus die
+  häufigste Reibungsklasse abgeleitet. `decision` kennt jetzt zusätzlich `'skip'`.
+- **Neu: `lib/env-ready.js` + `test-gate.js` unterscheidet „konnte nicht prüfen" von „Prüfung
+  rot".** Ein Repo mit deklarierten, aber nicht installierten Dependencies ließ die Suite mit
+  `MODULE_NOT_FOUND` scheitern — das las sich wie „Tests rot" und blockte jeden `git commit`.
+  Im Ursprungs-Repo kostete das eine ganze Session (alle Git-Operationen von Hand, ein
+  Release-Commit unterblieb dabei still). **Keine Abschwächung des Gates:** `test-gate.js`
+  behandelte den Spawn-Fehler (`status === null`) schon als „nichts wurde geprüft → fail open";
+  die Unterscheidung wird nur auf den zweiten, vor dem Spawn erkennbaren Fall ausgedehnt und
+  beim Namen genannt („run npm ci").
+- **Neu: `commit-msg-guard.js` (PreToolUse Bash|PowerShell).** Blockt ein `git commit -m`, dessen
+  Message per Heredoc/PowerShell-Here-String gebaut wird, und verweist auf `git commit -F <file>`.
+  Zweimal war der Delimiter selbst in die Message geleakt (`@`, `EOF`). Bewusst eng: getroffen
+  wird nur eine Zeile, die ausschließlich aus einem Delimiter besteht (optional gefolgt vom
+  schließenden Quote), plus die Heredoc-Einleitungen — `eslint@9` und das Wort EOF in Fließtext
+  passieren, Heredocs außerhalb eines Commit-Kommandos ebenso.
+- **Neu: `handoff-notice.js` (Stop).** Meldet Commits, die nur lokal existieren, einmal pro neuem
+  HEAD (State-File merkt sich die gemeldete SHA, damit ein ungepushter Branch nicht bei jedem
+  Turn-Ende feuert). `git log HEAD --not --remotes` deckt „kein Upstream" und „vor dem Upstream"
+  in einem ab. Der Hook **pusht nicht** — §9 verlangt ein explizites Ja; der Report-Vorschlag
+  „immer pushen bevor fertig gemeldet wird" wurde deshalb nicht übernommen, nur die Sichtbarkeit.
+- **Neu: drei Review-Linsen** (`templates/.claude/agents/`): `runtime-resource-reviewer`,
+  `api-contract-reviewer`, `cross-platform-reviewer`. Ohne `model:`-Feld — Review-Agents erben
+  laut §11 die Session. Verdrahtet in §9 als paralleler Fan-out neben `/code-review`, nicht als
+  neues autonomes Verhalten. Anlass: 16 Reibungsereignisse der Klasse „buggy_code" fielen erst
+  beim manuellen Testen des Nutzers auf, alle drei in genau diesen Klassen.
+- **CLAUDE.md §4**: Iterationsbudget (~10 Runden, dann `git bisect` statt weiterprobieren),
+  Offenlegungspflicht für Fixes durch Unterdrückung statt Verstehen, CRLF-sichere Zähl-/
+  Grep-Checks (eine still gezählte Null liest sich wie „sauber"), keine unbegrenzten
+  `requestAnimationFrame`-/`setInterval`-Schleifen in generierten Visualisierungen.
+- **CLAUDE.md §7**: jeder Bericht und Handover endet mit „verifiziert" vs. „angenommen".
+- **milestone-checkpoint**: Schritt 5 zählt Hook-Blocks über ein deterministisches Kommando und
+  prüft Blockspitzen zuerst gegen Testläufe; Schritt 7a spiegelt nur noch über eine
+  `Repo | Pfad | Ist | Soll`-Tabelle vor UND nach dem Editieren (zweimal ging hier ein Teil
+  verloren); der Bericht bekommt dieselbe Verifikationszeile.
+- **homey/HOMEY.md**: generierte Store-Assets vor dem Commit in Zielgröße rendern und ansehen.
+
+Bekannte Lücken / bewusst nicht übernommen:
+
+- `templates/test/hooks/hook-log.test.js` **fehlt im Framework** — `lib/log.js` ist hier ohne
+  eigenen Smoke-Test, obwohl der Ursprung ihn hat. Eigener Punkt für den nächsten Checkpoint.
+- `stop-verify.js` bekam im Ursprungs-Repo dieselbe `env-ready`-Behandlung, existiert hier aber
+  nicht — kein Port, nur diese Drift-Notiz.
+- **Nicht übernommen: „Gates fail-soft machen"** (`|| exit 0`). Verstößt gegen §10 Layer 1 und §5
+  („never weaken the hook"); es hätte das Release-Gate still deaktiviert — genau der Fehlermodus,
+  den der Report beklagt. Die `env-ready`-Unterscheidung ist der korrekte Fix.
+- **Nicht übernommen: pauschales `.gitattributes` für Zeilenenden** und ein eigener `/ship`-Skill
+  (Release-Mechanik steht in §8/§9 + der Plattformdatei), sowie ein autonomer Lauf „ohne
+  Bestätigung außer Publish" (widerspricht §9/§10).
+
 ## 0.1.27 (2026-08-21)
 
 - **Dashboard-Template: Milestone-Karten sind aufklappbar.** Jede Karte ist jetzt ein

@@ -29,5 +29,8 @@ Fill `.homeychangelog.json` for every new version with a clear, user-understanda
 2. Bump: `npx homey app version patch` (new build within the same milestone) or `npx homey app version minor` at the milestone start.
 3. Fill `.homeychangelog.json` for the new version (en + de).
 4. Check the generated `app.json` (version == `.homeycompose/app.json`); commit the bump + changelog together.
-5. Upload (`npx homey app install` or Store publish).
-6. Add a line to the project version log (version, date, commit, target, note) — see e.g. `docs/dashboard/versions.md`.
+5. **Render generated or changed image assets (app icon, store images) at target size and look at
+   them** before committing — both had to be redone after the commit once, because the defect only
+   became visible in the store preview.
+6. Upload (`npx homey app install` or Store publish).
+7. Add a line to the project version log (version, date, commit, target, note) — see e.g. `docs/dashboard/versions.md`.

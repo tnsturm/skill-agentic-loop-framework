@@ -77,6 +77,17 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 Known defects are frozen immediately as `{ todo: true }` tests encoding the CORRECT
 expectation — every run lists them without going red; the fixing session removes the flag.
 
+Red-to-green iteration gets a **budget**: if the suite is still red after ~10 rounds, stop trying —
+`git bisect` to the introducing commit and report, instead of more attempts. And **state explicitly
+what was fixed by suppression rather than by understanding** (timeout raised, test skipped, warning
+silenced). Such a fix is a valid intermediate result — but only when it is named as one.
+
+Counting and grep checks over repo files must be **CRLF-safe** on Windows checkouts: a `sed`/`grep`
+pattern with a `$` anchor silently counts zero on CRLF files — and a silent zero reads like "clean".
+
+Generated visualizations are **static/precomputed by default**. A `requestAnimationFrame` or
+`setInterval` loop without an explicit termination condition or frame cap does not ship.
+
 ## 5. Security by Design
 
 **Derive security requirements before writing the plan — not after the bug.**
@@ -137,6 +148,10 @@ Use a single-file `dashboard.html` (or equivalent): opens directly in a browser,
 - Every new milestone (or checkpoint) entered into the dashboard gets a `recommendedModel` at creation time, not as an afterthought — assign it per §11 before the entry is committed.
 - Every resume prompt (milestone or checkpoint) ends with `/remote-control <id> — <title>` so the spawned session is reachable from the Claude mobile app.
 - Resume prompts state the **goal and the machine-checkable done condition**, never a step-by-step procedure. For flagship sessions (§11 palette) this is load-bearing, not stylistic: over-prescriptive prompts measurably reduce flagship output quality. Give the full task spec up front and let the session plan its own path.
+- Every closing report and every handover ends with two lines: **what was actually run and
+  verified** (with the command and its result) and **what was assumed** without checking. A step an
+  unattended run skipped belongs in the second line, not silently in the first. Unverified
+  completion claims are the one friction class users react to worst — worse than bugs.
 - Log friction the moment it occurs: append a `log[]` entry prefixed `FRICTION:` to the active milestone (repeated errors, blocked tools, wrong assumptions, rework). The workflow retro in `milestone-checkpoint` reads these entries as its primary signal source — unlogged friction is invisible to it.
 - New milestone sessions and the release-readiness subagent read `docs/dashboard/triage-inbox.md`
   FIRST (when present) — surface open findings before starting new work.
@@ -185,6 +200,13 @@ Corollary for automations: a routine that writes **only its own ledger file** (e
 Once a branch/worktree's change is complete and a git action (commit/push/merge) is next:
 
 1. Proactively start `/code-review` on the diff against the base branch — don't wait to be asked.
+   When the diff touches runtime resources (timers, listeners, handles), an HTTP/API call, or
+   platform-dependent paths and shell invocations, run the matching lens agents from
+   `.claude/agents/` **in parallel** alongside it — `runtime-resource-reviewer`,
+   `api-contract-reviewer`, `cross-platform-reviewer`, fanned out via
+   `superpowers:dispatching-parallel-agents`. Leave out the lenses the diff doesn't touch. These
+   three classes are where defects most reliably survive review and surface in the user's own
+   manual testing.
 2. Based on the result, ask (don't decide silently):
    - **Trivial change (no Critical Issues):** ask whether to push directly to `origin/main` and pull the local `main` checkout up to date — skipping a PR.
    - **Otherwise:** ask whether to push the branch and open a Pull Request.
