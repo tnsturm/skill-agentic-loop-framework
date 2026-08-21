@@ -1,5 +1,19 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.27 (2026-08-21)
+
+- **Dashboard-Template: Milestone-Karten sind aufklappbar.** Jede Karte ist jetzt ein
+  `<details class="mcard">`; eingeklappt zeigt die `<summary>`-Zeile nur noch `Id · Titel`
+  plus Status-Badge, alles Weitere (Summary, Steps, Metazeile, Modell-Empfehlung, Log,
+  Start-Prompt) liegt dahinter. Default: `status: "active"` startet aufgeklappt, `done`
+  und `todo` eingeklappt. Dazu ein „Expand all"/„Collapse all"-Schalter über der Liste.
+  Grund: bei ~30 Milestones war die Liste nur noch scrollbar, nicht mehr überblickbar.
+  Der bestehende innere `<details>` für den Start-Prompt bleibt unangetastet und wird vom
+  Schalter nicht mitgeschaltet — die §7-Zusage „zeigt jeden Prompt in voller Länge" gilt
+  unverändert, der Prompt liegt nur eine Ebene tiefer.
+- Datenblock-Format unverändert — bestehende `dashboard.html`-Dateien brauchen keine
+  Migration, nur den neuen Renderer.
+
 ## 0.1.26 (2026-08-21)
 
 - **§0 names the plan-execution skill** (template CLAUDE.md): `subagent-driven-development`
