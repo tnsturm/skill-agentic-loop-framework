@@ -16,6 +16,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const { logHook } = require('./lib/log');
+const { isInsideGuardedRepo } = require('./lib/in-repo');
 
 function isGuardedDashboard(filePath) {
   const p = String(filePath || '').replace(/\\/g, '/');
@@ -31,9 +32,11 @@ process.stdin.on('end', () => {
   const filePath = (input.tool_input && input.tool_input.file_path) || '';
   if (!isGuardedDashboard(filePath)) process.exit(0);
 
-  const abs = path.isAbsolute(filePath)
-    ? filePath
-    : path.join(input.cwd || process.cwd(), filePath);
+  // Another checkout's dashboard.html — a template copy, say — is not ours to gate.
+  const root = input.cwd || process.cwd();
+  if (!isInsideGuardedRepo(root, filePath)) process.exit(0);
+
+  const abs = path.resolve(root, filePath);
   let html;
   try { html = fs.readFileSync(abs, 'utf8'); } catch { process.exit(0); }
 

@@ -1,5 +1,44 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.29 (2026-08-22)
+
+Herkunft: ein Guard-Fehlalarm im adoptierenden Projekt (VioletApp, 2026-08-21). Eine Session
+in Projekt A bearbeitete eine Datei in Repository B und wurde von A's `docs-header-guard`
+blockiert — wegen einer Header-Konvention, die B gar nicht verwendet.
+
+- **Neu: `lib/in-repo.js` mit `isInsideGuardedRepo(cwd, filePath)` — Guards wirken nur noch im
+  bewachten Repository.** Alle Edit|Write-Guards entschieden allein am Pfad-String, ob eine
+  Datei zu bewachen ist (`lib/`- oder `drivers/`-Segment irgendwo im Pfad, Basename
+  `package.json`, Pfadende `docs/dashboard/dashboard.html`), und prüften nie, ob der
+  aufgelöste absolute Pfad überhaupt innerhalb von `input.cwd` liegt. Jeder Fremdpfad mit
+  passendem Segment galt damit als Projekt-Quelldatei — besonders tückisch bei
+  `changelog-lang-guard`, der einen fremden Changelog gegen die **eigene**
+  `.homeycompose/app.json`-Version prüfte, also zwei unabhängige Versionslinien verglich.
+  Umgestellt: `control-bytes-guard`, `dashboard-guard` (templates) sowie `json-guard`,
+  `changelog-lang-guard` (homey).
+- **Grenze ist das Repository um `cwd`, nicht `cwd` selbst.** Ein reiner cwd-Vergleich hätte
+  die Guards still abgeschaltet, sobald eine Session in einem **Unterverzeichnis** startet
+  (`cwd = <repo>/sub/dir`, Datei `<repo>/lib/*.js`) — `compose-guard.js` dokumentiert genau
+  diesen Fall seit je als real. Der Helper sucht darum den nächsten Vorfahren mit
+  `.git`-Eintrag. Ein Worktree trägt `.git` als **Datei**, weshalb bloße Existenz genügt und
+  ein Worktree sich selbst begrenzt statt seines umgebenden Checkouts.
+- **Beide Seiten werden kanonisiert** (`fs.realpathSync.native`, mit Rückfall auf den längsten
+  existierenden Vorfahren, damit ein `Write` auf eine noch nicht existente Datei funktioniert).
+  Sonst hätten 8.3-Kurznamen (`TORSTE~1`) oder Junctions dieselbe Stelle unterschiedlich
+  buchstabiert — und der Guard hätte eine echte Verletzung still übersprungen, also genau die
+  Fehlerklasse reproduziert, die hier beseitigt wird. Groß-/Kleinschreibung und Separator-Stil
+  deckt `path.win32.relative` bereits selbst ab (nachgemessen).
+- **`control-bytes-guard.js`: toter `hook-log.jsonl`-Ausschluss entfernt.** Unerreichbar, weil
+  `GUARDED_EXT` auf `.json` verankert ist und `.jsonl` deshalb nie matcht. Was die
+  Telemetrie-Datei tatsächlich heraushält (die Endungsliste), steht jetzt als Kommentar dort
+  und ist im Test festgenagelt, statt sich auf toten Code zu verlassen.
+- **Bewusst nicht übernommen:** `compose-guard.js` bleibt unverändert — er rät nicht am Pfad,
+  sondern verifiziert die Signatur eines generierten Manifests (Basename `app.json` **und** ein
+  `.homeycompose/` im selben Verzeichnis); das ist eine plattformweite Wahrheit, und ein
+  cwd-Containment würde seine bewusste Verankerung am Verzeichnis der Datei kaputt machen.
+  `secrets-guard.js` ebenfalls unverändert: fail-closed vor Ergonomie — seine Regel für das
+  bekannte Write-Passwort soll einen Leak in *jedes* Repo fangen.
+
 ## 0.1.28 (2026-08-21)
 
 Herkunft: der neue native `/insights`-Report (Claude Code 2.1.220) über 33 Sessions eines
