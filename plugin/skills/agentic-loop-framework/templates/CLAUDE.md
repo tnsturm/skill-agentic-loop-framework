@@ -187,7 +187,7 @@ An ephemeral dev-run command (one that tears itself down on stop) is not a relea
 
 **A milestone or feature session works in its own git worktree — never in a checkout another session may be using.**
 
-Use `superpowers:using-git-worktrees` at session start. Exempt: short read-only or single-file sessions (a nightly routine, a dashboard edit, a quick doc fix) — they stay in the primary checkout.
+Use the native path first — `claude --worktree <name>` at launch, or the `EnterWorktree` tool mid-session (`/fork` gets its own worktree too); only the native path also isolates Bash/git from the main checkout. `superpowers:using-git-worktrees` stays the fallback. Exempt: short read-only or single-file sessions (a nightly routine, a dashboard edit, a quick doc fix) and checkpoint sessions that must delete worktrees — they stay in the primary checkout.
 
 Why: two agent sessions sharing one working directory collide in ways git cannot arbitrate. The failure mode is not a merge conflict but a silent one — `git status` shows foreign changes that must be reasoned about before every commit, and one session's `git push` ships another session's finished-but-unpushed commits that nobody decided to release. Isolation is cheap; untangling a shared tree is not. The `milestone-checkpoint` skill already cleans worktrees up afterwards (§7, its step 1).
 
@@ -200,6 +200,12 @@ Corollary for automations: a routine that writes **only its own ledger file** (e
 Once a branch/worktree's change is complete and a git action (commit/push/merge) is next:
 
 1. Proactively start `/code-review` on the diff against the base branch — don't wait to be asked.
+   **Always name the level**, never call it bare: without one the command reuses the last level
+   you typed, across sessions. `medium` for a task review inside `subagent-driven-development`
+   (few, high-confidence findings), `xhigh` for the whole-branch review here, `ultra` (Cloud
+   multi-agent, costs credits — a per-case decision) plus `/security-review high` for a milestone
+   with its own threat model (§5). `--fix` only at `medium`; its edits sit outside `/rewind`
+   checkpoints, so undo them with git.
    When the diff touches runtime resources (timers, listeners, handles), an HTTP/API call, or
    platform-dependent paths and shell invocations, run the matching lens agents from
    `.claude/agents/` **in parallel** alongside it — `runtime-resource-reviewer`,
@@ -213,15 +219,25 @@ Once a branch/worktree's change is complete and a git action (commit/push/merge)
 
 Always wait for an explicit yes before pushing or merging — this section only saves re-explaining the two options each time, not the confirmation itself.
 
-## 10. Permission Strategy (3 Layers)
+## 10. Permission Strategy (2 Layers)
 
-**Hooks always win; the allowlist covers the everyday; Auto Mode is for autonomous loops.**
+**Hooks define what must never happen; the Auto Mode classifier judges everything else.**
 
 1. **Hooks = "must NEVER happen"** — deterministic exit-2 guards (PreToolUse). They apply in every permission mode; neither Auto Mode nor `bypassPermissions` can override them.
-2. **Project allowlist (`permissions.allow` in `.claude/settings.json`) = "is ALWAYS ok"** — deterministic, documents intent, git-portable (team, worktrees, routines). Curated at every milestone checkpoint via `/fewer-permission-prompts`. Global vs. project split: see "Claude-Code-Settings: Skill = Source of Truth" below.
-3. **Auto Mode (`claude --permission-mode auto`) = situational autonomy** for long autonomous runs (`/goal` milestone sessions, nightly routines) — the classifier approves novel actions; hooks and allowlist remain in force underneath. Never use `bypassPermissions` locally.
+2. **Auto Mode = the normal case**, not situational autonomy: it is the Pro/Max product default from v2.1.228 (v2.1.233 on native Windows), and `permissions.defaultMode: "auto"` sets it everywhere else. Hooks stay in force underneath. Never use `bypassPermissions` locally.
 
-Everyday sessions run in the default mode with the allowlist; autonomous loop sessions start with `--permission-mode auto`.
+Two boundaries the classifier must not clear on its own — both evaluated **before** it:
+- **`permissions.ask`** = human checkpoint, always prompts. For actions that are legitimate but must never be auto-approved (`Bash(git push --force*)`, a store/registry publish).
+- **`autoMode.hard_deny`** = prose rules no user intent or `allow` entry can clear. Keep `"$defaults"` in the array or the built-in exfiltration rule is silently replaced. Read **only** from `~/.claude/settings.json`, never from a repo's `.claude/settings.json` — so tool-pattern boundaries for one repo belong in `permissions.ask`/`deny` instead.
+
+`permissions.allow` is no longer curated per checkpoint; it documents read-only everyday commands and keeps non-auto sessions usable. Global vs. project split: see "Claude Code Settings: Skill = Source of Truth" below.
+
+### Hook start conditions (`if` filters)
+
+A hook entry takes an optional `if` holding **exactly one** permission rule; Claude Code evaluates it before spawning the process, so a guard that would have exited early never starts at all. Two rules for using it without weakening the net:
+
+- The filter must be a genuine **superset** of the hook's own predicate. One `if` cannot express "Edit OR Write", so register the hook once per tool name (`Edit(lib/**)` and `Write(lib/**)`).
+- **Do not filter Bash gates on a subcommand pattern.** A permission rule must match *every* subcommand of a compound command, so `if: "Bash(git commit *)"` does not match `git add . && git commit -m …` — the gate would silently stop firing exactly where it matters most. Path-based `Edit`/`Write` guards have no such problem.
 
 ## 11. Model Tiering (Subagents & Milestones)
 
@@ -234,8 +250,10 @@ Everyday sessions run in the default mode with the allowlist; autonomous loop se
 Subagents inherit the session model by default. Assign tiers explicitly via frontmatter in `.claude/agents/*.md` (`model:` + `effort:`):
 
 - **Mechanical/checklist/extraction agents** (run commands, compare outputs, grep & report — e.g. `release-readiness`): workhorse, `effort: low`/`medium`.
-- **Review/judge/security agents** (e.g. `security-reviewer`): `model: inherit` — feedback quality is the loop bottleneck (§4), and a weak verifier defeats the maker/checker split. In a flagship session the checker inherits the flagship — that is the point, not a cost bug.
+- **Review/judge/security agents** (e.g. `security-reviewer`): `model: inherit` **plus `effort: high`** — feedback quality is the loop bottleneck (§4), and a weak verifier defeats the maker/checker split. In a flagship session the checker inherits the flagship — that is the point, not a cost bug.
 - In multi-agent workflows, set effort per stage: low for finder/collector stages, high only for verify/judge stages.
+- **Implementers are dispatched as `subagent_type: general-purpose`, never `fork`.** Subagents run background-by-default and `fork` (parent context inherited) is the Agent tool's default, but `subagent-driven-development` lives on the *fresh* context per implementer and names no type of its own. For review agents `fork` is welcome — they should know the task context and inherit the model.
+- `TodoWrite`/`TaskCreate` are off on current models while `using-superpowers` still asks for "a todo per item". Do **not** set `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` — checklists live in plan files and the dashboard.
 - Global session-wide override if ever needed: `CLAUDE_CODE_SUBAGENT_MODEL`.
 
 ### Milestones (main-loop sessions)

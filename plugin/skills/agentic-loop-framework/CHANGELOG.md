@@ -1,5 +1,54 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.30 (2026-08-24)
+
+Herkunft: das Setup-Tuning-Checkpoint M9.0 im adoptierenden Projekt (VioletApp). Vier
+Produktänderungen von Claude Code hatten das Framework überholt; die generischen Anteile davon
+sind hier gespiegelt.
+
+- **CLAUDE.md §10: drei Schichten → zwei.** Auto Mode ist seit v2.1.228 (v2.1.233 auf nativem
+  Windows) Produkt-Default auf Pro/Max, damit verliert die kuratierte Allowlist ihren Hauptzweck
+  (Prompts vermeiden) — sie dokumentiert nur noch Read-Only-Alltagsbefehle. Neu benannt sind die
+  zwei Grenzen, die der Classifier **nicht selbst** aufheben kann und die **vor** ihm ausgewertet
+  werden: `permissions.ask` (menschlicher Checkpoint, erzwingt immer einen Prompt) und
+  `autoMode.hard_deny` (Prosa-Regeln). Wichtig und leicht falsch zu machen: `autoMode` liest der
+  Classifier **nur** aus `~/.claude/settings.json`, nie aus der `.claude/settings.json` eines
+  Repos, und die Listen nehmen Prosa statt Werkzeug-Muster — Repo-Grenzen gehören darum nach
+  `permissions.ask`/`deny`. Fehlt `"$defaults"` im Array, ersetzt man die eingebaute
+  Exfiltrations-Regel ersatzlos.
+- **Neu: „Hook start conditions (`if` filters)" in §10** plus `if`-Filter in
+  `templates/.claude/settings.json` (package-guard nur auf `**/package.json`, dashboard-guard nur
+  auf `docs/dashboard/dashboard.html`). Zwei Regeln, damit das Netz dabei nicht leiser wird: der
+  Filter muss eine echte **Obermenge** des Hook-Prädikats sein, und weil ein `if` genau EINE
+  Permission-Regel trägt, wird der Hook je Tool-Namen einmal registriert (`Edit(…)` und
+  `Write(…)`). **Bash-Gates bleiben bewusst ungefiltert:** eine Permission-Regel muss *jedes*
+  Subkommando eines Compound-Kommandos treffen, also greift `Bash(git commit *)` bei
+  `git add . && git commit -m …` nicht — das Gate wäre genau dort still abgeschaltet, wo es zählt.
+- **`lib/log.js` schreibt `durationMs`** (aus `performance.now()`, in Node relativ zum
+  Prozessstart — kein Eingriff an den Aufrufstellen nötig). Damit beantwortet die Checkpoint-Retro
+  „was kostet das Gate-Netz pro Commit?" mit einer Zahl statt einem Gefühl; das Auswertungskommando
+  in Schritt 5 gibt jetzt Blocks **und** den `durationMs`-Median je Hook aus.
+- **Checkpoint-Skill: `/insights` als zweite Signalquelle der Workflow-Retro.** Der Nutzer tippt es
+  zu Retro-Beginn (gleiches Muster wie `/doctor`); die Befunde werden mit dem lokalen Signal
+  zusammengeführt und laufen durch EINE gemeinsame Impact-Gewichtung samt
+  `AskUserQuestion`-Auswahl — kein eigener Analyse-Schritt, keine zweite Liste. Das **Delta**
+  (in `/insights`, aber nicht im `FRICTION:`-Log) wird als Hinweis auf ungeloggte Reibungsklassen
+  protokolliert.
+- **Checkpoint-Skill Schritt 2 ist jetzt der `/doctor`-Lauf** statt `/fewer-permission-prompts`:
+  dessen denial-basierter Permission-Check ersetzt die frühere Allowlist-Kuratierung, und der
+  Vorschlag „Auto Mode als Default" wird angenommen statt abgelehnt (folgt aus §10).
+- **§9 nennt native Worktrees zuerst** (`claude --worktree`, `EnterWorktree`, `/fork`) — nur der
+  native Weg isoliert auch Bash/git vom Haupt-Checkout; `superpowers:using-git-worktrees` bleibt
+  Fallback. Ebenfalls in §9: `/code-review` wird **nie ohne Level** aufgerufen, sonst erbt es
+  sessionübergreifend das zuletzt getippte (`medium` Task, `xhigh` Branch, `ultra` +
+  `/security-review high` bei eigenem Threat-Model).
+- **§11 + Agent-Templates:** Review-/Security-Agents tragen `model: inherit` **und**
+  `effort: high`. Neu als stehende Regel: **Implementer werden als
+  `subagent_type: general-purpose` dispatcht, nie als `fork`** — `fork` (Elternkontext geerbt) ist
+  inzwischen Agent-Tool-Default und zerstört genau den frischen Kontext, von dem
+  `subagent-driven-development` lebt; der Skill selbst benennt keinen Typ. Für Review-Agents ist
+  `fork` dagegen erwünscht. `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` bewusst nicht setzen.
+
 ## 0.1.29 (2026-08-22)
 
 Herkunft: ein Guard-Fehlalarm im adoptierenden Projekt (VioletApp, 2026-08-21). Eine Session

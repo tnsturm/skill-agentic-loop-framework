@@ -18,7 +18,11 @@ error → setup runs via the agentic-loop-framework bootstrap (Phase 0), not her
 ## Steps
 
 1. **Branch/worktree cleanup** (see below).
-2. Run `/fewer-permission-prompts`.
+2. **`/doctor` run** — the user has to type it (`disableModelInvocation`); an unattended session
+   skips it, logs that, and names it in the handover. Accept its "Auto Mode as default" proposal
+   (CLAUDE.md §10) instead of rejecting it, and let its denial-based permission check replace the
+   former separate `/fewer-permission-prompts` curation — `permissions.allow` is no longer
+   maintained, it only documents read-only everyday commands.
 3. Run `/claude-automation-recommender`, offer the results for direct implementation (see below).
 4. Check the skill sources (see below).
 5. Run the **workflow retrospective / optimizer** (see below) — turn recurring friction from the
@@ -159,15 +163,18 @@ too (they are in scope for `disableSkillShellExecution`).
 Turn recurring, similar mistakes into a durable safeguard so they don't
 happen again.
 
-1. **Collect signal** for the completed milestone: `feedback` memories (memory folder),
-   `FRICTION:` entries in the dashboard `log[]`, and the git history (repeated `fix:`/`revert:`
-   commits, a commit that corrects the immediately preceding one, ≥2 similar fix commits to the same file).
-   Additionally read `.claude/hooks/hook-log.jsonl` (block counts per hook since the last
-   checkpoint instead of memory — M4.8; many blocks from the same hook = a recurring friction class).
-   Count it deterministically instead of skimming — set `SINCE` to the last checkpoint's date:
+1. **Collect signal from two sources — merged, not analysed separately.**
+
+   **Local:** `feedback` memories (memory folder), `FRICTION:` entries in the dashboard `log[]`,
+   and the git history (repeated `fix:`/`revert:` commits, a commit that corrects the immediately
+   preceding one, ≥2 similar fix commits to the same file). Additionally read
+   `.claude/hooks/hook-log.jsonl` — many blocks from the same hook = a recurring friction class,
+   and the `durationMs` field turns "what does the gate net cost?" into a number instead of a
+   feeling, so a strikingly expensive hook is itself a finding. Count deterministically instead of
+   skimming — set `SINCE` to the last checkpoint's date:
 
    ```bash
-   node -e "const fs=require('fs');const SINCE='<last-checkpoint-YYYY-MM-DD>';const a={};for(const l of fs.readFileSync('.claude/hooks/hook-log.jsonl','utf8').trim().split(/\r?\n/)){try{const o=JSON.parse(l);if(o.decision==='block'&&o.ts>=SINCE)a[o.hook]=(a[o.hook]||0)+1}catch{}}console.log(a)"
+   node -e "const fs=require('fs');const SINCE='<last-checkpoint-YYYY-MM-DD>';const a={},d={};for(const l of fs.readFileSync('.claude/hooks/hook-log.jsonl','utf8').trim().split(/\r?\n/)){try{const o=JSON.parse(l);if(o.ts<SINCE)continue;if(o.decision==='block')a[o.hook]=(a[o.hook]||0)+1;if(typeof o.durationMs==='number'){(d[o.hook]=d[o.hook]||[]).push(o.durationMs)}}catch{}}console.log('blocks',a);console.log('ms_median',Object.fromEntries(Object.entries(d).map(([k,v])=>[k,v.sort((x,y)=>x-y)[v.length>>1]])))"
    ```
 
    If a single hook shows a striking spike, **first check whether it came from a test run**
@@ -175,19 +182,30 @@ happen again.
    class from it. In the origin repo this exact mistake was waiting to happen: 434 of 449 block
    records were fixture records written by one hook's own test suite. `lib/log.js` closes that
    structurally via the node:test markers, so such a cluster would itself be the finding.
+
+   **`/insights`:** like `/doctor`, a command only the user can start. Ask for it via
+   `AskUserQuestion` at the **start** of the retro; an unattended session skips it, logs that, and
+   names it in the handover. Its findings are **merged with the local signal** and run through the
+   same weighting and selection (step 4) — no separate analysis step, no second list.
+   **Mind the delta:** anything `/insights` shows that the `FRICTION:` log does not is itself a
+   finding — a friction class nobody logged, although §7 asks for it the moment it occurs. Record
+   that delta list in the `Mx.0` `log[]`.
 2. **Cluster** into distinct problems; count frequency. **In scope only: seen ≥2× OR flagged by the
    user** ("again", "for the third time"). Skip one-offs (YAGNI).
 3. **Root cause** per problem (three "whys": happens · repeats · not caught before the commit).
-4. **Choose the codification level** — most reliable first; a problem may get several:
+4. **Weigh impact and select** — ONE common list across both sources, sorted by frequency × cost,
+   offered for implementation via `AskUserQuestion` (multiSelect).
+5. **Choose the codification level** — most reliable first; a problem may get several:
    **a. Hook** (mechanically checkable → automatic guard; unforgettable) ·
    **b. CLAUDE.md / <PLATFORM>.md** (process/convention rule) ·
    **c. `feedback` memory** (cross-session guidance) ·
    **d. Skill edit** (a skill step is itself wrong).
    Prefer the highest level that covers the problem *completely*. Every new hook brings its own
-   smoke test (like `secrets-guard` / `json-guard`) and is wired into `.claude/settings.json`.
-5. **Apply + verify** (hook smoke test green; rule/memory lands). A small, reversible
+   smoke test (like `secrets-guard` / `json-guard`) and is wired into `.claude/settings.json` with
+   an `if` filter that is a genuine superset of the hook's own predicate (CLAUDE.md §10).
+6. **Apply + verify** (hook smoke test green; rule/memory lands). A small, reversible
    change, its own commit.
-6. **Log** in the `Mx.0` `log[]`: `problem → root cause → level → change → verified`.
+7. **Log** in the `Mx.0` `log[]`: `problem → root cause → level → change → verified`.
 
 If the signal is empty (nothing repeated), this step is a no-op — just note it briefly.
 

@@ -12,7 +12,8 @@
       {
         "matcher": "Edit|Write",
         "hooks": [
-          { "type": "command", "command": "node .claude/hooks/package-guard.js" }
+          { "type": "command", "if": "Edit(**/package.json)", "command": "node .claude/hooks/package-guard.js" },
+          { "type": "command", "if": "Write(**/package.json)", "command": "node .claude/hooks/package-guard.js" }
         ]
       }
     ],
@@ -20,7 +21,8 @@
       {
         "matcher": "Edit|Write",
         "hooks": [
-          { "type": "command", "command": "node .claude/hooks/dashboard-guard.js" },
+          { "type": "command", "if": "Edit(docs/dashboard/dashboard.html)", "command": "node .claude/hooks/dashboard-guard.js" },
+          { "type": "command", "if": "Write(docs/dashboard/dashboard.html)", "command": "node .claude/hooks/dashboard-guard.js" },
           { "type": "command", "command": "node .claude/hooks/control-bytes-guard.js" }
         ]
       }
@@ -34,6 +36,9 @@
     ]
   },
   "permissions": {
+    "ask": [
+      "Bash(git push --force*)"
+    ],
     "allow": [
       "Bash(git fetch *)",
       "Bash(git merge-base *)"

@@ -29,6 +29,12 @@ const path = require('path');
  * security/audit log — the block DECISION itself is unaffected either way):
  * hook test harnesses set it so any cwd a hook computes internally still can't
  * produce telemetry.
+ * Each record also carries `durationMs`: whole milliseconds from THIS hook process's
+ * start to the decision, read from `performance.now()` (relative to the process's own
+ * timeOrigin, so no call-site change and no shared start variable is needed). It is the
+ * hook's wall-clock cost including Node bootstrap — which is what the checkpoint retro
+ * asks about ("what does the gate net cost per commit?"), since every hook is its own
+ * process. Without it, hook cost can only be guessed.
  * @param {string} hook Hook name, e.g. `test-gate`.
  * @param {'block'|'pass'|'skip'} decision Outcome at a real decision point (D3); `skip` = the
  *   check could not run at all (e.g. toolchain not installed) and nothing was verified.
@@ -45,7 +51,7 @@ function logHook(hook, decision, cwd) {
   try {
     fs.appendFileSync(
       path.join(cwd, '.claude', 'hooks', 'hook-log.jsonl'),
-      `${JSON.stringify({ ts: new Date().toISOString(), hook, decision })}\n`
+      `${JSON.stringify({ ts: new Date().toISOString(), hook, decision, durationMs: Math.round(performance.now()) })}\n`
     );
   } catch {
     // telemetry must never break a hook (spec D1)
