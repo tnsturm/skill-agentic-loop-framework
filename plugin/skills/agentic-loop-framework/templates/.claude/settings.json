@@ -12,6 +12,8 @@
       {
         "matcher": "Edit|Write",
         "hooks": [
+          { "type": "command", "if": "Edit(package.json)", "command": "node .claude/hooks/package-guard.js" },
+          { "type": "command", "if": "Write(package.json)", "command": "node .claude/hooks/package-guard.js" },
           { "type": "command", "if": "Edit(**/package.json)", "command": "node .claude/hooks/package-guard.js" },
           { "type": "command", "if": "Write(**/package.json)", "command": "node .claude/hooks/package-guard.js" }
         ]
