@@ -1,5 +1,17 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.31 (2026-08-24)
+
+- **Neuer Skill `claude-code-news-review`** (plugin/skills/claude-code-news-review/): wöchentliche
+  Prüfung der Claude-Code-What's-New-Digests gegen drei Zielsysteme (globales Setup / Projekte /
+  dieses Framework) mit committetem Ledger `reviews/whats-new-ledger.md` als Dedup-Marker — jeder
+  Digest wird genau einmal geprüft. Interaktiv: Impact-Ranking + AskUserQuestion-Auswahl; headless
+  (`-p`/Routine): nur Routing in Ledger/triage-inbox, keine Umsetzung. Der Ledger liegt bewusst
+  AUSSERHALB von plugin/ (wird nicht mit dem Plugin ausgeliefert) und ist mit dem Prüfstand des
+  Setup-Tunings vom 2026-08-23/24 vorbefüllt (geprüft bis 2026-w34 / v2.1.239; 2026-w31 = kein
+  Digest). Wöchentlicher Trigger: `/schedule`-Routine oder lokaler Task mit
+  `claude -p "/claude-code-news-review"` im Framework-Checkout.
+
 ## 0.1.30 (2026-08-24)
 
 Herkunft: das Setup-Tuning-Checkpoint M9.0 im adoptierenden Projekt (VioletApp). Vier
