@@ -32,6 +32,21 @@
   weil das Triage-Gate dazwischen liegt. Ebenfalls korrigiert: der Checkpoint hat neun Schritte,
   nicht acht (`/doctor` als Schritt 2 fehlte in der Aufzählung, seit er 0.1.30 dazukam).
 
+- **`assets/struktur.svg` + `.en.svg` entrostet.** Vier Stellen waren nachweislich falsch: das
+  Versionsschild (`0.1.15` → `0.1.33`), die Hook-Zahl im Homey-Modul (4 → 6), die
+  Milestone-Loop-Zeile (`/code-review → §9-Gate → Checkpoint (8 Schritte)` → Fan-out, Triage und
+  neun Schritte) und die Templates-Zeile, die `.claude/agents/` gar nicht kannte — die vier
+  Linsen-Agents sind seit 0.1.28 dort und tauchten in der Grafik nie auf. Damit ist der Anlass
+  für die Pflegeregel oben zugleich behoben.
+
+- **Beide Sprachfassungen für den Zyklus.** `MILESTONE-CYCLE.en.md` +
+  `assets/milestone-cycle.en.svg` liegen neben den deutschen Originalen; beide Fassungen
+  verlinken einander im Kopf wie die READMEs. Der Zyklus ist damit die dritte bilinguale Einheit
+  des Repos (nach README und Struktur-Grafik). Die Pflegeregel und Schritt 7a benennen
+  ausdrücklich beide: eine Änderung, die nur eine Sprachfassung erreicht, ist ein Defekt und kein
+  Backlog-Eintrag — sonst folgen die Leser der zwei Fassungen verschiedenen Abläufen. Die SVGs
+  tragen zusätzlich ein `<title>`-Element als barrierefreie Beschreibung.
+
 ## 0.1.32 (2026-08-26)
 
 - **Neue Review-Linse `adversarial-reviewer`** (templates/.claude/agents/): prüft den Diff

@@ -24,7 +24,7 @@ as a hook, rule, or memory:
    skill runs (9 steps: permissions, `/doctor`, automation recommendations, skill sources incl.
    review gate, workflow retro, memory consolidation, framework reconciliation (drift +
    native-feature review), dashboard, handover). The full flow with a diagram:
-   [MILESTONE-CYCLE.md](MILESTONE-CYCLE.md) (German).
+   [MILESTONE-CYCLE.en.md](MILESTONE-CYCLE.en.md).
 4. **Heartbeat (nightly):** CI on push/PR plus cron, and a local triage routine that
    writes findings into a committed inbox — the next session reads it first.
 

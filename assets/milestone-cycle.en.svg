@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 900" width="880" height="900" font-family="Segoe UI, system-ui, sans-serif" role="img">
-<title>Ablauf eines Meilensteins: Start, Design, Umsetzung, Gates, paralleler Review-Fan-out, Triage-Gate durch den Menschen, Fix-Loop, Freigabe.</title>
+<title>Milestone flow: start, design, build, gates, parallel review fan-out, human triage gate, fix loop, release.</title>
 <rect x="0" y="0" width="880" height="900" fill="#F6F7F8"/>
         <defs>
           <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -19,12 +19,12 @@
         <g font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1.1" fill="#8494A1" text-anchor="end">
           <text x="112" y="78">START</text>
           <text x="112" y="166">DESIGN</text>
-          <text x="112" y="266">UMSETZUNG</text>
+          <text x="112" y="266">BUILD</text>
           <text x="112" y="376">GATES</text>
           <text x="112" y="492">REVIEW</text>
           <text x="112" y="622">TRIAGE</text>
           <text x="112" y="736">FIX</text>
-          <text x="112" y="836">FREIGABE</text>
+          <text x="112" y="836">RELEASE</text>
         </g>
 
         <g stroke="#DBE1E5" stroke-width="1">
@@ -34,15 +34,15 @@
         <!-- ============ BAND 1 · START ============ -->
         <g>
           <rect x="132" y="48" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
-          <text x="240" y="70" text-anchor="middle" font-size="12.5" fill="#17212B">triage-inbox lesen</text>
-          <text x="240" y="86" text-anchor="middle" font-size="10.5" fill="#8494A1">offene Funde zuerst (§7)</text>
+          <text x="240" y="70" text-anchor="middle" font-size="12.5" fill="#17212B">read triage-inbox</text>
+          <text x="240" y="86" text-anchor="middle" font-size="10.5" fill="#8494A1">open findings first (§7)</text>
 
           <rect x="388" y="48" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
-          <text x="496" y="70" text-anchor="middle" font-size="12.5" fill="#17212B">Worktree anlegen</text>
-          <text x="496" y="86" text-anchor="middle" font-size="10.5" fill="#8494A1">eine Session, ein Tree</text>
+          <text x="496" y="70" text-anchor="middle" font-size="12.5" fill="#17212B">create worktree</text>
+          <text x="496" y="86" text-anchor="middle" font-size="10.5" fill="#8494A1">one session, one tree</text>
 
           <rect x="644" y="48" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
-          <text x="752" y="70" text-anchor="middle" font-size="12.5" fill="#17212B">Dashboard-Eintrag</text>
+          <text x="752" y="70" text-anchor="middle" font-size="12.5" fill="#17212B">dashboard entry</text>
           <text x="752" y="86" text-anchor="middle" font-size="10.5" fill="#8494A1">dashboard-sync</text>
 
           <line x1="348" y1="74" x2="382" y2="74" stroke="#17212B" stroke-opacity=".5" marker-end="url(#ah)"/>
@@ -54,15 +54,15 @@
         <g>
           <rect x="132" y="136" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
           <text x="240" y="158" text-anchor="middle" font-size="12.5" fill="#17212B">brainstorming</text>
-          <text x="240" y="174" text-anchor="middle" font-size="10.5" fill="#8494A1">unknown unknowns zuerst</text>
+          <text x="240" y="174" text-anchor="middle" font-size="10.5" fill="#8494A1">unknown unknowns first</text>
 
           <rect x="388" y="136" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
           <text x="496" y="158" text-anchor="middle" font-size="12.5" fill="#17212B">writing-plans</text>
-          <text x="496" y="174" text-anchor="middle" font-size="10.5" fill="#8494A1">Spec + Plan in docs/</text>
+          <text x="496" y="174" text-anchor="middle" font-size="10.5" fill="#8494A1">spec + plan in docs/</text>
 
           <rect x="644" y="136" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#8494A1" stroke-dasharray="4 3"/>
-          <text x="752" y="158" text-anchor="middle" font-size="12.5" fill="#556673">Threat Model</text>
-          <text x="752" y="174" text-anchor="middle" font-size="10.5" fill="#8494A1">nur bei neuer Angriffsfläche</text>
+          <text x="752" y="158" text-anchor="middle" font-size="12.5" fill="#556673">threat model</text>
+          <text x="752" y="174" text-anchor="middle" font-size="10.5" fill="#8494A1">only for a new attack surface</text>
 
           <line x1="348" y1="162" x2="382" y2="162" stroke="#17212B" stroke-opacity=".5" marker-end="url(#ah)"/>
           <line x1="604" y1="162" x2="638" y2="162" stroke="#8494A1" stroke-dasharray="4 3" marker-end="url(#ah-faint)"/>
@@ -71,39 +71,39 @@
 
         <!-- ============ BAND 3 · UMSETZUNG (Schleife) ============ -->
         <rect x="124" y="224" width="744" height="106" rx="5" fill="none" stroke="#8494A1" stroke-dasharray="5 4" stroke-opacity=".7"/>
-        <text x="136" y="240" font-size="10" font-family="'JetBrains Mono', monospace" fill="#8494A1">je Task</text>
+        <text x="136" y="240" font-size="10" font-family="'JetBrains Mono', monospace" fill="#8494A1">per task</text>
         <g>
           <rect x="132" y="250" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
-          <text x="240" y="272" text-anchor="middle" font-size="12.5" fill="#17212B">TDD: rot → grün</text>
-          <text x="240" y="288" text-anchor="middle" font-size="10.5" fill="#8494A1">Test vor Implementierung</text>
+          <text x="240" y="272" text-anchor="middle" font-size="12.5" fill="#17212B">TDD: red → green</text>
+          <text x="240" y="288" text-anchor="middle" font-size="10.5" fill="#8494A1">test before implementation</text>
 
           <rect x="388" y="250" width="216" height="52" rx="4" fill="#E2EFEB" stroke="#0B6E5E"/>
           <text x="496" y="272" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0B6E5E">/code-review medium</text>
-          <text x="496" y="288" text-anchor="middle" font-size="10.5" fill="#0B6E5E">nur dieser Task-Diff</text>
+          <text x="496" y="288" text-anchor="middle" font-size="10.5" fill="#0B6E5E">this task&apos;s diff only</text>
 
           <rect x="644" y="250" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
-          <text x="752" y="272" text-anchor="middle" font-size="12.5" fill="#17212B">Findings sofort fixen</text>
-          <text x="752" y="288" text-anchor="middle" font-size="10.5" fill="#8494A1">im selben Task</text>
+          <text x="752" y="272" text-anchor="middle" font-size="12.5" fill="#17212B">fix findings at once</text>
+          <text x="752" y="288" text-anchor="middle" font-size="10.5" fill="#8494A1">in the same task</text>
 
           <line x1="348" y1="276" x2="382" y2="276" stroke="#17212B" stroke-opacity=".5" marker-end="url(#ah)"/>
           <line x1="604" y1="276" x2="638" y2="276" stroke="#17212B" stroke-opacity=".5" marker-end="url(#ah)"/>
 
           <path d="M 752 302 L 752 318 L 240 318 L 240 306" fill="none" stroke="#8494A1" stroke-opacity=".8" marker-end="url(#ah-faint)"/>
-          <text x="496" y="315" text-anchor="middle" font-size="10" fill="#8494A1">nächster Task</text>
+          <text x="496" y="315" text-anchor="middle" font-size="10" fill="#8494A1">next task</text>
         </g>
         <line x1="496" y1="330" x2="496" y2="356" stroke="#17212B" stroke-opacity=".5" marker-end="url(#ah)"/>
 
         <!-- ============ BAND 4 · GATES ============ -->
         <g>
           <rect x="260" y="362" width="360" height="42" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
-          <text x="440" y="380" text-anchor="middle" font-size="12.5" fill="#17212B">Gates grün</text>
+          <text x="440" y="380" text-anchor="middle" font-size="12.5" fill="#17212B">gates green</text>
           <text x="440" y="395" text-anchor="middle" font-size="10.5" fill="#8494A1">npm test · app validate --level=debug</text>
         </g>
         <line x1="440" y1="404" x2="440" y2="430" stroke="#17212B" stroke-opacity=".5" marker-end="url(#ah)"/>
 
         <!-- ============ BAND 5 · ABSCHLUSS-REVIEW (Fan-out) ============ -->
         <g>
-          <text x="440" y="443" text-anchor="middle" font-size="10" font-family="'JetBrains Mono', monospace" fill="#0B6E5E">FAN-OUT · PARALLEL · WHOLE-BRANCH-DIFF</text>
+          <text x="440" y="443" text-anchor="middle" font-size="10" font-family="'JetBrains Mono', monospace" fill="#0B6E5E">FAN-OUT · PARALLEL · WHOLE-BRANCH DIFF</text>
           <path d="M 132 456 L 860 456" stroke="#0B6E5E" stroke-opacity=".45"/>
           <line x1="440" y1="430" x2="440" y2="456" stroke="#17212B" stroke-opacity=".5"/>
 
@@ -115,22 +115,22 @@
           <rect x="132" y="478" width="166" height="66" rx="4" fill="#E2EFEB" stroke="#0B6E5E"/>
           <text x="215" y="500" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0B6E5E">/code-review</text>
           <text x="215" y="515" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0B6E5E">xhigh</text>
-          <text x="215" y="532" text-anchor="middle" font-size="10" fill="#0B6E5E">wenige, hochsichere Funde</text>
+          <text x="215" y="532" text-anchor="middle" font-size="10" fill="#0B6E5E">few, high-confidence findings</text>
 
           <rect x="319" y="478" width="166" height="66" rx="4" fill="#E2EFEB" stroke="#0B6E5E" stroke-width="2"/>
           <text x="402" y="500" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0B6E5E">adversarial-</text>
           <text x="402" y="515" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0B6E5E">reviewer</text>
-          <text x="402" y="532" text-anchor="middle" font-size="10" fill="#0B6E5E">läuft IMMER · Beweislast</text>
+          <text x="402" y="532" text-anchor="middle" font-size="10" fill="#0B6E5E">runs ALWAYS · burden of proof</text>
 
           <rect x="506" y="478" width="166" height="66" rx="4" fill="#FFFFFF" stroke="#8494A1" stroke-dasharray="4 3"/>
-          <text x="589" y="500" text-anchor="middle" font-size="11.5" fill="#556673">3 Linsen-Agents</text>
+          <text x="589" y="500" text-anchor="middle" font-size="11.5" fill="#556673">3 lens agents</text>
           <text x="589" y="516" text-anchor="middle" font-size="10" fill="#8494A1">runtime · api · platform</text>
-          <text x="589" y="531" text-anchor="middle" font-size="10" fill="#8494A1">nur wenn der Diff sie berührt</text>
+          <text x="589" y="531" text-anchor="middle" font-size="10" fill="#8494A1">only if the diff touches them</text>
 
           <rect x="693" y="478" width="166" height="66" rx="4" fill="#FFFFFF" stroke="#8494A1" stroke-dasharray="4 3"/>
           <text x="776" y="500" text-anchor="middle" font-size="11.5" fill="#556673">/security-review</text>
           <text x="776" y="516" text-anchor="middle" font-size="11.5" fill="#556673">high</text>
-          <text x="776" y="531" text-anchor="middle" font-size="10" fill="#8494A1">nur mit Threat Model</text>
+          <text x="776" y="531" text-anchor="middle" font-size="10" fill="#8494A1">only with a threat model</text>
 
           <line x1="215" y1="544" x2="215" y2="566" stroke="#0B6E5E" stroke-opacity=".55"/>
           <line x1="402" y1="544" x2="402" y2="566" stroke="#0B6E5E" stroke-opacity=".55"/>
@@ -143,40 +143,40 @@
         <!-- ============ BAND 6 · TRIAGE (der Halt) ============ -->
         <g>
           <rect x="132" y="598" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
-          <text x="240" y="620" text-anchor="middle" font-size="12.5" fill="#17212B">Funde zusammenführen</text>
-          <text x="240" y="636" text-anchor="middle" font-size="10.5" fill="#8494A1">Dubletten raus → Artifact</text>
+          <text x="240" y="620" text-anchor="middle" font-size="12.5" fill="#17212B">merge the findings</text>
+          <text x="240" y="636" text-anchor="middle" font-size="10.5" fill="#8494A1">drop duplicates → Artifact</text>
 
           <rect x="388" y="592" width="216" height="64" rx="4" fill="#F7E9E2" stroke="#9E3B18" stroke-width="2"/>
-          <text x="496" y="614" text-anchor="middle" font-size="12.5" font-weight="600" fill="#9E3B18">TRIAGE — der Mensch</text>
+          <text x="496" y="614" text-anchor="middle" font-size="12.5" font-weight="600" fill="#9E3B18">TRIAGE — the human</text>
           <text x="496" y="630" text-anchor="middle" font-size="10.5" fill="#9E3B18">approved / rejected / deferred</text>
-          <text x="496" y="646" text-anchor="middle" font-size="10.5" fill="#9E3B18">ohne Repro = rejected</text>
+          <text x="496" y="646" text-anchor="middle" font-size="10.5" fill="#9E3B18">no repro = rejected</text>
 
           <rect x="644" y="598" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
           <text x="752" y="620" text-anchor="middle" font-size="12.5" fill="#17212B">approved.md</text>
-          <text x="752" y="636" text-anchor="middle" font-size="10.5" fill="#8494A1">mit head-SHA als Anker</text>
+          <text x="752" y="636" text-anchor="middle" font-size="10.5" fill="#8494A1">with head SHA as anchor</text>
 
           <line x1="348" y1="624" x2="382" y2="624" stroke="#9E3B18" marker-end="url(#ah-halt)"/>
           <line x1="604" y1="624" x2="638" y2="624" stroke="#9E3B18" marker-end="url(#ah-halt)"/>
-          <text x="496" y="586" text-anchor="middle" font-size="10" font-family="'JetBrains Mono', monospace" fill="#9E3B18">SESSION HÄLT AN</text>
+          <text x="496" y="586" text-anchor="middle" font-size="10" font-family="'JetBrains Mono', monospace" fill="#9E3B18">SESSION STOPS HERE</text>
         </g>
         <path d="M 752 650 L 752 662 L 240 662 L 240 690" fill="none" stroke="#17212B" stroke-opacity=".5" marker-end="url(#ah)"/>
 
         <!-- ============ BAND 7 · FIX ============ -->
         <rect x="124" y="670" width="744" height="76" rx="5" fill="none" stroke="#8494A1" stroke-dasharray="5 4" stroke-opacity=".7"/>
-        <text x="136" y="684" font-size="10" font-family="'JetBrains Mono', monospace" fill="#8494A1">je Fund</text>
+        <text x="136" y="684" font-size="10" font-family="'JetBrains Mono', monospace" fill="#8494A1">per finding</text>
         <g>
           <rect x="132" y="692" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
-          <text x="240" y="714" text-anchor="middle" font-size="12.5" fill="#17212B">Repro → Test (rot)</text>
-          <text x="240" y="730" text-anchor="middle" font-size="10.5" fill="#8494A1">das Szenario wird der Test</text>
+          <text x="240" y="714" text-anchor="middle" font-size="12.5" fill="#17212B">repro → test (red)</text>
+          <text x="240" y="730" text-anchor="middle" font-size="10.5" fill="#8494A1">the scenario becomes the test</text>
 
           <rect x="388" y="692" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
-          <text x="496" y="714" text-anchor="middle" font-size="12.5" fill="#17212B">Fix → Test grün</text>
-          <text x="496" y="730" text-anchor="middle" font-size="10.5" fill="#8494A1">nichts drumherum aufräumen</text>
+          <text x="496" y="714" text-anchor="middle" font-size="12.5" fill="#17212B">fix → test green</text>
+          <text x="496" y="730" text-anchor="middle" font-size="10.5" fill="#8494A1">no cleanup around it</text>
 
           <rect x="644" y="692" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
-          <text x="752" y="710" text-anchor="middle" font-size="12.5" fill="#17212B">Gates erneut</text>
-          <text x="752" y="725" text-anchor="middle" font-size="10.5" fill="#8494A1">Suite + validate</text>
-          <text x="752" y="738" text-anchor="middle" font-size="10.5" fill="#8494A1">optional: Re-Review des Fix-Diffs</text>
+          <text x="752" y="710" text-anchor="middle" font-size="12.5" fill="#17212B">gates again</text>
+          <text x="752" y="725" text-anchor="middle" font-size="10.5" fill="#8494A1">suite + validate</text>
+          <text x="752" y="738" text-anchor="middle" font-size="10.5" fill="#8494A1">optional: re-review the fix diff</text>
 
           <line x1="348" y1="718" x2="382" y2="718" stroke="#17212B" stroke-opacity=".5" marker-end="url(#ah)"/>
           <line x1="604" y1="718" x2="638" y2="718" stroke="#17212B" stroke-opacity=".5" marker-end="url(#ah)"/>
@@ -186,8 +186,8 @@
         <!-- ============ BAND 8 · FREIGABE ============ -->
         <g>
           <rect x="260" y="774" width="360" height="52" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
-          <text x="440" y="796" text-anchor="middle" font-size="12.5" fill="#17212B">Frage: push auf main — oder PR?</text>
-          <text x="440" y="812" text-anchor="middle" font-size="10.5" fill="#8494A1">nie ohne explizites Ja des Menschen</text>
+          <text x="440" y="796" text-anchor="middle" font-size="12.5" fill="#17212B">Ask: push to main — or PR?</text>
+          <text x="440" y="812" text-anchor="middle" font-size="10.5" fill="#8494A1">never without an explicit human yes</text>
 
           <line x1="440" y1="826" x2="440" y2="850" stroke="#17212B" stroke-opacity=".5" marker-end="url(#ah)"/>
           <text x="440" y="866" text-anchor="middle" font-size="11" fill="#556673">milestone-checkpoint</text>

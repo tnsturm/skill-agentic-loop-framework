@@ -1,5 +1,7 @@
 # Meilenstein-Zyklus
 
+*Deutsch · [English version](MILESTONE-CYCLE.en.md)*
+
 **Stand: 0.1.33** — die Framework-Version, in der der hier abgebildete Ablauf zuletzt geändert
 wurde. Weicht sie stark von der aktuellen `plugin.json` ab, ist das kein Fehler: der Ablauf hat
 sich seither nicht geändert. Weicht der *Ablauf* ab, ist diese Datei veraltet — siehe
@@ -111,9 +113,10 @@ falsch, weil niemand sie nachzog. Deshalb die Regel:
 - die Schrittfolge in `milestone-checkpoint` ändert sich
 - die „Standing rules" in `SKILL.md` ändern sich in einem Punkt, der im Diagramm auftaucht
 
-**Was dann zu tun ist:** `assets/milestone-cycle.svg` anpassen, den Erklärtext oben, die
-Mapping-Tabelle, und den `Stand:`-Stempel im Kopf auf die neue Version setzen. Die Änderung
-gehört in denselben CHANGELOG-Eintrag wie die Regeländerung, die sie ausgelöst hat.
+**Was dann zu tun ist:** `assets/milestone-cycle.svg` **und** `assets/milestone-cycle.en.svg`
+anpassen, den Erklärtext in beiden Sprachfassungen, die Mapping-Tabelle, und den
+`Stand:`-Stempel im Kopf auf die neue Version setzen. Die Änderung gehört in denselben
+CHANGELOG-Eintrag wie die Regeländerung, die sie ausgelöst hat.
 
 `milestone-checkpoint` prüft das in Schritt 7a mit — dort ist es als Punkt der
 Framework-Abgleichs-Checkliste verankert.
@@ -123,9 +126,6 @@ CSS, keine Schriftabhängigkeit über Fallbacks hinaus) und lässt sich direkt i
 GitHub anzeigen. Wird die Grafik anderswo eingebettet, ist das eine Kopie — Änderungen gehen
 zuerst hierher.
 
-## Sprache
-
-Diese Datei und ihre Grafik sind deutsch, wie `README.md` und `assets/struktur.svg`. Der Rest des
-Repos ist englisch (siehe CHANGELOG 0.1.15). Eine englische Entsprechung
-(`MILESTONE-CYCLE.en.md` + `assets/milestone-cycle.en.svg`) existiert noch nicht; kommt sie dazu,
-fällt sie unter dieselbe Pflegeregel und verdoppelt deren Aufwand.
+**Beide Sprachfassungen sind gleichrangig und werden zusammen gepflegt.** Eine Änderung, die nur
+eine der beiden erreicht, ist ein Defekt und kein Backlog-Eintrag: die Leser der zwei Fassungen
+würden sonst verschiedenen Abläufen folgen.
