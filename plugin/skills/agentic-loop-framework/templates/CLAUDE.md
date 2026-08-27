@@ -193,9 +193,9 @@ Why: two agent sessions sharing one working directory collide in ways git cannot
 
 Corollary for automations: a routine that writes **only its own ledger file** (e.g. a nightly triage writing its findings inbox) commits it directly on the main branch — those findings must be readable on the main branch, because every new milestone session reads them first (§7). Routing them through a PR queue hides them behind a merge nobody performs. The moment an automation touches anything beyond that ledger — code, version bumps, shared docs — it needs a branch and a PR.
 
-### Finishing: review, then ask
+### Finishing: review, triage, then ask
 
-**Before any git action on a finished branch, run `/code-review` — then ask how to proceed.**
+**Before any git action on a finished branch, run `/code-review`, let the human triage the findings — then ask how to proceed.**
 
 Once a branch/worktree's change is complete and a git action (commit/push/merge) is next:
 
@@ -206,14 +206,23 @@ Once a branch/worktree's change is complete and a git action (commit/push/merge)
    multi-agent, costs credits — a per-case decision) plus `/security-review high` for a milestone
    with its own threat model (§5). `--fix` only at `medium`; its edits sit outside `/rewind`
    checkpoints, so undo them with git.
-   When the diff touches runtime resources (timers, listeners, handles), an HTTP/API call, or
-   platform-dependent paths and shell invocations, run the matching lens agents from
-   `.claude/agents/` **in parallel** alongside it — `runtime-resource-reviewer`,
-   `api-contract-reviewer`, `cross-platform-reviewer`, fanned out via
-   `superpowers:dispatching-parallel-agents`. Leave out the lenses the diff doesn't touch. These
-   three classes are where defects most reliably survive review and surface in the user's own
-   manual testing.
-2. Based on the result, ask (don't decide silently):
+   Fan out the lens agents from `.claude/agents/` **in parallel** alongside it, via
+   `superpowers:dispatching-parallel-agents`. `adversarial-reviewer` runs **every time** — it is
+   the counterweight to `/code-review`'s high-confidence calibration and covers what only fails
+   under unfavourable inputs, timings or orderings. The other three are conditional on what the
+   diff touches: `runtime-resource-reviewer` (timers, listeners, handles),
+   `api-contract-reviewer` (an HTTP/API call), `cross-platform-reviewer` (platform-dependent
+   paths and shell invocations) — leave out the ones the diff doesn't touch. Those three classes
+   are where defects most reliably survive review and surface in the user's own manual testing.
+2. Merge the findings from every lens, drop the duplicates, publish them as an Artifact — and
+   **stop there.** The human triages each finding as `approved` / `rejected` / `deferred`; a
+   finding without a reproducible scenario is rejected without discussion. Write the approved
+   ones to `docs/superpowers/reviews/<date>-approved.md` with the reviewed `head` SHA in the
+   frontmatter, so a later session can tell that the release is stale once `HEAD` has moved.
+   Fix them through `superpowers:test-driven-development` — the repro scenario is the failing
+   test, written before the fix. This gate is the reason the lenses may be paranoid: a human
+   decides what counts, not the reviewer.
+3. Based on the result, ask (don't decide silently):
    - **Trivial change (no Critical Issues):** ask whether to push directly to `origin/main` and pull the local `main` checkout up to date — skipping a PR.
    - **Otherwise:** ask whether to push the branch and open a Pull Request.
 
@@ -251,6 +260,7 @@ Subagents inherit the session model by default. Assign tiers explicitly via fron
 
 - **Mechanical/checklist/extraction agents** (run commands, compare outputs, grep & report — e.g. `release-readiness`): workhorse, `effort: low`/`medium`.
 - **Review/judge/security agents** (e.g. `security-reviewer`): `model: inherit` **plus `effort: high`** — feedback quality is the loop bottleneck (§4), and a weak verifier defeats the maker/checker split. In a flagship session the checker inherits the flagship — that is the point, not a cost bug.
+  - **One exception, `adversarial-reviewer`: pinned to `model: opus` + `effort: xhigh`.** It is the only lens that runs on *every* whole-branch review (§9), and its whole value is finding what `/code-review` misses. Inherited from a workhorse session it would arrive as a weak verifier on a job that has no other checker — noise, not a net. The pin is a floor, not a ceiling: in a flagship session, weigh switching it back to `inherit` for that run. `xhigh` matches the level §9 uses for the whole-branch `/code-review`, so both lenses are calibrated alike.
 - In multi-agent workflows, set effort per stage: low for finder/collector stages, high only for verify/judge stages.
 - **Implementers are dispatched as `subagent_type: general-purpose`, never `fork`.** Subagents run background-by-default and `fork` (parent context inherited) is the Agent tool's default, but `subagent-driven-development` lives on the *fresh* context per implementer and names no type of its own. For review agents `fork` is welcome — they should know the task context and inherit the model.
 - `TodoWrite`/`TaskCreate` are off on current models while `using-superpowers` still asks for "a todo per item". Do **not** set `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` — checklists live in plan files and the dashboard.

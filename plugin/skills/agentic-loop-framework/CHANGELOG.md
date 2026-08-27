@@ -1,5 +1,42 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.32 (2026-08-26)
+
+- **Neue Review-Linse `adversarial-reviewer`** (templates/.claude/agents/): prüft den Diff
+  gegnerisch — Grundannahme ist, dass der Code kaputt und unvalidiert ist und die Tests das
+  Falsche prüfen. Anders als die drei bestehenden Linsen läuft sie in §9 **immer** mit, weil sie
+  nicht an eine Diff-Eigenschaft gebunden ist, sondern die Gegenkalibrierung zu `/code-review`
+  liefert: dieses findet wenige, hochsichere Funde, jene den anderen Rand — was erst unter
+  ungünstigen Eingaben, Zeitpunkten oder Reihenfolgen auffällt.
+
+  Zentral ist die **Beweislast statt Findepflicht**: ein Fund zählt nur mit Datei:Zeile, einem
+  konkreten Repro-Szenario, der Begründung, warum kein vorhandener Test greift, und einem
+  Fix-Ansatz; "kein Critical" ist ein zulässiges Ergebnis. Die naheliegende Formulierung
+  ("finde mindestens einen kritischen Fehler") wurde bewusst verworfen — sie garantiert ein
+  Ergebnis, nicht dessen Wahrheit, und die Triage-Kosten trägt der Mensch. Sicherheitsanalyse
+  bleibt ausdrücklich bei `/security-review`.
+
+  Modell `opus`, `effort: xhigh` — dieselbe Stufe, auf der `/code-review` den Whole-Branch-Review
+  fährt, damit beide Linsen vergleichbar kalibriert sind; für Opus-Klasse-Modelle ist xhigh die
+  beste Einstellung für Coding- und Agentic-Arbeit. Das ist die **einzige Ausnahme von der
+  `model: inherit`-Regel für Review-Agents** (§11, dort als solche dokumentiert): diese Linse
+  läuft bei *jedem* Whole-Branch-Review, und aus einer Workhorse-Session geerbt käme sie als
+  schwacher Verifier auf einer Aufgabe an, für die es keinen zweiten Checker gibt — Rauschen
+  statt Netz. Der Pin ist eine Untergrenze, kein Deckel. Der Prompt ist als Ziel plus Suchraum
+  geschrieben statt als nummerierte Prüfliste, mit dem ausdrücklichen Hinweis, dass die
+  Aufzählung ein Startpunkt und keine Checkliste ist. Sicherheitsvokabular meidet er bewusst:
+  die Klassifikatoren der aktuellen Modellgeneration greifen bei Cybersecurity-Inhalten, und ein
+  abgelehnter Lauf sähe wie ein leerer Review aus statt wie ein Fehler.
+
+- **CLAUDE.md §9: Triage-Gate als eigener Schritt.** Aus "review, then ask" wird "review, triage,
+  then ask". Neuer Schritt 2: Funde aller Linsen zusammenführen, als Artifact veröffentlichen und
+  **anhalten**; der Mensch triagiert jeden Fund als `approved` / `rejected` / `deferred`, die
+  freigegebenen landen in `docs/superpowers/reviews/<datum>-approved.md` mit dem geprüften
+  `head`-SHA im Frontmatter — daran erkennt eine spätere Session, dass die Freigabe veraltet ist.
+  Gefixt wird über `test-driven-development`, das Repro-Szenario ist der zuerst geschriebene
+  Test. Dieses Gate ist der Grund, warum die Linsen paranoid sein dürfen: über die Relevanz
+  entscheidet ein Mensch, nicht der Reviewer. Die bisherige Zwei-Optionen-Frage wird Schritt 3.
+
 ## 0.1.31 (2026-08-24)
 
 - **Neuer Skill `claude-code-news-review`** (plugin/skills/claude-code-news-review/): wöchentliche
