@@ -21,11 +21,13 @@ als Hook, Regel oder Memory:
    `FRICTION:`-Eintrag geloggt, und ein Turn darf nicht mit rotem Stand enden
    (Stop-Hook-Muster).
 3. **Milestone-Loop (Tage):** Jeder Milestone hat einen Resume-Prompt mit
-   maschinell prüfbarer Done-Bedingung, endet mit `/code-review` + explizitem
-   Push-Gate, und zwischen Milestones läuft der `milestone-checkpoint`-Skill
-   (8 Schritte: Permissions, Automation-Empfehlungen, Skill-Quellen inkl. Review-Gate,
+   maschinell prüfbarer Done-Bedingung und endet mit einem parallelen Review-Fan-out
+   (`/code-review` + Linsen-Agents), einer Triage durch den Menschen und einem expliziten
+   Push-Gate. Zwischen Milestones läuft der `milestone-checkpoint`-Skill
+   (9 Schritte: Permissions, `/doctor`, Automation-Empfehlungen, Skill-Quellen inkl. Review-Gate,
    Workflow-Retro, Memory-Konsolidierung, Framework-Abgleich (Drift + Native-Feature-Review),
-   Dashboard, Handover).
+   Dashboard, Handover). Der vollständige Ablauf mit Grafik:
+   [MILESTONE-CYCLE.md](MILESTONE-CYCLE.md).
 4. **Heartbeat (nächtlich):** CI bei Push/PR plus Cron, dazu eine lokale
    Triage-Routine, die Befunde in eine committete Inbox schreibt — die nächste
    Session liest sie zuerst.

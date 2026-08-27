@@ -19,10 +19,12 @@ as a hook, rule, or memory:
    complete resume prompts), friction is logged immediately as a `FRICTION:` entry, and
    a turn must not end in a red state (stop-hook pattern).
 3. **Milestone loop (days):** Every milestone has a resume prompt with a machine-checkable
-   done condition, ends with `/code-review` + an explicit push gate, and between
-   milestones the `milestone-checkpoint` skill runs (8 steps: permissions, automation
-   recommendations, skill sources incl. review gate, workflow retro, memory consolidation,
-   framework reconciliation (drift + native-feature review), dashboard, handover).
+   done condition and ends with a parallel review fan-out (`/code-review` + lens agents), a
+   human triage pass, and an explicit push gate. Between milestones the `milestone-checkpoint`
+   skill runs (9 steps: permissions, `/doctor`, automation recommendations, skill sources incl.
+   review gate, workflow retro, memory consolidation, framework reconciliation (drift +
+   native-feature review), dashboard, handover). The full flow with a diagram:
+   [MILESTONE-CYCLE.md](MILESTONE-CYCLE.md) (German).
 4. **Heartbeat (nightly):** CI on push/PR plus cron, and a local triage routine that
    writes findings into a committed inbox — the next session reads it first.
 

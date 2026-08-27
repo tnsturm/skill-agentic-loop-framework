@@ -242,6 +242,17 @@ every row is now consistent. Files that do not exist in the framework yet belong
 their own row ("missing there") rather than being silently passed over. The second table is the
 proof; without it the mirroring is a claim.
 
+**If the drift touched the milestone flow, the diagram is part of the mirroring.**
+`MILESTONE-CYCLE.md` in the framework repo draws that flow and carries a mapping table naming
+every source it is derived from. It has no gate hook and goes stale silently — the README's
+structure diagram carried a wrong version label for seventeen releases for exactly that reason.
+So whenever this step changes one of the CLAUDE.md sections listed in that mapping table (today
+§0, §4, §5, §7, §9, §11), adds or removes a lens agent, alters the step sequence in this skill,
+or changes a standing rule that shows up in the picture: update `assets/milestone-cycle.svg`, the
+prose, the mapping table, and the `Stand:` stamp — in the same commit as the rule change, and as
+its own row in the table above. That file's "Pflege" section states the same rule from the other
+side.
+
 ### 7b: Native-feature review (framework → platform)
 
 The framework only grows if nobody ever asks what it can shed. Claude Code ships fast;

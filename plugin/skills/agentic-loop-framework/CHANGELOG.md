@@ -1,5 +1,37 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.33 (2026-08-27)
+
+- **Neu: `MILESTONE-CYCLE.md` + `assets/milestone-cycle.svg`** — der Meilenstein-Zyklus als
+  Ablaufgrafik mit Erklärtext. Acht Bänder von `triage-inbox` bis `milestone-checkpoint`; es ist
+  die Detailansicht der Zeile „Milestone-Loop · Tage" aus `assets/struktur.svg`, wo der ganze
+  Zyklus eine Zeile ist. Sichtbar gemacht wird vor allem die Stelle, die am leichtesten
+  verwechselt wird: `/code-review medium` läuft **pro Task** innerhalb der Umsetzung, der
+  Fan-out aus `/code-review xhigh` + `adversarial-reviewer` + bedingten Linsen läuft **einmal**
+  auf dem Whole-Branch-Diff, und nur dort hängt ein Triage-Gate dran.
+
+- **Die Grafik trägt ihre eigene Herkunft.** Der Ablauf ist über `templates/CLAUDE.md` §0/§4/§5/
+  §7/§9/§11, die Linsen-Agents, `milestone-checkpoint` und die „Standing rules" in `SKILL.md`
+  verteilt — die Datei enthält deshalb eine Mapping-Tabelle, die je Diagrammschritt die Quelle
+  benennt, aus der er stammt. Bei Widerspruch gilt die Quelle, nicht das Bild. Dazu ein
+  `Stand:`-Stempel im Kopf und ein „Pflege"-Abschnitt mit den vier Auslösern, die ein Nachziehen
+  erzwingen.
+
+  Anlass ist ein konkreter Verrottungsfall: `assets/struktur.svg` trägt seit 0.1.15 das
+  Versionsschild `plugin.json · 0.1.15` — siebzehn Releases lang falsch, weil die Grafik keinen
+  Gate-Hook hat und niemand sie nachzog. Ein Hook ist hier nicht möglich (das Repo installiert
+  seine eigenen Templates nicht), deshalb ist die Regel prozedural verankert statt mechanisch.
+
+- **`milestone-checkpoint` Schritt 7a nimmt die Grafik in die Spiegelung auf.** Berührt die Drift
+  einen der gemappten CLAUDE.md-Abschnitte, einen Linsen-Agent, die Schrittfolge des Checkpoints
+  oder eine im Bild sichtbare Standing rule, gehören SVG, Text, Mapping-Tabelle und Stempel in
+  denselben Commit — und als eigene Zeile in die Abgleichstabelle, die 7a ohnehin verlangt.
+
+- **README-Korrekturen, ausgelöst von genau dieser Regel.** Beide READMEs beschrieben den
+  Milestone-Loop noch als „endet mit `/code-review` + explizitem Push-Gate" — seit 0.1.32 falsch,
+  weil das Triage-Gate dazwischen liegt. Ebenfalls korrigiert: der Checkpoint hat neun Schritte,
+  nicht acht (`/doctor` als Schritt 2 fehlte in der Aufzählung, seit er 0.1.30 dazukam).
+
 ## 0.1.32 (2026-08-26)
 
 - **Neue Review-Linse `adversarial-reviewer`** (templates/.claude/agents/): prüft den Diff
