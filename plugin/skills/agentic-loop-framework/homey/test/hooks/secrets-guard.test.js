@@ -43,6 +43,12 @@ const cases = [
   ['test mock → PASS', { file_path: 'test/mocks/homey.js', content: "writePassword: 'fixture-secret'" }, 0],
   // Counter-check: the carve-out must not soften the production path.
   ['production drivers/ still BLOCKED after the test-path carve-out', { file_path: 'drivers/pool/driver.js', content: "writePassword: 'hunter2secret'" }, 2],
+  // Found by the fix-diff re-review (§9 step 3, 2026-08-30): hoisting the carve-out also
+  // pulled '.claude' out of scope, unguarding the hook sources themselves — the one place
+  // this hook's own header says a credential must never appear. Only the JSONC config
+  // files under .claude/ belong in the exclusion.
+  ['hook source under .claude/hooks/lib → BLOCK', { file_path: '.claude/hooks/lib/changelog.js', content: `const h = '${SECRET_B64}';` }, 2],
+  ['.claude tooling JSON → PASS (may be JSONC)', { file_path: '.claude/launch.json', content: '{ /* comment */ }' }, 0],
 ];
 
 for (const [name, toolInput, expected] of cases) {
