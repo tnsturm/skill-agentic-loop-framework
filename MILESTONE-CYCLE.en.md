@@ -2,7 +2,7 @@
 
 *English · [Deutsche Version](MILESTONE-CYCLE.md)*
 
-**As of: 0.1.33** — the framework version in which the flow drawn here last changed. If that
+**As of: 0.1.34** — the framework version in which the flow drawn here last changed. If that
 differs from the current `plugin.json`, nothing is wrong: the flow has not changed since. If the
 *flow* differs, this file is stale — see [Maintenance](#maintenance).
 
@@ -88,7 +88,8 @@ Shorthands for the paths in the table:
 | TRIAGE | `approved.md` + `head` SHA | `CLAUDE.md §9` step 2 | Validity anchor against `git rev-parse HEAD` |
 | FIX | repro → test → fix | `CLAUDE.md §9` step 2, `§0` | `sp:test-driven-development`; the scenario becomes the test |
 | FIX | gates again | `CLAUDE.md §4` | The same gates as above |
-| RELEASE | push to main or PR? | `CLAUDE.md §9` step 3 | Two options, never without an explicit yes |
+| FIX | re-review the fix diff | `CLAUDE.md §9` step 3 | **Required** since 0.1.34; `medium` + `adversarial-reviewer`, fix diff only |
+| RELEASE | push to main or PR? | `CLAUDE.md §9` step 4 | Two options, never without an explicit yes |
 | RELEASE | `milestone-checkpoint` | `CLAUDE.md §7`, `checkpoint` | Its own `Mx.0` entry; nine steps |
 | RELEASE | `deferred` → triage-inbox | `CLAUDE.md §7` | Return path; the next session reads it first |
 

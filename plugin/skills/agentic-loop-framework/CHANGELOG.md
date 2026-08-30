@@ -1,5 +1,53 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.34 (2026-08-30)
+
+Alles in diesem Release stammt aus dem ersten vollständigen Durchlauf des §9-Gates im
+Ursprungsprojekt (2026-08-28/29) und dem Checkpoint danach — also aus echtem Betrieb des
+Ablaufs, den 0.1.33 gezeichnet hat.
+
+- **`templates/CLAUDE.md` §9: der Re-Review des Fix-Diffs ist Pflicht, nicht optional.** Die
+  Triage-Freigabe aus Schritt 2 gilt dem Code, wie er VOR den Fixes aussah; die Fixes selbst
+  gingen bisher ungeprüft in den Push. Neuer Schritt 3 (`/code-review medium` +
+  `adversarial-reviewer`, nur über den Fix-Diff), alter Schritt 3 wird 4.
+
+  Beleg statt Vermutung: der erste vollständige Loop fand mit genau diesem Schritt **vier reale
+  Defekte in zwanzig frischen Fixes** — ein neuer Repair-Dialog sperrte Legacy-Geräte aus, eine
+  Reihenfolgeregel war nur in einer Richtung implementiert, eine Entprellung zählte Ticks statt
+  Wanduhrzeit, und leere Repair-Felder löschten gespeicherte Credentials. Alle vier wären
+  gemergt worden.
+
+- **`MILESTONE-CYCLE.md`/`.en.md` + beide SVGs nachgezogen** (die 0.1.33-Pflegeregel greift hier
+  zum ersten Mal): der Knoten „optional: Re-Review des Fix-Diffs" heißt jetzt „Pflicht", die
+  Mapping-Tabelle bekommt eine eigene FIX-Zeile mit Verweis auf §9 Schritt 3, die FREIGABE-Zeile
+  zeigt auf den neuen Schritt 4, und beide `Stand:`-Stempel stehen auf 0.1.34.
+
+- **`homey/hooks/secrets-guard.js`: der Testbaum ist wirklich außerhalb des Scopes.** Die
+  Ausnahme für `node_modules|.git|.claude|docs|test|scratchpad` stand nur im `*.json`-Zweig,
+  während die Regeln für `lib/` und `drivers/` an jeder Stelle des Pfades matchten — `test/lib/`
+  und `test/drivers/` waren damit bewacht, entgegen dem Header der Datei. Ein Fixture-Passwort
+  in einem Testfile wurde als Leak blockiert; die Fehlermeldung zeigte den Pfad sogar ohne sein
+  `test/`-Präfix. `OUT_OF_SCOPE` wird jetzt zuerst geprüft. Vier neue Testfälle inklusive
+  Gegenprobe, dass `drivers/` weiterhin blockt (13/13 grün; die alte Fassung fällt gegen die
+  neuen Fälle mit 2 Fehlern durch — verifiziert).
+
+- **`homey/HOMEY.md`: die JSON-Authoring-Regel gilt für neue Dateien und neue Werte, nicht fürs
+  Neu-Serialisieren.** `JSON.stringify(obj, null, 2)` formatiert die ganze Datei um; Settings-
+  Manifeste halten `label`/`hint`-Paare bewusst einzeilig. Der Round-Trip machte aus einer
+  Zwei-Zeilen-Änderung einen mehrhundertzeiligen Diff. Punktuelle Änderungen laufen über einen
+  gezielten Edit plus `JSON.parse`-Gegenprobe.
+
+- **`templates/.claude/agents/adversarial-reviewer.md`: Repro-Harnesse gehören außerhalb des
+  Repos.** Der Agent baut sie per Auftrag, hatte aber keine Ansage, wohin — eine blieb im
+  Repo-Root liegen und wurde von einem `git add -A` der Hauptsession eingesammelt. Nach seinem
+  Lauf muss `git status` bis auf den Report sauber sein.
+
+**Bekannte Lücke, unverändert:** `typecheck-gate.js` und sein Test fehlen in `templates/`
+(seit M4.9). Im Ursprungsprojekt hat der Hook in diesem Zyklus gelernt, jeden Fail-open-Pfad zu
+melden statt still mit exit 0 zurückzukehren — diese generische Verbesserung kann mangels
+Template nicht gespiegelt werden. Ebenfalls weiter offen: `dashboard-sync`-Skill,
+Model-Tiering-Notiz, `reference.md` des Checkpoint-Skills.
+
 ## 0.1.33 (2026-08-27)
 
 - **Neu: `MILESTONE-CYCLE.md` + `assets/milestone-cycle.svg`** — der Meilenstein-Zyklus als

@@ -34,6 +34,15 @@ const cases = [
   ['guarded json clean → PASS', { file_path: '.homeychangelog.json', content: '{"0.3.0":{"en":"write control"}}' }, 0],
   ['Edit new_string with token → BLOCK', { file_path: 'lib/WriteClient.js', new_string: `headers.Authorization = '${SECRET_B64}'` }, 2],
   ['empty writePassword → PASS', { file_path: 'drivers/pool/driver.js', content: "writePassword: String(password || '')" }, 0],
+  // 2026-08-30: the lib//drivers/ rules matched ANYWHERE in the path, so test/drivers/
+  // and test/lib/ were guarded too — against this hook's own header and against the
+  // *.json rule, which already excluded test/. A fixture credential in a test file is
+  // not a leak; the false alarm cost a detour via a constant during a fix round.
+  ['test file under test/drivers → PASS (fixture credential, not a leak)', { file_path: 'test/drivers/pool.driver.pair.test.js', content: "const OLD_PW = 'oldpw12345'; store = { writePassword: 'newpw12345' };" }, 0],
+  ['test file under test/lib → PASS', { file_path: 'test/lib/WriteClient.test.js', content: `const h = '${SECRET_B64}';` }, 0],
+  ['test mock → PASS', { file_path: 'test/mocks/homey.js', content: "writePassword: 'fixture-secret'" }, 0],
+  // Counter-check: the carve-out must not soften the production path.
+  ['production drivers/ still BLOCKED after the test-path carve-out', { file_path: 'drivers/pool/driver.js', content: "writePassword: 'hunter2secret'" }, 2],
 ];
 
 for (const [name, toolInput, expected] of cases) {

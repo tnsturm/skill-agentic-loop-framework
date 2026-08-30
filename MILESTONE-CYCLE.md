@@ -2,7 +2,7 @@
 
 *Deutsch · [English version](MILESTONE-CYCLE.en.md)*
 
-**Stand: 0.1.33** — die Framework-Version, in der der hier abgebildete Ablauf zuletzt geändert
+**Stand: 0.1.34** — die Framework-Version, in der der hier abgebildete Ablauf zuletzt geändert
 wurde. Weicht sie stark von der aktuellen `plugin.json` ab, ist das kein Fehler: der Ablauf hat
 sich seither nicht geändert. Weicht der *Ablauf* ab, ist diese Datei veraltet — siehe
 [Pflege](#pflege).
@@ -90,7 +90,8 @@ Kurzformen für die Pfade in der Tabelle:
 | TRIAGE | `approved.md` + `head`-SHA | `CLAUDE.md §9` Schritt 2 | Gültigkeitsanker gegen `git rev-parse HEAD` |
 | FIX | Repro → Test → Fix | `CLAUDE.md §9` Schritt 2, `§0` | `sp:test-driven-development`; Szenario wird der Test |
 | FIX | Gates erneut | `CLAUDE.md §4` | Dieselben Gates wie oben |
-| FREIGABE | push auf main oder PR? | `CLAUDE.md §9` Schritt 3 | Zwei Optionen, nie ohne explizites Ja |
+| FIX | Re-Review des Fix-Diffs | `CLAUDE.md §9` Schritt 3 | **Pflicht** seit 0.1.34; `medium` + `adversarial-reviewer`, nur der Fix-Diff |
+| FREIGABE | push auf main oder PR? | `CLAUDE.md §9` Schritt 4 | Zwei Optionen, nie ohne explizites Ja |
 | FREIGABE | `milestone-checkpoint` | `CLAUDE.md §7`, `checkpoint` | Eigener `Mx.0`-Eintrag; neun Schritte |
 | FREIGABE | `deferred` → triage-inbox | `CLAUDE.md §7` | Rücklauf; die nächste Session liest sie zuerst |
 

@@ -195,7 +195,7 @@ Corollary for automations: a routine that writes **only its own ledger file** (e
 
 ### Finishing: review, triage, then ask
 
-**Before any git action on a finished branch, run `/code-review`, let the human triage the findings — then ask how to proceed.**
+**Before any git action on a finished branch, run `/code-review`, let the human triage the findings, re-review the fixes — then ask how to proceed.**
 
 Once a branch/worktree's change is complete and a git action (commit/push/merge) is next:
 
@@ -222,7 +222,18 @@ Once a branch/worktree's change is complete and a git action (commit/push/merge)
    Fix them through `superpowers:test-driven-development` — the repro scenario is the failing
    test, written before the fix. This gate is the reason the lenses may be paranoid: a human
    decides what counts, not the reviewer.
-3. Based on the result, ask (don't decide silently):
+3. **Re-review the fix diff — before the push.** The triage approval from step 2 applies to the
+   code as it looked BEFORE the fixes. The fixes themselves are freshly written, unreviewed code,
+   and that is where defect density is highest. So: `/code-review medium` **plus**
+   `adversarial-reviewer` over the diff of the fix commits (not the whole branch again — step 1
+   has seen that). Findings inside the already-approved mandate are fixed test-first straight
+   away; anything beyond it goes back through the triage of step 2. Record the outcome as an
+   addendum in the `-approved.md`. Evidence: the first full loop of this gate found **four real
+   defects in twenty fresh fixes** with exactly this step — a new repair dialog locked out
+   legacy devices, an ordering rule was implemented in only one direction, a debounce counted
+   ticks instead of wall-clock time, and empty repair fields wiped stored credentials. All four
+   would have been merged.
+4. Based on the result, ask (don't decide silently):
    - **Trivial change (no Critical Issues):** ask whether to push directly to `origin/main` and pull the local `main` checkout up to date — skipping a PR.
    - **Otherwise:** ask whether to push the branch and open a Pull Request.
 

@@ -176,7 +176,7 @@
           <rect x="644" y="692" width="216" height="52" rx="4" fill="#FFFFFF" stroke="#17212B" stroke-opacity=".35"/>
           <text x="752" y="710" text-anchor="middle" font-size="12.5" fill="#17212B">Gates erneut</text>
           <text x="752" y="725" text-anchor="middle" font-size="10.5" fill="#8494A1">Suite + validate</text>
-          <text x="752" y="738" text-anchor="middle" font-size="10.5" fill="#8494A1">optional: Re-Review des Fix-Diffs</text>
+          <text x="752" y="738" text-anchor="middle" font-size="10.5" fill="#8494A1">Pflicht: Re-Review des Fix-Diffs</text>
 
           <line x1="348" y1="718" x2="382" y2="718" stroke="#17212B" stroke-opacity=".5" marker-end="url(#ah)"/>
           <line x1="604" y1="718" x2="638" y2="718" stroke="#17212B" stroke-opacity=".5" marker-end="url(#ah)"/>
