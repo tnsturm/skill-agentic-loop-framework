@@ -31,6 +31,14 @@ Ablaufs, den 0.1.33 gezeichnet hat.
   Gegenprobe, dass `drivers/` weiterhin blockt (13/13 grün; die alte Fassung fällt gegen die
   neuen Fälle mit 2 Fehlern durch — verifiziert).
 
+  **Der neue Schritt 3 hat sich sofort an dieser Änderung bewährt.** Beim Hochziehen wanderte
+  `.claude` mit in die gemeinsame Liste und nahm damit den **Hook-Quelltext selbst** aus dem
+  Scope — ausgerechnet die Stelle, an der `secrets-guard.js` im eigenen Header erklärt, dass
+  nie ein Secret stehen darf. Der Nachreview des Fix-Diffs fand das Stunden nach der
+  Entstehung; die `.claude`-Ausnahme steht wieder allein in der `*.json`-Regel, zwei weitere
+  Tests pinnen beide Seiten (15/15). Ein Release, das seinen eigenen neuen Pflichtschritt im
+  selben Atemzug rechtfertigt.
+
 - **`homey/HOMEY.md`: die JSON-Authoring-Regel gilt für neue Dateien und neue Werte, nicht fürs
   Neu-Serialisieren.** `JSON.stringify(obj, null, 2)` formatiert die ganze Datei um; Settings-
   Manifeste halten `label`/`hint`-Paare bewusst einzeilig. Der Round-Trip machte aus einer
