@@ -1,5 +1,46 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.35 (2026-08-31)
+
+Ein Befund aus dem `/doctor`-Lauf des Ursprungsprojekts — gefunden durch einen Transkript-Scan,
+nicht dadurch, dass er jemandem aufgefallen wäre. Genau das ist der Punkt.
+
+- **`templates/.claude/settings.json`: Hook-Kommandos finden ihr Skript jetzt über
+  `${CLAUDE_PROJECT_DIR}` statt über einen repo-relativen Pfad.** Ein relatives
+  `node .claude/hooks/x.js` wird gegen das **cwd der Session** aufgelöst. Ist das nicht die
+  Repo-Wurzel, findet Node das Modul nicht und der Hook läuft **gar nicht** — und zwar das
+  gesamte Gate-Netz gleichzeitig (`test-gate`, `typecheck-gate`, `commit-msg-guard`,
+  `secrets-guard`, `package-guard`, …).
+
+  Der Ausfall ist unsichtbar: er landet ausschließlich als `hook_non_blocking_error` im
+  Transkript, wo weder Modell noch Nutzer ihn sieht. Von „lief und war grün" ist er nicht zu
+  unterscheiden. Das ist dieselbe Klasse, gegen die 0.1.34 die Fail-open-Hörbarkeit eingeführt
+  hat — nur eine Stufe schlimmer, weil der Prozess nie startet und deshalb nicht einmal der
+  Hook-Ledger etwas mitbekommt.
+
+  Belegt statt vermutet: im Ursprungsprojekt **211 solcher Fehlstarts an fünf Tagen**, aus vier
+  verschiedenen Session-cwds — einem Nachbar-Repo, `.claude/worktrees`, `.claude/hooks` selbst
+  (der Pfad verdoppelte sich) und dem `.git/worktrees` eines zweiten Checkouts. Betroffen war
+  jedes Mal das komplette Gate-Netz, einmal darunter `commit-msg-guard` in genau der Session,
+  die tags zuvor bewiesen hatte, dass er „live blockt".
+
+  Die geklammerte Form ist Absicht: `${CLAUDE_PROJECT_DIR}` ersetzt Claude Code **selbst**,
+  bevor das Kommando eine Shell erreicht — also shell-unabhängig. Das nackte
+  `$CLAUDE_PROJECT_DIR` ist es nicht: Hooks mit Matcher `Bash|PowerShell` laufen auch unter
+  PowerShell, das die Variable als undefiniert (`$null`) liest; die CLI warnt für genau diese
+  Schreibweise.
+
+- **Neuer Template-Test `templates/test/hooks/hook-command-paths.test.js`.** Pinnt die
+  Verdrahtung statt der Hook-Logik: jedes Kommando muss den Token tragen, keines die nackte
+  Variable, jedes referenzierte Skript muss existieren. Dazu das Repro in beiden Richtungen —
+  der relative Pfad **scheitert** aus einem fremden cwd (negative Kontrolle, hält den Defekt
+  fest), der substituierte **löst auf**. Ohne die negative Kontrolle wäre der Test grün, auch
+  wenn der Mechanismus gar nicht mehr griffe.
+
+`MILESTONE-CYCLE.md`/`.en.md` und die beiden SVGs bleiben bewusst auf **0.1.34**: ihr
+`Stand:`-Stempel nennt die Version, in der sich der *abgebildete Ablauf* zuletzt geändert hat,
+und dieses Release ändert ihn nicht.
+
 ## 0.1.34 (2026-08-30)
 
 Alles in diesem Release stammt aus dem ersten vollständigen Durchlauf des §9-Gates im

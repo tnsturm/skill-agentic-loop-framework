@@ -4,18 +4,18 @@
       {
         "matcher": "Bash|PowerShell",
         "hooks": [
-          { "type": "command", "command": "node .claude/hooks/test-gate.js" },
-          { "type": "command", "command": "node .claude/hooks/package-guard.js" },
-          { "type": "command", "command": "node .claude/hooks/commit-msg-guard.js" }
+          { "type": "command", "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/test-gate.js\"" },
+          { "type": "command", "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/package-guard.js\"" },
+          { "type": "command", "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/commit-msg-guard.js\"" }
         ]
       },
       {
         "matcher": "Edit|Write",
         "hooks": [
-          { "type": "command", "if": "Edit(package.json)", "command": "node .claude/hooks/package-guard.js" },
-          { "type": "command", "if": "Write(package.json)", "command": "node .claude/hooks/package-guard.js" },
-          { "type": "command", "if": "Edit(**/package.json)", "command": "node .claude/hooks/package-guard.js" },
-          { "type": "command", "if": "Write(**/package.json)", "command": "node .claude/hooks/package-guard.js" }
+          { "type": "command", "if": "Edit(package.json)", "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/package-guard.js\"" },
+          { "type": "command", "if": "Write(package.json)", "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/package-guard.js\"" },
+          { "type": "command", "if": "Edit(**/package.json)", "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/package-guard.js\"" },
+          { "type": "command", "if": "Write(**/package.json)", "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/package-guard.js\"" }
         ]
       }
     ],
@@ -23,16 +23,16 @@
       {
         "matcher": "Edit|Write",
         "hooks": [
-          { "type": "command", "if": "Edit(docs/dashboard/dashboard.html)", "command": "node .claude/hooks/dashboard-guard.js" },
-          { "type": "command", "if": "Write(docs/dashboard/dashboard.html)", "command": "node .claude/hooks/dashboard-guard.js" },
-          { "type": "command", "command": "node .claude/hooks/control-bytes-guard.js" }
+          { "type": "command", "if": "Edit(docs/dashboard/dashboard.html)", "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/dashboard-guard.js\"" },
+          { "type": "command", "if": "Write(docs/dashboard/dashboard.html)", "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/dashboard-guard.js\"" },
+          { "type": "command", "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/control-bytes-guard.js\"" }
         ]
       }
     ],
     "Stop": [
       {
         "hooks": [
-          { "type": "command", "command": "node .claude/hooks/handoff-notice.js" }
+          { "type": "command", "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/handoff-notice.js\"" }
         ]
       }
     ]
