@@ -1,6 +1,6 @@
 # What's-New-Ledger — claude-code-news-review
 
-Stand: geprüft bis 2026-w34 (v2.1.239) · letzter Lauf: 2026-08-25 (Routine, headless — Übersichtsseite listete keine Woche nach w34, nichts Neues)
+Stand: geprüft bis 2026-w34 (v2.1.239) · letzter Lauf: 2026-08-31 (Routine, headless — Übersichtsseite listete keine Woche nach w34, nichts Neues)
 
 Besonderheiten: 2026-w31 = kein Digest veröffentlicht (404, verifiziert 2026-08-23).
 
