@@ -1,5 +1,43 @@
 # Changelog — agentic-loop-framework
 
+## 0.1.36 (2026-08-31)
+
+Ergebnis der /insights-Auswertung des M9.0b-Checkpoints im Ursprungsprojekt. Die Gewichtung
+vorweg, weil sie das Framework selbst bestätigt: von 18 Report-Befunden waren 8 bereits durch
+existierende Regeln und Hooks abgedeckt (der Report meldet großteils Vorfälle, aus denen der
+Loop längst Regeln gemacht hat — `handoff-notice` zitiert sogar den Vorgänger-Report als
+Entstehungsgrund), 2 wurden verworfen, 3 gingen ins Backlog. Übrig blieben vier kleine
+Deltas, alle hier gespiegelt:
+
+- **Neuer SessionStart-Hook `templates/.claude/hooks/selftest-guards.js` + Tests.** Macht ein
+  entwaffnetes Gate-Netz beim Session-Start HÖRBAR statt still: prüft, ob jede registrierte
+  Hook-Datei auflösbar ist (Settings-Kaskade, nicht nur die eingecheckte Datei), ob kein
+  Kommando die cwd-relative Form trägt, ob `node_modules` existiert, wenn `package.json`
+  Dependencies deklariert (sonst skippen test-/typecheck-gate jeden Commit), und ob jede
+  vorhandene Settings-Datei parst (eine unparsbare lädt GAR KEINE Hooks). Befunde gehen auf
+  stdout — Claude Code injiziert SessionStart-stdout in den Kontext, das Modell selbst sieht
+  also die Warnung. Immer exit 0: fail-open, aber hörbar. Schließt das Fenster zwischen
+  Session-Start und erstem Commit, das die Commit-Zeit-Invariante aus 0.1.35 nicht sieht —
+  im Ursprungsprojekt lagen genau dort fünf ungelesene Gate-Skip-Records.
+
+- **`templates/CLAUDE.md` §4: Mehrzeiliges nie durch ein Heredoc** (Git Bash auf Windows):
+  Heredocs zerlegen Backslash-Literale im Quelltext, und ein PreToolUse-Block verwirft das
+  GESAMTE Verbundkommando — samt dem darin enthaltenen Datei-Schreiben, der Folgefehler zeigt
+  dann überallhin außer auf die Ursache. Datei-Inhalte über das Write-Tool, Commit-Messages
+  über `git commit -F <datei>`, Message-Datei und Commit in getrennten Aufrufen. Häufigste
+  wiederkehrende Reibungsklasse des Reports (≥6 Sessions, zweimal am Auswertungstag selbst).
+
+- **`templates/CLAUDE.md` §1: Fakten über die Umgebung nie annehmen** — aktivierte Features,
+  installierte Integrationen, Auth-Anforderungen: Read-only-Probe oder Rückfrage. Die einzige
+  Reibungsklasse, die NUR /insights sieht: eine falsche Annahme fühlt sich im Moment nicht
+  wie Reibung an und landet deshalb nie im FRICTION-Log.
+
+- **`templates/.claude/skills/milestone-checkpoint` Step 1 nachgeschärft:** drei Vorprüfungen
+  vor jeder Worktree-/Checkout-Löschung (cwd nicht im Ziel, kein haltender Prozess, nichts
+  Unpubliziertes; bei Windows-Lock Pfade listen statt Wiederholungsversuche) und der Hinweis,
+  lange Checkpoints in Read-only-Befundaufnahme und getrennte Reparatur zu teilen — Hinweis,
+  kein Verbot.
+
 ## 0.1.35 (2026-08-31)
 
 Ein Befund aus dem `/doctor`-Lauf des Ursprungsprojekts — gefunden durch einen Transkript-Scan,

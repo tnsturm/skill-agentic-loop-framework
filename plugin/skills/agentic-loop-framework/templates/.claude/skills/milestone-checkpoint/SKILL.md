@@ -47,6 +47,19 @@ each candidate (what it belonged to; merged, orphaned, or still active?) and off
 (local + origin) and worktrees (`git worktree remove` including the directory on disk).
 Record the result in the `Mx.0` `log[]`.
 
+Before deleting any worktree or checkout, three pre-checks: (1) the session's cwd is NOT
+inside the deletion target, (2) no running process holds it (typically `node --test --watch`
+or a cloud-sync client), (3) nothing unpublished inside it (`git log --branches --not
+--remotes`, `git status`, `git stash list`). If removal still fails on a Windows lock, list
+the exact paths for manual removal instead of retrying — the empty shell usually only
+disappears with the next reboot.
+
+When a checkpoint grows long (many findings, several repairs), separate discovery from
+repair: run every diagnostic step read-only first, show a prioritized findings list, then
+repair — after the user's triage, possibly in follow-up sessions. A hint, not a rule: short
+checkpoints keep running discovery+repair interleaved. Reason: interleaved long checkpoints
+have produced session crashes and context limits in the origin project.
+
 ## Step 3: Offer /claude-automation-recommender results
 
 The recommender is read-only (it only suggests). So that the suggestions don't fizzle out in the

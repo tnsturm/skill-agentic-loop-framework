@@ -22,6 +22,9 @@ Before implementing:
 - If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
+- Facts about the user's environment (enabled features, installed integrations, auth
+  requirements) are verified with a read-only probe or a question — never assumed. A wrong
+  assumption doesn't feel like friction while it happens, so this class never self-reports.
 
 During brainstorming, before converging on a design:
 
@@ -84,6 +87,12 @@ silenced). Such a fix is a valid intermediate result — but only when it is nam
 
 Counting and grep checks over repo files must be **CRLF-safe** on Windows checkouts: a `sed`/`grep`
 pattern with a `$` anchor silently counts zero on CRLF files — and a silent zero reads like "clean".
+
+**Multi-line content never travels through a heredoc** (Git Bash on Windows): heredocs mangle
+backslash literals in source code, and a PreToolUse block discards the WHOLE compound command —
+including the file-write it contained, so the follow-up error points anywhere but the cause.
+File content goes through the Write tool (or a script file), commit messages through
+`git commit -F <file>`, and the message file is written in a separate call from the commit.
 
 Generated visualizations are **static/precomputed by default**. A `requestAnimationFrame` or
 `setInterval` loop without an explicit termination condition or frame cap does not ship.
