@@ -37,6 +37,16 @@ nicht dadurch, dass er jemandem aufgefallen wäre. Genau das ist der Punkt.
   fest), der substituierte **löst auf**. Ohne die negative Kontrolle wäre der Test grün, auch
   wenn der Mechanismus gar nicht mehr griffe.
 
+  Der Nachreview des eigenen Fix-Diffs (§9 Schritt 3) hat den Test danach dreimal
+  nachgeschärft: die Probe läuft über `control-bytes-guard` statt `test-gate` (letzterer
+  startet `npm test` — die einzige Sicherung gegen Rekursion wäre seine Startbedingung
+  gewesen), die Invariante liest die ganze Settings-Kaskade statt nur der eingecheckten
+  Datei (`settings.local.json` ist gitignored und damit die wahrscheinlichste Rückfallstelle),
+  und sie hängt an `node <relativer Pfad>` statt am Verzeichnisnamen, damit auch
+  `node scripts/gate.js` erfasst wird. Dazu die Gegenrichtung: jede Hook-Datei auf Platte
+  muss registriert sein — ein grün getesteter, nie verdrahteter Guard ist aus der Suite
+  heraus von einem funktionierenden nicht zu unterscheiden.
+
 `MILESTONE-CYCLE.md`/`.en.md` und die beiden SVGs bleiben bewusst auf **0.1.34**: ihr
 `Stand:`-Stempel nennt die Version, in der sich der *abgebildete Ablauf* zuletzt geändert hat,
 und dieses Release ändert ihn nicht.
